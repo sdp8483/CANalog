@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CANalog</title>
+</head>
+<body>
+
+<h2>CANalog Configuration</h2>
+<form action="/save" method="POST">
+<label for="canid">CAN ID:</label><br>
+<input type="text" id="canid" name="canid" value="18EFB300"><br>
+<label for="bytepos">Byte Position:</label><br>
+<input type="number" id="bytepos" name="bytepos" value="2" min="0" max="32"><br>
+<label for="msglen">Number of Bits:</label><br>
+<input type="number" id="msglen" name="msglen" value="8" min="1" max="32"><br><br>
+<input type="submit" value="Save">
+</form>
+</body>
+</html>
