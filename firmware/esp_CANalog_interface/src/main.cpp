@@ -9,9 +9,14 @@ IPAddress local_IP(192,168,4,1);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
-String canID = "18EFB300";
-String msgBitPosition = "0";
-String msgBitLen = "8";
+#define NUMBER_CAN_BAUD_RATES  9
+String possible_can_baud[NUMBER_CAN_BAUD_RATES] = {"10", "20", "50", "100", "125", "250", "500", "750", "1000"};
+
+String can_baud = "500";
+String can_id = "18EFB300";
+String can_is_extended = "true";
+String can_signal_start_bit = "0";
+String can_signal_bit_len = "8";
 
 ESP8266WebServer server(80);
 
@@ -49,23 +54,67 @@ void loop(void){
 void handleRoot() {
   String root = "<!DOCTYPE html>";
   root += "<html>";
-  root += "<head><title>CANalog</title></head>";
+  root += "<head><title>CANalog</title>";
+  root += "<style>";
+  root += "h1 {font-size: 500%;}";
+  root += "select {font-size: 300%;}";
+  root += "input {font-size: 300%;}";
+  root += "label {font-size: 300%;}";
+  root += "</style>";
+  root += "</head>";
   root += "<body>";
-  root += "<h2>CANalog Configuration</h2>";
+  root += "<h1>CANalog Configuration</h1>";
+
   root += "<form action=\"/save\" method=\"POST\">";
-  root += "<label for=\"canid\">CAN ID:</label><br>";
-  root += "<input type=\"text\" id=\"canid\" name=\"canid\" value=\"";
-  root += canID;
-  root += "\"><br>";
-  root += "<label for=\"bitpos\">Bit Position:</label><br>";
-  root += "<input type=\"number\" id=\"bitpos\" name=\"bitpos\" value=\"";
-  root += msgBitPosition;
-  root += "\" min=\"0\" max=\"32\"><br>";
-  root += "<label for=\"msglen\">Number of Bits:</label><br>";
-  root += "<input type=\"number\" id=\"msglen\" name=\"msglen\" value=\"";
-  root += msgBitLen;
-  root += "\" min=\"1\" max=\"32\"><br><br>";
+  
+  root += "<label for=\"can_baud\">CAN Baud Rate: </label>";
+  root += "<select id=\"can_baud\" name=\"can_baud\">";
+
+  for (uint8_t i=0; i<NUMBER_CAN_BAUD_RATES; i++) {
+    if (can_baud == possible_can_baud[i]) {
+        root += "<option value=\"";
+        root += possible_can_baud[i];
+        root += "\" selected>";
+        root += possible_can_baud[i];
+        root += "kbps</option>";
+      } else {
+        root += "<option value=\"";
+        root += possible_can_baud[i];
+        root += "\">";
+        root += possible_can_baud[i];
+        root += "kbps</option>";
+      }
+  }
+  root += "</select><br>";
+
+  root += "<label for=\"can_id\">CAN ID: </label>";
+  root += "<input type=\"text\" id=\"can_id\" name=\"can_id\" value=\"";
+  root += can_id;
+  root += "\"  size=\"9\"><br>";
+
+  root += "<label for=\"can_is_extended\">29bit ID: </label>";
+  root += "<select id=\"can_is_extended\" name=\"can_is_extended\">";
+  if (can_is_extended == "true") {
+    root += "<option value=\"true\" selected>true</option>";
+    root += "<option value=\"false\">false</option>";
+  } else {
+    root += "<option value=\"true\">true</option>";
+    root += "<option value=\"false\" selected>false</option>";
+  }
+  root += "</select><br>";
+
+  root += "<label for=\"can_signal_start_bit\">Bit Position: </label>";
+  root += "<input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
+  root += can_signal_start_bit;
+  root += "\" min=\"0\" max=\"32\" size=\"3\"><br>";
+
+  root += "<label for=\"can_signal_bit_len\">Number of Bits: </label>";
+  root += "<input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
+  root += can_signal_bit_len;
+  root += "\" min=\"1\" max=\"32\" size=\"3\"><br><br>";
+
   root += "<input type=\"submit\" value=\"Save\">";
+
   root += "</form>";
   root += "</body>";
   root += "</html>";
@@ -78,17 +127,28 @@ void handleSave() {
   //String msgBitPosition_str = server.arg("bitpos");
   //String msgBitLen_str = server.arg("msglen");
 
-  canID = server.arg("canid");
-  msgBitPosition = server.arg("bitpos");
-  msgBitLen = server.arg("msglen");
+  can_baud = server.arg("can_baud");
+  can_id = server.arg("can_id");
+  can_is_extended = server.arg("can_is_extended");
+  can_signal_start_bit = server.arg("can_signal_start_bit");
+  can_signal_bit_len = server.arg("can_signal_bit_len");
 
+  Serial.print("CAN Baud Rate: ");
+  Serial.print(can_baud);
+  Serial.println("kbps");
   Serial.print("CAN ID: 0x");
-  Serial.println(canID);
-  Serial.print("Bit Position: ");
-  Serial.println(msgBitPosition);
-  Serial.print("Bit Length: ");
-  Serial.println(msgBitLen);
+  Serial.println(can_id);
+  Serial.print("29bit ID? ");
+  Serial.println(can_is_extended);
+  Serial.print("Signal Start Bit: ");
+  Serial.println(can_signal_start_bit);
+  Serial.print("Signal Bit Length: ");
+  Serial.println(can_signal_bit_len);
   Serial.println();
+
+  /* Send out parsable commands for stm32 */
+  Serial.print("@can_baud=");
+  Serial.println(can_baud);
 
   /*
   if( ! server.hasArg("username") || ! server.hasArg("password")  

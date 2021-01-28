@@ -2,17 +2,43 @@
 <html>
 <head>
     <title>CANalog</title>
+    
+    <style>
+    h1 {
+      	font-size: 500%;
+    }
+    select {
+    	font-size: 300%;
+    }
+    input {
+        font-size: 300%;
+	}
+    label {
+        font-size: 300%;
+	}
+</style>
 </head>
 <body>
 
-<h2>CANalog Configuration</h2>
+<h1>CANalog Configuration</h1>
 <form action="/save" method="POST">
-<label for="canid">CAN ID:</label><br>
-<input type="text" id="canid" name="canid" value="18EFB300"><br>
-<label for="bytepos">Byte Position:</label><br>
-<input type="number" id="bytepos" name="bytepos" value="2" min="0" max="32"><br>
-<label for="msglen">Number of Bits:</label><br>
-<input type="number" id="msglen" name="msglen" value="8" min="1" max="32"><br><br>
+<label for="can_baud">CAN Baud Rate: </label>
+<select id="can_baud" name="can_baud">
+	<option value="125">125kbps</option>
+	<option value="250">250kbps</option>
+    <option value="500" selected>500kbps</option>
+</select><br>
+<label for="can_id">CAN ID: </label>
+<input type="text" id="can_id" name="can_id" value="18EFB300" size="9"><br>
+<label for="can_is_extended">29bit ID: </label>
+<select id="can_is_extended" name="can_is_extended">
+	<option value="true">true</option>
+	<option value="false" selected>false</option>
+</select><br>
+<label for="can_signal_start_bit">Signal Start Bit: </label>
+<input type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="32" size="3"><br>
+<label for="can_signal_bit_len">Signal Bit Length: </label>
+<input type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="32" size="3"><br><br>
 <input type="submit" value="Save">
 </form>
 </body>
