@@ -19,17 +19,16 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "adc.h"
 #include "can.h"
 #include "dac.h"
-#include "i2c.h"
 #include "rtc.h"
-#include "tim.h"
 #include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "device_sn.h"
+#include "cmd_parsing.h"
 
 /* USER CODE END Includes */
 
@@ -40,11 +39,23 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define DEFAULT_CAN_BAUD				500
-#define DEFAULT_CAN_ID					0x18FEEE00
-#define DEFAULT_CAN_IS_EXTENDED			1
-#define DEFAULT_CAN_SIGNAL_START_BIT	0
-#define DEFAULT_CAN_SIGNAL_BIT_LEN		16
+#define DEVICE_NAME				"CANalog"
+/* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
+ * 		MAIN marks major milestones of the project such as release
+ * 		TOPIC marks the introduction of a new functionality or major changes
+ * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
+ * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
+ */
+#define HW_VERSION				"V0.0.1.0"
+#define FW_VERSION				"V0.0.1.0"
+
+#define BKP_IS_SET				0x1234			/* if this value is found in the first backup register the values have been set before */
+#define BKP_SET_ADDR			RTC_BKP_DR0		/* backup register address where magic number is stored */
+#define BKP_CAN_BAUD_ADDR		RTC_BKP_DR1		/* backup register address where CAN baud rate is stored */
+#define BKP_CAN_ID_ADDR			RTC_BKP_DR2		/* backup register address where CAN ID is stored */
+#define BKP_CAN_SSB_ADDR		RTC_BKP_DR3		/* backup register address where CAN signal start bit is stored */
+#define BKP_CAD_SBL_ADDR		RTC_BKP_DR4		/* backup register address where CAN signal bit length is stored */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -56,16 +67,18 @@
 
 /* USER CODE BEGIN PV */
 UART_HandleTypeDef huart1;
-uint8_t rxBuffer[1];
-uint8_t cmdBuffer[12];
-volatile uint8_t cmdBuffer_index = 0;
-uint8_t cmd_end_flag = 0;
+RTC_HandleTypeDef hrtc;
 
-uint16_t can_baud = DEFAULT_CAN_BAUD; /* CAN baud rate, supports 250kbps and 500kbps */
-uint32_t can_id = DEFAULT_CAN_ID; /* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
-uint8_t can_is_extended = DEFAULT_CAN_IS_EXTENDED; /* CAN ID is extended if 1 */
-uint32_t can_signal_start_bit = DEFAULT_CAN_SIGNAL_START_BIT; /* bit that signal to convert to analog starts */
-uint32_t can_signal_bit_len = DEFAULT_CAN_SIGNAL_BIT_LEN; /* bit length of signal to convert to analog */
+CMD_Handle_t hcmd;
+
+uint32_t device_sn;	/* serial number created using 96bit unique device ID
+ 	 	 	 	 	 * used to set SSID of WiFi */
+
+uint16_t can_baud = 500; /* CAN baud rate, supports 250kbps and 500kbps */
+uint32_t can_id = 0x18EFB300; /* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
+uint8_t can_is_extended; /* CAN ID is extended if 1 */
+uint32_t can_signal_start_bit; /* bit that signal to convert to analog starts */
+uint32_t can_signal_bit_len = 16; /* bit length of signal to convert to analog */
 
 /* USER CODE END PV */
 
@@ -110,12 +123,21 @@ int main(void) {
 	MX_CAN_Init();
 	MX_DAC_Init();
 	MX_RTC_Init();
-	MX_TIM1_Init();
-	MX_I2C1_Init();
 	MX_USART1_UART_Init();
-	MX_ADC1_Init();
 	/* USER CODE BEGIN 2 */
-	HAL_UART_Receive_IT(&huart1, rxBuffer, 1);
+
+	device_sn = calc_sn();		/* get device 32bit sn */
+
+	/* read in saved data from RTC backup registers */
+	if (HAL_RTCEx_BKUPRead(&hrtc, BKP_SET_ADDR) != BKP_IS_SET) { 	/* if backup register != BKP_IS_SET then set save data */
+		HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
+		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
+		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
+		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
+		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
+	}
+
+	HAL_UART_Receive_IT(&huart1, hcmd.rxBuffer, 1); /* receive one byte at a time */
 
 	/* USER CODE END 2 */
 
@@ -125,6 +147,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
+		cmd_parse(&hcmd);
 
 	}
 	/* USER CODE END 3 */
@@ -142,23 +165,20 @@ void SystemClock_Config(void) {
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
 	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI
-			| RCC_OSCILLATORTYPE_LSI | RCC_OSCILLATORTYPE_HSE;
-	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-	RCC_OscInitStruct.HSEPredivValue = RCC_HSE_PREDIV_DIV1;
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
 	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
 	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL9;
+	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
 		Error_Handler();
 	}
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1
+			| RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -167,15 +187,9 @@ void SystemClock_Config(void) {
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
 		Error_Handler();
 	}
-	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1
-			| RCC_PERIPHCLK_I2C1 | RCC_PERIPHCLK_RTC | RCC_PERIPHCLK_TIM1
-			| RCC_PERIPHCLK_ADC1;
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_RTC;
 	PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-	PeriphClkInit.I2c1ClockSelection = RCC_I2C1CLKSOURCE_HSI;
 	PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
-	PeriphClkInit.Tim1ClockSelection = RCC_TIM1CLK_HCLK;
-	PeriphClkInit.Adc1ClockSelection = RCC_ADC1PLLCLK_DIV1;
-
 	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
 		Error_Handler();
 	}
@@ -183,23 +197,19 @@ void SystemClock_Config(void) {
 
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+	hcmd.buffer[hcmd.index] = hcmd.rxBuffer[0];
 
-	cmdBuffer[cmdBuffer_index] = rxBuffer[0];
-
-	if(cmdBuffer[cmdBuffer_index] == '\n') {
-		cmd_end_flag = 1;
-
-		HAL_UART_Transmit(&huart1, cmdBuffer, sizeof(cmdBuffer)-1, 100);
-		uint8_t txBuffer[] = " OK!\n\r";
-		HAL_UART_Transmit(&huart1, txBuffer, sizeof(txBuffer), 100);
-
-		cmdBuffer[cmdBuffer_index] = 0;
-		cmdBuffer_index = 0;
-	} else {
-		cmdBuffer_index++;
+	if (hcmd.buffer[hcmd.index] == CMD_END_CHAR) {
+		hcmd.is_ready = 1;
 	}
 
-	HAL_UART_Receive_IT(&huart1, rxBuffer, 1);
+	hcmd.index++;
+
+	if (hcmd.index >= CMD_BUFFER_LEN) {
+		hcmd.is_overflow = 1;
+	}
+
+	HAL_UART_Receive_IT(&huart1, hcmd.rxBuffer, 1);
 }
 
 /* USER CODE END 4 */
