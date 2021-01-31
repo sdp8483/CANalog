@@ -134,10 +134,10 @@ void cmd_is_get(CMD_Handle_t *hcmd) {
 
 void cmd_send_response(CMD_Handle_t *hcmd, uint8_t parameter_char, uint32_t value) {
 
-	if ((parameter_char == CMD_CAN_ID) || (parameter_char == CMD_SN)) {
-		sprintf((char *)hcmd->txBuffer, "%c%c%c%lX%s", CMD_START_CHAR, parameter_char, CMD_RESPOND_CHAR, value, CMD_EOL);
-	} else {
-		sprintf((char *)hcmd->txBuffer, "%c%c%c%lu%s", CMD_START_CHAR, parameter_char, CMD_RESPOND_CHAR, value, CMD_EOL);
-	}
+//	if ((parameter_char == CMD_CAN_ID) || (parameter_char == CMD_SN)) {
+//		sprintf((char *)hcmd->txBuffer, "%c%c%c%lX%s", CMD_START_CHAR, parameter_char, CMD_RESPOND_CHAR, value, CMD_EOL);
+//	} else {
+	sprintf((char *)hcmd->txBuffer, "%c%c%c%lu%s", CMD_START_CHAR, parameter_char, CMD_RESPOND_CHAR, value, CMD_EOL);
+//	}
 	cmd_tx_string(hcmd->txBuffer);
 }
