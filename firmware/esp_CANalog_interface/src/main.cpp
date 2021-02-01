@@ -64,7 +64,8 @@ void handleSave(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
-void get_parameter(char cmd_character);
+void send_get_parameter(char cmd_character);
+void send_set_parameter(char cmd_character);
 
 void setup(void){
   inputString.reserve(CMD_BUFFER_LEN);
@@ -86,11 +87,7 @@ void loop(void){
     break;
   case GET_SN_STARTUP:
     if (fsm.first_run()) {
-      get_parameter(CMD_SN);
-      // Serial.print(CMD_START_CHAR);
-      // Serial.print(CMD_SN);
-      // Serial.print(CMD_GET_CHAR);
-      // Serial.print(CMD_EOL);
+      send_get_parameter(CMD_SN);
     }
 
     if(stringComplete) {
@@ -109,21 +106,14 @@ void loop(void){
 
         fsm.changeState(GET_BAUD_STARTUP);
       } else {
-        get_parameter(CMD_SN);
-        // Serial.print(CMD_START_CHAR);
-        // Serial.print(CMD_SN);
-        // Serial.print(CMD_GET_CHAR);
-        // Serial.print(CMD_EOL);
+        send_get_parameter(CMD_SN);
       }
       inputString = "";   /* clear the input */
     }
     break;
   case GET_BAUD_STARTUP:
     if (fsm.first_run()) {
-      Serial.print(CMD_START_CHAR);
-      Serial.print(CMD_CAN_BAUD);
-      Serial.print(CMD_GET_CHAR);
-      Serial.print(CMD_EOL);
+      send_get_parameter(CMD_CAN_BAUD);
     }
 
     if(stringComplete) {
@@ -139,19 +129,13 @@ void loop(void){
         can_baud = inputString.toInt();
         fsm.changeState(GET_ID_STARTUP);
       } else {
-        Serial.print(CMD_START_CHAR);
-        Serial.print(CMD_CAN_BAUD);
-        Serial.print(CMD_GET_CHAR);
-        Serial.print(CMD_EOL);
+        send_get_parameter(CMD_CAN_BAUD);
       }
       inputString = "";   /* clear the input */
     }
   case GET_ID_STARTUP:
     if (fsm.first_run()) {
-      Serial.print(CMD_START_CHAR);
-      Serial.print(CMD_CAN_ID);
-      Serial.print(CMD_GET_CHAR);
-      Serial.print(CMD_EOL);
+      send_get_parameter(CMD_CAN_ID);
     }
 
     if(stringComplete) {
@@ -168,20 +152,14 @@ void loop(void){
 
         fsm.changeState(GET_START_STARTUP);
       } else {
-        Serial.print(CMD_START_CHAR);
-        Serial.print(CMD_CAN_ID);
-        Serial.print(CMD_GET_CHAR);
-        Serial.print(CMD_EOL);
+        send_get_parameter(CMD_CAN_ID);
       }
       inputString = "";   /* clear the input */
     }
     break;
   case GET_START_STARTUP:
     if (fsm.first_run()) {
-      Serial.print(CMD_START_CHAR);
-      Serial.print(CMD_CAN_SIGNAL_START_BIT);
-      Serial.print(CMD_GET_CHAR);
-      Serial.print(CMD_EOL);
+      send_get_parameter(CMD_CAN_SIGNAL_START_BIT);
     }
 
     if(stringComplete) {
@@ -198,20 +176,14 @@ void loop(void){
 
         fsm.changeState(GET_LEN_STARTUP);
       } else {
-        Serial.print(CMD_START_CHAR);
-        Serial.print(CMD_CAN_SIGNAL_START_BIT);
-        Serial.print(CMD_GET_CHAR);
-        Serial.print(CMD_EOL);
+        send_get_parameter(CMD_CAN_SIGNAL_START_BIT);
       }
       inputString = "";   /* clear the input */
     }
     break;
   case GET_LEN_STARTUP:
     if (fsm.first_run()) {
-      Serial.print(CMD_START_CHAR);
-      Serial.print(CMD_CAN_SIGNAL_BIT_LEN);
-      Serial.print(CMD_GET_CHAR);
-      Serial.print(CMD_EOL);
+      send_get_parameter(CMD_CAN_SIGNAL_BIT_LEN);
     }
 
     if(stringComplete) {
@@ -228,19 +200,13 @@ void loop(void){
 
         fsm.changeState(SETUP_WIFI);
       } else {
-        Serial.print(CMD_START_CHAR);
-        Serial.print(CMD_CAN_SIGNAL_BIT_LEN);
-        Serial.print(CMD_GET_CHAR);
-        Serial.print(CMD_EOL);
+        send_get_parameter(CMD_CAN_SIGNAL_BIT_LEN);
       }
       inputString = "";   /* clear the input */
     }
     break;
   case SETUP_WIFI:
-    //if(hfsm.lastState != hfsm.state) {
     if (fsm.first_run()) {
-      // hfsm.lastState = hfsm.state;
-
       Serial.print("Setting AP configuration ... ");
       Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
 
@@ -269,11 +235,17 @@ void loop(void){
   }
 }
 
-void get_parameter(char cmd_character) {
+void send_get_parameter(char cmd_character) {
   Serial.print(CMD_START_CHAR);
   Serial.print(cmd_character);
   Serial.print(CMD_GET_CHAR);
   Serial.print(CMD_EOL);
+}
+
+void send_set_parameter(char cmd_character) {
+  Serial.print(CMD_START_CHAR);
+  Serial.print(cmd_character);
+  Serial.print(CMD_SET_CHAR);
 }
 
 void handleRoot() {
@@ -352,27 +324,47 @@ void handleRoot() {
 
 void handleSave() {
   can_baud = server.arg("can_baud").toInt();
-  can_id = server.arg("can_id").toInt();
+  can_id = strtoul(server.arg("can_id").c_str(), NULL, 16);
   can_is_extended = server.arg("can_is_extended").toInt();
   can_signal_start_bit = server.arg("can_signal_start_bit").toInt();
   can_signal_bit_len = server.arg("can_signal_bit_len").toInt();
 
-  Serial.print("CAN Baud Rate: ");
-  Serial.print(can_baud);
-  Serial.println("kbps");
-  Serial.print("CAN ID: 0x");
-  Serial.println(can_id);
-  Serial.print("29bit ID? ");
-  Serial.println(can_is_extended);
-  Serial.print("Signal Start Bit: ");
-  Serial.println(can_signal_start_bit);
-  Serial.print("Signal Bit Length: ");
-  Serial.println(can_signal_bit_len);
-  Serial.println();
-
   /* Send out parsable commands for stm32 */
-  Serial.print("@can_baud=");
-  Serial.println(can_baud);
+  send_set_parameter(CMD_CAN_BAUD);
+  Serial.print(can_baud);
+  Serial.print(CMD_EOL);
+
+  bool cmd_accepted = false;
+
+  while(cmd_accepted == false) {
+    serialEvent();
+
+    if(stringComplete) {
+      stringComplete = false;
+      // Serial.print(inputString);
+      if(inputString.equals(CMD_IS_GOOD)) {
+        cmd_accepted = true;
+      } else {
+        send_set_parameter(CMD_CAN_BAUD);
+        Serial.print(can_baud);
+        Serial.print(CMD_EOL);
+      }
+
+      inputString = "";
+    }
+  }
+
+  send_set_parameter(CMD_CAN_ID);
+  Serial.print(can_id);
+  Serial.print(CMD_EOL);
+
+  send_set_parameter(CMD_CAN_SIGNAL_START_BIT);
+  Serial.print(can_signal_start_bit);
+  Serial.print(CMD_EOL);
+
+  send_set_parameter(CMD_CAN_SIGNAL_BIT_LEN);
+  Serial.print(can_signal_bit_len);
+  Serial.print(CMD_EOL);
 
   /*
   if( ! server.hasArg("username") || ! server.hasArg("password")  
