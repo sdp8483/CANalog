@@ -94,7 +94,7 @@ void cmd_is_set(CMD_Handle_t *hcmd) {
 		cmd_to_ul(hcmd, 10, (uint32_t *) &can_baud);
 		break;
 	case CMD_CAN_ID:								/* set the can ID */
-		cmd_to_ul(hcmd, 16, &can_id);
+		cmd_to_ul(hcmd, 10, &can_id);
 		break;
 	case CMD_CAN_SIGNAL_START_BIT:					/* set the signal start bit */
 		cmd_to_ul(hcmd, 10, &can_signal_start_bit);
