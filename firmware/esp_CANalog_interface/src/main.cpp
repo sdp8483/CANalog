@@ -3,20 +3,59 @@
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
 
-const char* ssid =      "CANalog";
-const char* password =  "admin";
+#include "state_machine.h"
+
+#define DEVICE_NAME				"CANalog WiFi"
+/* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
+ * 		MAIN marks major milestones of the project such as release
+ * 		TOPIC marks the introduction of a new functionality or major changes
+ * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
+ * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
+ */
+#define FW_VERSION				"V0.0.1.0"
+
+/* Command parsing settings --------------------------------------------------*/
+#define CMD_BUFFER_LEN				16			/* how long the rx command buffer is */
+
+/* common characters and strings for command parser */
+#define CMD_START_CHAR				'$'			/* all commands start with this character */
+#define CMD_GET_CHAR				'?'			/* used by rx line to get value */
+#define CMD_SET_CHAR				'='			/* used by rx line to set value */
+#define CMD_RESPOND_CHAR			':'			/* use to respond with value */
+#define CMD_END_CHAR				'\n'		/* all valid commands end with this character */
+#define CMD_EOL						"\r\n"		/* used to terminate command */
+#define CMD_IS_GOOD					"OK\r\n"	/* response when command is accepted */
+#define CMD_IS_BAD					"NOK\r\n"	/* response when command is not accepted */
+#define CMD_IS_LONG					"OVF\r\n"	/* response when command is too long */
+
+/* parameters to set or get with command parser, case is important */
+#define CMD_SN						's'			/* 32bit unique device serial number */
+#define CMD_CAN_BAUD				'B'			/* CAN baud rate */
+#define CMD_CAN_ID					'I'			/* CAN ID in hex */
+#define CMD_CAN_SIGNAL_START_BIT 	'S'			/* CAN Signal Start Bit */
+#define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
+
+String inputString = "";
+String expectedResponse = "";
+bool stringComplete = false;  // whether the string is complete
+
+uint32_t device_sn;
+uint16_t can_baud;
+uint32_t can_id;
+uint8_t can_is_extended;
+uint8_t can_signal_start_bit;
+uint8_t can_signal_bit_len;
+
+/* WiFi Settings -------------------------------------------------------------*/
+String ssid = "CANalog ";   /* first part of ssid, will append device sn to end */
 IPAddress local_IP(192,168,4,1);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
 #define NUMBER_CAN_BAUD_RATES  9
-String possible_can_baud[NUMBER_CAN_BAUD_RATES] = {"10", "20", "50", "100", "125", "250", "500", "750", "1000"};
+uint16_t possible_can_baud[NUMBER_CAN_BAUD_RATES] = {10, 20, 50, 100, 125, 250, 500, 750, 1000};
 
-String can_baud = "500";
-String can_id = "18EFB300";
-String can_is_extended = "true";
-String can_signal_start_bit = "0";
-String can_signal_bit_len = "8";
+StateMachine fsm;   /* first state is STARTUP */
 
 ESP8266WebServer server(80);
 
@@ -24,31 +63,217 @@ void handleRoot(void);              // function prototypes for HTTP handlers
 void handleSave(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
+void serialEvent(void);
+void get_parameter(char cmd_character);
 
 void setup(void){
-  Serial.begin(115200);         // Start the Serial communication to send messages to the computer
+  inputString.reserve(CMD_BUFFER_LEN);
+  expectedResponse.reserve(CMD_BUFFER_LEN);
+
+  Serial.begin(115200);
   delay(10);
-  Serial.println('\n');
-
-  Serial.print("Setting AP configuration ... ");
-  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
-
-  Serial.print("Setting AP ... ");
-  Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
-
-  Serial.print("AP IP address = ");
-  Serial.println(WiFi.softAPIP());
-
-  server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
-  server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
-  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
-
-  server.begin();                            // Actually start the server
-  Serial.println("HTTP server started");
+  Serial.println(CMD_EOL);
+  delay(10);
 }
 
 void loop(void){
-  server.handleClient();                     // Listen for HTTP requests from clients
+  serialEvent();  /* check for serial data */
+
+  switch (fsm.state) {
+  case STARTUP:
+    if (fsm.first_run());
+    fsm.changeState(GET_SN_STARTUP);
+    break;
+  case GET_SN_STARTUP:
+    if (fsm.first_run()) {
+      get_parameter(CMD_SN);
+      // Serial.print(CMD_START_CHAR);
+      // Serial.print(CMD_SN);
+      // Serial.print(CMD_GET_CHAR);
+      // Serial.print(CMD_EOL);
+    }
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += CMD_SN;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $s: */
+        device_sn = strtoul(inputString.c_str(), NULL, 10);
+        ssid += String(device_sn, HEX);
+        ssid.c_str();
+
+        fsm.changeState(GET_BAUD_STARTUP);
+      } else {
+        get_parameter(CMD_SN);
+        // Serial.print(CMD_START_CHAR);
+        // Serial.print(CMD_SN);
+        // Serial.print(CMD_GET_CHAR);
+        // Serial.print(CMD_EOL);
+      }
+      inputString = "";   /* clear the input */
+    }
+    break;
+  case GET_BAUD_STARTUP:
+    if (fsm.first_run()) {
+      Serial.print(CMD_START_CHAR);
+      Serial.print(CMD_CAN_BAUD);
+      Serial.print(CMD_GET_CHAR);
+      Serial.print(CMD_EOL);
+    }
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += CMD_CAN_BAUD;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $B: */
+        can_baud = inputString.toInt();
+        fsm.changeState(GET_ID_STARTUP);
+      } else {
+        Serial.print(CMD_START_CHAR);
+        Serial.print(CMD_CAN_BAUD);
+        Serial.print(CMD_GET_CHAR);
+        Serial.print(CMD_EOL);
+      }
+      inputString = "";   /* clear the input */
+    }
+  case GET_ID_STARTUP:
+    if (fsm.first_run()) {
+      Serial.print(CMD_START_CHAR);
+      Serial.print(CMD_CAN_ID);
+      Serial.print(CMD_GET_CHAR);
+      Serial.print(CMD_EOL);
+    }
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += CMD_CAN_ID;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $I: */
+        can_id = strtoul(inputString.c_str(), NULL, 10);
+
+        fsm.changeState(GET_START_STARTUP);
+      } else {
+        Serial.print(CMD_START_CHAR);
+        Serial.print(CMD_CAN_ID);
+        Serial.print(CMD_GET_CHAR);
+        Serial.print(CMD_EOL);
+      }
+      inputString = "";   /* clear the input */
+    }
+    break;
+  case GET_START_STARTUP:
+    if (fsm.first_run()) {
+      Serial.print(CMD_START_CHAR);
+      Serial.print(CMD_CAN_SIGNAL_START_BIT);
+      Serial.print(CMD_GET_CHAR);
+      Serial.print(CMD_EOL);
+    }
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += CMD_CAN_SIGNAL_START_BIT;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $I: */
+        can_signal_start_bit = inputString.toInt();
+
+        fsm.changeState(GET_LEN_STARTUP);
+      } else {
+        Serial.print(CMD_START_CHAR);
+        Serial.print(CMD_CAN_SIGNAL_START_BIT);
+        Serial.print(CMD_GET_CHAR);
+        Serial.print(CMD_EOL);
+      }
+      inputString = "";   /* clear the input */
+    }
+    break;
+  case GET_LEN_STARTUP:
+    if (fsm.first_run()) {
+      Serial.print(CMD_START_CHAR);
+      Serial.print(CMD_CAN_SIGNAL_BIT_LEN);
+      Serial.print(CMD_GET_CHAR);
+      Serial.print(CMD_EOL);
+    }
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += CMD_CAN_SIGNAL_BIT_LEN;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $I: */
+        can_signal_bit_len = inputString.toInt();
+
+        fsm.changeState(SETUP_WIFI);
+      } else {
+        Serial.print(CMD_START_CHAR);
+        Serial.print(CMD_CAN_SIGNAL_BIT_LEN);
+        Serial.print(CMD_GET_CHAR);
+        Serial.print(CMD_EOL);
+      }
+      inputString = "";   /* clear the input */
+    }
+    break;
+  case SETUP_WIFI:
+    //if(hfsm.lastState != hfsm.state) {
+    if (fsm.first_run()) {
+      // hfsm.lastState = hfsm.state;
+
+      Serial.print("Setting AP configuration ... ");
+      Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+
+      Serial.print("Setting AP ... ");
+      Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
+
+      Serial.print("AP IP address = ");
+      Serial.println(WiFi.softAPIP());
+
+      server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
+      server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
+      server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+
+      server.begin();                            // Actually start the server
+      Serial.println("HTTP server started");
+    }
+
+    fsm.changeState(MAIN_LOOP);
+  break;
+  case MAIN_LOOP:
+    server.handleClient();                     // Listen for HTTP requests from clients
+  break;
+  
+  default:
+    break;
+  }
+}
+
+void get_parameter(char cmd_character) {
+  Serial.print(CMD_START_CHAR);
+  Serial.print(cmd_character);
+  Serial.print(CMD_GET_CHAR);
+  Serial.print(CMD_EOL);
 }
 
 void handleRoot() {
@@ -89,12 +314,15 @@ void handleRoot() {
 
   root += "<label for=\"can_id\">CAN ID: </label>";
   root += "<input type=\"text\" id=\"can_id\" name=\"can_id\" value=\"";
-  root += can_id;
+
+  // String S_can_id = String(can_id, HEX);
+
+  root += String(can_id, HEX);
   root += "\"  size=\"9\"><br>";
 
   root += "<label for=\"can_is_extended\">29bit ID: </label>";
   root += "<select id=\"can_is_extended\" name=\"can_is_extended\">";
-  if (can_is_extended == "true") {
+  if (can_is_extended == 1) {
     root += "<option value=\"true\" selected>true</option>";
     root += "<option value=\"false\">false</option>";
   } else {
@@ -123,15 +351,11 @@ void handleRoot() {
 }
 
 void handleSave() {
-  //String canID_str = server.arg("canid");
-  //String msgBitPosition_str = server.arg("bitpos");
-  //String msgBitLen_str = server.arg("msglen");
-
-  can_baud = server.arg("can_baud");
-  can_id = server.arg("can_id");
-  can_is_extended = server.arg("can_is_extended");
-  can_signal_start_bit = server.arg("can_signal_start_bit");
-  can_signal_bit_len = server.arg("can_signal_bit_len");
+  can_baud = server.arg("can_baud").toInt();
+  can_id = server.arg("can_id").toInt();
+  can_is_extended = server.arg("can_is_extended").toInt();
+  can_signal_start_bit = server.arg("can_signal_start_bit").toInt();
+  can_signal_bit_len = server.arg("can_signal_bit_len").toInt();
 
   Serial.print("CAN Baud Rate: ");
   Serial.print(can_baud);
@@ -174,4 +398,23 @@ void handleNotFound(){
 
 void handleInvalidRequest(void) {
   server.send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
+}
+
+/*
+  SerialEvent occurs whenever a new data comes in the hardware serial RX. This
+  routine is run between each time loop() runs, so using delay inside loop can
+  delay response. Multiple bytes of data may be available.
+*/
+void serialEvent() {
+  while (Serial.available()) {
+    // get the new byte:
+    char inChar = (char)Serial.read();
+    // add it to the inputString:
+    inputString += inChar;
+    // if the incoming character is a newline, set a flag so the main loop can
+    // do something about it:
+    if (inChar == '\n') {
+      stringComplete = true;
+    }
+  }
 }
