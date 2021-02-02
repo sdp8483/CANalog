@@ -26,7 +26,7 @@
 #include "errno.h"
 #include "limits.h"
 
-#define CMD_BUFFER_LEN				16			/* how long the rx command buffer is */
+#define CMD_BUFFER_LEN				32			/* how long the rx command buffer is */
 
 /* common characters and strings for command parser */
 #define CMD_START_CHAR				'$'			/* all commands start with this character */
@@ -45,6 +45,12 @@
 #define CMD_CAN_ID					'I'			/* CAN ID in hex */
 #define CMD_CAN_SIGNAL_START_BIT 	'S'			/* CAN Signal Start Bit */
 #define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
+
+/* command parsing return codes, used to signal main loop */
+#define CMD_NONE					0			/* no action needed by main loop */
+#define CMD_RECEIVED_VALUE			1			/* there is a new parameter value, react by saving to backup and more */
+#define CMD_SENT_VALUE				2			/* sent parameter to requesting device, no need to react (I think) */
+#define CMD_ERROR					-1			/* something is wrong */
 
 /* command handle type define */
 typedef struct __CMD_Handle_t {
@@ -65,7 +71,7 @@ extern uint32_t can_signal_start_bit; 			/* bit that signal to convert to analog
 extern uint32_t can_signal_bit_len; 			/* bit length of signal to convert to analog */
 
 /* function prototypes */
-void cmd_parse(CMD_Handle_t *hcmd);				/* parse the incoming command and determine if set/get
+int8_t cmd_parse(CMD_Handle_t *hcmd);			/* parse the incoming command and determine if set/get
  	 	 	 	 	 	 	 	 	 	 	 	 *  this is only function that should be called by main */
 void cmd_clear_buffer(CMD_Handle_t *hcmd); 		/* clear the command buffer */
 void cmd_tx_string(uint8_t *str);				/* send string over UART */

@@ -74,11 +74,11 @@ CMD_Handle_t hcmd;
 uint32_t device_sn;	/* serial number created using 96bit unique device ID
  	 	 	 	 	 * used to set SSID of WiFi */
 
-uint16_t can_baud = 500; /* CAN baud rate, supports 250kbps and 500kbps */
-uint32_t can_id = 0x18EFB300; /* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
+uint16_t can_baud; /* CAN baud rate, supports 250kbps and 500kbps */
+uint32_t can_id; /* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
 uint8_t can_is_extended; /* CAN ID is extended if 1 */
 uint32_t can_signal_start_bit; /* bit that signal to convert to analog starts */
-uint32_t can_signal_bit_len = 16; /* bit length of signal to convert to analog */
+uint32_t can_signal_bit_len; /* bit length of signal to convert to analog */
 
 /* USER CODE END PV */
 
@@ -129,12 +129,21 @@ int main(void) {
 	device_sn = calc_sn();		/* get device 32bit sn */
 
 	/* read in saved data from RTC backup registers */
-	if (HAL_RTCEx_BKUPRead(&hrtc, BKP_SET_ADDR) != BKP_IS_SET) { 	/* if backup register != BKP_IS_SET then set save data */
+	if (HAL_RTCEx_BKUPRead(&hrtc, BKP_SET_ADDR) != BKP_IS_SET) {
+		/* if backup register != BKP_IS_SET then set save data
+		 *   this should only run on first compile */
 		HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
 		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
 		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
 		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
 		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
+	} else {
+		/* else read in the data from the backup registers
+		 *   this should run every other time */
+		can_baud 				= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_BAUD_ADDR);
+		can_id 					= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_ID_ADDR);
+		can_signal_start_bit 	= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_SSB_ADDR);
+		can_signal_bit_len 		= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAD_SBL_ADDR);
 	}
 
 	HAL_UART_Receive_IT(&huart1, hcmd.rxBuffer, 1); /* receive one byte at a time */
@@ -148,6 +157,27 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 		cmd_parse(&hcmd);
+//		switch (cmd_parse(&hcmd)) {
+//		case (CMD_NONE):
+//
+//				break;
+//		case (CMD_RECEIVED_VALUE):	/* new value was received, save all to backup */
+//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
+//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
+//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
+//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
+//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
+//			break;
+//		case (CMD_SENT_VALUE):
+//
+//				break;
+//		case (CMD_ERROR):
+//
+//				break;
+//		default:
+//
+//			break;
+//		}
 
 	}
 	/* USER CODE END 3 */

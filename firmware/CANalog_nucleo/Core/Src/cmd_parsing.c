@@ -8,35 +8,44 @@
 #include "cmd_parsing.h"
 
 /* parse commands when handle has is_ready flag set */
-void cmd_parse(CMD_Handle_t *hcmd) {
+int8_t cmd_parse(CMD_Handle_t *hcmd) {
+	int8_t rVal = CMD_NONE;							/* return value */
+
 	if(hcmd->is_overflow == 1) {					/* handle overflow condition */
 		hcmd->is_overflow = 0;
 		cmd_clear_buffer(hcmd);
 		cmd_tx_string((uint8_t *)CMD_IS_LONG);
-		return;
+		rVal = CMD_ERROR;
+		return rVal;
 	}
 
-	if(hcmd->is_ready == 1) {						/* handle when a command is ready */
+	if(hcmd->is_ready == 1) {				/* handle when a command is ready */
 		hcmd->is_ready = 0;
 
 		if(hcmd->buffer[0] != CMD_START_CHAR) {		/* start character is wrong */
 			cmd_tx_string((uint8_t *)CMD_IS_BAD);
+			rVal = CMD_ERROR;
 		} else {
 			switch(hcmd->buffer[2]) {
 			case CMD_SET_CHAR:						/* set parameter value */
 				cmd_is_set(hcmd);
+				rVal = CMD_RECEIVED_VALUE;
 				break;
 			case CMD_GET_CHAR:						/* respond with parameter value */
 				cmd_is_get(hcmd);
+				rVal = CMD_SENT_VALUE;
 				break;
 			default:								/* unsupported command type */
 				cmd_tx_string((uint8_t *)CMD_IS_BAD);
+				rVal = CMD_ERROR;
 				break;
 			}
 		}
 
 		cmd_clear_buffer(hcmd);
 	}
+
+	return rVal;
 }
 
 /* clear the command receive buffer */
