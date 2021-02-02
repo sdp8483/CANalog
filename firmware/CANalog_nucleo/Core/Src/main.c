@@ -156,28 +156,28 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		cmd_parse(&hcmd);
-//		switch (cmd_parse(&hcmd)) {
-//		case (CMD_NONE):
-//
-//				break;
-//		case (CMD_RECEIVED_VALUE):	/* new value was received, save all to backup */
-//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
-//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
-//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
-//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
-//			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
-//			break;
-//		case (CMD_SENT_VALUE):
-//
-//				break;
-//		case (CMD_ERROR):
-//
-//				break;
-//		default:
-//
-//			break;
-//		}
+//		cmd_parse(&hcmd);
+		switch (cmd_parse(&hcmd)) {
+		case (CMD_NONE):
+
+				break;
+		case (CMD_RECEIVED_VALUE):	/* new value was received, save all to backup */
+			HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
+			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
+			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
+			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
+			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
+			break;
+		case (CMD_SENT_VALUE):
+
+				break;
+		case (CMD_ERROR):
+
+				break;
+		default:
+
+			break;
+		}
 
 	}
 	/* USER CODE END 3 */

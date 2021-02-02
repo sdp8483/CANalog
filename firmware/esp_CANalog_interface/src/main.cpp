@@ -36,6 +36,7 @@
 #define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
 
 String inputString = "";
+String outputString = "";
 String expectedResponse = "";
 bool stringComplete = false;  // whether the string is complete
 
@@ -69,6 +70,7 @@ void send_set_parameter(char cmd_character);
 
 void setup(void){
   inputString.reserve(CMD_BUFFER_LEN);
+  outputString.reserve(CMD_BUFFER_LEN);
   expectedResponse.reserve(CMD_BUFFER_LEN);
 
   Serial.begin(115200);
@@ -106,6 +108,7 @@ void loop(void){
 
         fsm.changeState(GET_BAUD_STARTUP);
       } else {
+        delay(10);
         send_get_parameter(CMD_SN);
       }
       inputString = "";   /* clear the input */
@@ -129,6 +132,7 @@ void loop(void){
         can_baud = inputString.toInt();
         fsm.changeState(GET_ID_STARTUP);
       } else {
+        delay(10);
         send_get_parameter(CMD_CAN_BAUD);
       }
       inputString = "";   /* clear the input */
@@ -152,6 +156,7 @@ void loop(void){
 
         fsm.changeState(GET_START_STARTUP);
       } else {
+        delay(10);
         send_get_parameter(CMD_CAN_ID);
       }
       inputString = "";   /* clear the input */
@@ -176,6 +181,7 @@ void loop(void){
 
         fsm.changeState(GET_LEN_STARTUP);
       } else {
+        delay(10);
         send_get_parameter(CMD_CAN_SIGNAL_START_BIT);
       }
       inputString = "";   /* clear the input */
@@ -200,6 +206,7 @@ void loop(void){
 
         fsm.changeState(SETUP_WIFI);
       } else {
+        delay(10);
         send_get_parameter(CMD_CAN_SIGNAL_BIT_LEN);
       }
       inputString = "";   /* clear the input */
@@ -236,16 +243,27 @@ void loop(void){
 }
 
 void send_get_parameter(char cmd_character) {
-  Serial.print(CMD_START_CHAR);
-  Serial.print(cmd_character);
-  Serial.print(CMD_GET_CHAR);
-  Serial.print(CMD_EOL);
+  outputString = "";
+  outputString += CMD_START_CHAR;
+  outputString += cmd_character;
+  outputString += CMD_GET_CHAR;
+  outputString += CMD_EOL;
+
+  Serial.print(outputString);
+  Serial.flush();
+  outputString = "";
 }
 
 void send_set_parameter(char cmd_character) {
-  Serial.print(CMD_START_CHAR);
-  Serial.print(cmd_character);
-  Serial.print(CMD_SET_CHAR);
+  outputString = "";
+  outputString += CMD_START_CHAR;
+  outputString += cmd_character;
+  outputString += CMD_SET_CHAR;
+  outputString += CMD_EOL;
+
+  Serial.print(outputString);
+  Serial.flush();
+  outputString = "";
 }
 
 void handleRoot() {
