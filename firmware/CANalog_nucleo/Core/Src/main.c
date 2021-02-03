@@ -2,17 +2,8 @@
 /**
  ******************************************************************************
  * @file           : main.c
- * @brief          : Main program body
+ * @brief          : CANalog: CAN to analog converter
  ******************************************************************************
- * @attention
- *
- * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
- * All rights reserved.</center></h2>
- *
- * This software component is licensed by ST under BSD 3-Clause license,
- * the "License"; You may not use this file except in compliance with the
- * License. You may obtain a copy of the License at:
- *                        opensource.org/licenses/BSD-3-Clause
  *
  ******************************************************************************
  */
@@ -61,6 +52,8 @@
 UART_HandleTypeDef huart1;
 
 CMD_Handle_t hcmd;
+
+DAC_HandleTypeDef hdac;
 
 uint32_t device_sn; /* serial number created using 96bit unique device ID
  * used to set SSID of WiFi */
@@ -120,6 +113,8 @@ int main(void) {
 
 	HAL_UART_Receive_IT(&huart1, hcmd.rxBuffer, 1); /* receive one byte at a time */
 
+	uint32_t val = 0;
+	int8_t dir = 1;
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -129,6 +124,19 @@ int main(void) {
 
 		/* USER CODE BEGIN 3 */
 		cmd_parse(&hcmd);
+
+		HAL_DAC_SetValue(&hdac, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, val);
+		HAL_DAC_Start(&hdac, DAC1_CHANNEL_1);
+
+		val+= dir;
+
+		if (val > 4095) {
+			dir = -1;
+		}
+
+		if (val == 0) {
+			dir = 1;
+		}
 
 	}
 	/* USER CODE END 3 */
