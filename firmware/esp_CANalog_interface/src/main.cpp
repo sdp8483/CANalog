@@ -4,8 +4,6 @@
 #include <ESP8266WebServer.h>
 #include <ESP_EEPROM.h>
 
-#include "state_machine.h"
-
 #define DEVICE_NAME				"CANalog WiFi"
 /* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
  * 		MAIN marks major milestones of the project such as release
@@ -57,8 +55,6 @@ IPAddress subnet(255,255,255,0);
 #define NUMBER_CAN_BAUD_RATES  9
 uint16_t possible_can_baud[NUMBER_CAN_BAUD_RATES] = {10, 20, 50, 100, 125, 250, 500, 750, 1000};
 
-StateMachine fsm;   /* first state is STARTUP */
-
 ESP8266WebServer server(80);
 
 void handleRoot(void);              // function prototypes for HTTP handlers
@@ -95,11 +91,11 @@ void setup(void){
   // If so, overwrite the 'default' values set up in our struct
   if(EEPROM.percentUsed()>=0) {
     EEPROM.get(0, can);
-    Serial.println("EEPROM has data from a previous run.");
+    // Serial.println("EEPROM has data from a previous run.");
     Serial.print(EEPROM.percentUsed());
-    Serial.println("% of ESP flash space currently used");
+    // Serial.println("% of ESP flash space currently used");
   } else {
-    Serial.println("EEPROM size changed - EEPROM data zeroed - commit() to make permanent");    
+    // Serial.println("EEPROM size changed - EEPROM data zeroed - commit() to make permanent");    
   }
 
   /* get SN to use in ssid */
@@ -127,57 +123,6 @@ void setup(void){
 void loop(void){
   serialEvent();                              /* check for serial data */
   server.handleClient();                      /* Listen for HTTP requests from clients */
-}
-
-void get_sn(char cmd_character) {
-  uint32_t device_sn;
-  bool parameter_was_fetched = false;
-  send_get_parameter(cmd_character);
-  while(parameter_was_fetched == false) {
-    serialEvent();
-
-    if(stringComplete) {
-      stringComplete = false;
-
-      expectedResponse = "";
-      expectedResponse += CMD_START_CHAR;
-      expectedResponse += cmd_character;
-      expectedResponse += CMD_RESPOND_CHAR;
-
-      if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $X: */
-        device_sn = strtoul(inputString.c_str(), NULL, 10);
-        ssid += String(device_sn, HEX);
-        parameter_was_fetched = true;
-      } else {
-        delay(10);
-        send_get_parameter(cmd_character);
-      }
-      inputString = "";   /* clear the input */
-    }
-  }
-}
-
-void send_get_parameter(char cmd_character) {
-  outputString = "";
-  outputString += CMD_START_CHAR;
-  outputString += cmd_character;
-  outputString += CMD_GET_CHAR;
-  outputString += CMD_EOL;
-
-  Serial.print(outputString);
-  Serial.flush();
-  outputString = "";
-}
-
-void send_set_parameter(char cmd_character) {
-  outputString = "";
-  outputString += CMD_START_CHAR;
-  outputString += cmd_character;
-  outputString += CMD_SET_CHAR;
-
-  Serial.print(outputString);
-  outputString = "";
 }
 
 void handleRoot() {
@@ -349,6 +294,57 @@ void handleNotFound(){
 
 void handleInvalidRequest(void) {
   server.send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
+}
+
+void get_sn(char cmd_character) {
+  uint32_t device_sn;
+  bool parameter_was_fetched = false;
+  send_get_parameter(cmd_character);
+  while(parameter_was_fetched == false) {
+    serialEvent();
+
+    if(stringComplete) {
+      stringComplete = false;
+
+      expectedResponse = "";
+      expectedResponse += CMD_START_CHAR;
+      expectedResponse += cmd_character;
+      expectedResponse += CMD_RESPOND_CHAR;
+
+      if(inputString.startsWith(expectedResponse)) {
+        inputString.remove(0, 3);   /* remove $X: */
+        device_sn = strtoul(inputString.c_str(), NULL, 10);
+        ssid += String(device_sn, HEX);
+        parameter_was_fetched = true;
+      } else {
+        delay(10);
+        send_get_parameter(cmd_character);
+      }
+      inputString = "";   /* clear the input */
+    }
+  }
+}
+
+void send_get_parameter(char cmd_character) {
+  outputString = "";
+  outputString += CMD_START_CHAR;
+  outputString += cmd_character;
+  outputString += CMD_GET_CHAR;
+  outputString += CMD_EOL;
+
+  Serial.print(outputString);
+  Serial.flush();
+  outputString = "";
+}
+
+void send_set_parameter(char cmd_character) {
+  outputString = "";
+  outputString += CMD_START_CHAR;
+  outputString += cmd_character;
+  outputString += CMD_SET_CHAR;
+
+  Serial.print(outputString);
+  outputString = "";
 }
 
 /*
