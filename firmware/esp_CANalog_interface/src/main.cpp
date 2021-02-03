@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP_EEPROM.h>
 
 #include "state_machine.h"
 
@@ -40,12 +41,12 @@ String outputString = "";
 String expectedResponse = "";
 bool stringComplete = false;  // whether the string is complete
 
-uint32_t device_sn;
-uint16_t can_baud;
-uint32_t can_id;
-uint8_t can_is_extended;
-uint8_t can_signal_start_bit;
-uint8_t can_signal_bit_len;
+struct MyEEPROMStruct {
+  uint16_t baud;
+  uint32_t id;
+  uint8_t signal_start_bit;
+  uint8_t signal_bit_len;
+} can;
 
 /* WiFi Settings -------------------------------------------------------------*/
 String ssid = "CANalog ";   /* first part of ssid, will append device sn to end */
@@ -65,180 +66,95 @@ void handleSave(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
+void get_sn(char cmd_character);
 void send_get_parameter(char cmd_character);
 void send_set_parameter(char cmd_character);
 
 void setup(void){
+  /* setup Strings, reserve memory */
   inputString.reserve(CMD_BUFFER_LEN);
   outputString.reserve(CMD_BUFFER_LEN);
   expectedResponse.reserve(CMD_BUFFER_LEN);
 
+  /* start serial and send EOL to reset STM32 */
   Serial.begin(115200);
   delay(10);
   Serial.println(CMD_EOL);
-  delay(10);
+  Serial.flush();
+
+  /* setup default values */
+  can.baud = 500;
+  can.id = 0x18efb300;
+  can.signal_start_bit = 0;
+  can.signal_bit_len = 16;
+
+  /* setup EEPROM */
+  EEPROM.begin(sizeof(MyEEPROMStruct));
+
+  // Check if the EEPROM contains valid data from another run
+  // If so, overwrite the 'default' values set up in our struct
+  if(EEPROM.percentUsed()>=0) {
+    EEPROM.get(0, can);
+    Serial.println("EEPROM has data from a previous run.");
+    Serial.print(EEPROM.percentUsed());
+    Serial.println("% of ESP flash space currently used");
+  } else {
+    Serial.println("EEPROM size changed - EEPROM data zeroed - commit() to make permanent");    
+  }
+
+  /* get SN to use in ssid */
+  get_sn(CMD_SN);
+  
+
+  /* start up WiFi Server */
+  Serial.print("Setting AP configuration ... ");
+  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+
+  Serial.print("Setting AP ... ");
+  Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
+
+  Serial.print("AP IP address = ");
+  Serial.println(WiFi.softAPIP());
+
+  server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
+  server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
+  server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
+
+  server.begin();                            // Actually start the server
+  Serial.println("HTTP server started");
 }
 
 void loop(void){
-  serialEvent();  /* check for serial data */
+  serialEvent();                              /* check for serial data */
+  server.handleClient();                      /* Listen for HTTP requests from clients */
+}
 
-  switch (fsm.state) {
-  case STARTUP:
-    if (fsm.first_run());
-    fsm.changeState(GET_SN_STARTUP);
-    break;
-  case GET_SN_STARTUP:
-    if (fsm.first_run()) {
-      send_get_parameter(CMD_SN);
-    }
+void get_sn(char cmd_character) {
+  uint32_t device_sn;
+  bool parameter_was_fetched = false;
+  send_get_parameter(cmd_character);
+  while(parameter_was_fetched == false) {
+    serialEvent();
 
     if(stringComplete) {
       stringComplete = false;
 
       expectedResponse = "";
       expectedResponse += CMD_START_CHAR;
-      expectedResponse += CMD_SN;
+      expectedResponse += cmd_character;
       expectedResponse += CMD_RESPOND_CHAR;
 
       if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $s: */
+        inputString.remove(0, 3);   /* remove $X: */
         device_sn = strtoul(inputString.c_str(), NULL, 10);
         ssid += String(device_sn, HEX);
-        ssid.c_str();
-
-        fsm.changeState(GET_BAUD_STARTUP);
+        parameter_was_fetched = true;
       } else {
         delay(10);
-        send_get_parameter(CMD_SN);
+        send_get_parameter(cmd_character);
       }
       inputString = "";   /* clear the input */
     }
-    break;
-  case GET_BAUD_STARTUP:
-    if (fsm.first_run()) {
-      send_get_parameter(CMD_CAN_BAUD);
-    }
-
-    if(stringComplete) {
-      stringComplete = false;
-
-      expectedResponse = "";
-      expectedResponse += CMD_START_CHAR;
-      expectedResponse += CMD_CAN_BAUD;
-      expectedResponse += CMD_RESPOND_CHAR;
-
-      if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $B: */
-        can_baud = inputString.toInt();
-        fsm.changeState(GET_ID_STARTUP);
-      } else {
-        delay(10);
-        send_get_parameter(CMD_CAN_BAUD);
-      }
-      inputString = "";   /* clear the input */
-    }
-  case GET_ID_STARTUP:
-    if (fsm.first_run()) {
-      send_get_parameter(CMD_CAN_ID);
-    }
-
-    if(stringComplete) {
-      stringComplete = false;
-
-      expectedResponse = "";
-      expectedResponse += CMD_START_CHAR;
-      expectedResponse += CMD_CAN_ID;
-      expectedResponse += CMD_RESPOND_CHAR;
-
-      if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $I: */
-        can_id = strtoul(inputString.c_str(), NULL, 10);
-
-        fsm.changeState(GET_START_STARTUP);
-      } else {
-        delay(10);
-        send_get_parameter(CMD_CAN_ID);
-      }
-      inputString = "";   /* clear the input */
-    }
-    break;
-  case GET_START_STARTUP:
-    if (fsm.first_run()) {
-      send_get_parameter(CMD_CAN_SIGNAL_START_BIT);
-    }
-
-    if(stringComplete) {
-      stringComplete = false;
-
-      expectedResponse = "";
-      expectedResponse += CMD_START_CHAR;
-      expectedResponse += CMD_CAN_SIGNAL_START_BIT;
-      expectedResponse += CMD_RESPOND_CHAR;
-
-      if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $I: */
-        can_signal_start_bit = inputString.toInt();
-
-        fsm.changeState(GET_LEN_STARTUP);
-      } else {
-        delay(10);
-        send_get_parameter(CMD_CAN_SIGNAL_START_BIT);
-      }
-      inputString = "";   /* clear the input */
-    }
-    break;
-  case GET_LEN_STARTUP:
-    if (fsm.first_run()) {
-      send_get_parameter(CMD_CAN_SIGNAL_BIT_LEN);
-    }
-
-    if(stringComplete) {
-      stringComplete = false;
-
-      expectedResponse = "";
-      expectedResponse += CMD_START_CHAR;
-      expectedResponse += CMD_CAN_SIGNAL_BIT_LEN;
-      expectedResponse += CMD_RESPOND_CHAR;
-
-      if(inputString.startsWith(expectedResponse)) {
-        inputString.remove(0, 3);   /* remove $I: */
-        can_signal_bit_len = inputString.toInt();
-
-        fsm.changeState(SETUP_WIFI);
-      } else {
-        delay(10);
-        send_get_parameter(CMD_CAN_SIGNAL_BIT_LEN);
-      }
-      inputString = "";   /* clear the input */
-    }
-    break;
-  case SETUP_WIFI:
-    if (fsm.first_run()) {
-      Serial.print("Setting AP configuration ... ");
-      Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
-
-      Serial.print("Setting AP ... ");
-      Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
-
-      Serial.print("AP IP address = ");
-      Serial.println(WiFi.softAPIP());
-
-      server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
-      server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
-      server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
-
-      server.begin();                            // Actually start the server
-      Serial.println("HTTP server started");
-    }
-
-    fsm.changeState(MAIN_LOOP);
-  break;
-  case MAIN_LOOP:
-    server.handleClient();                     // Listen for HTTP requests from clients
-  break;
-  
-  default:
-    break;
   }
 }
 
@@ -259,10 +175,8 @@ void send_set_parameter(char cmd_character) {
   outputString += CMD_START_CHAR;
   outputString += cmd_character;
   outputString += CMD_SET_CHAR;
-  outputString += CMD_EOL;
 
   Serial.print(outputString);
-  Serial.flush();
   outputString = "";
 }
 
@@ -286,7 +200,7 @@ void handleRoot() {
   root += "<select id=\"can_baud\" name=\"can_baud\">";
 
   for (uint8_t i=0; i<NUMBER_CAN_BAUD_RATES; i++) {
-    if (can_baud == possible_can_baud[i]) {
+    if (can.baud == possible_can_baud[i]) {
         root += "<option value=\"";
         root += possible_can_baud[i];
         root += "\" selected>";
@@ -307,28 +221,28 @@ void handleRoot() {
 
   // String S_can_id = String(can_id, HEX);
 
-  root += String(can_id, HEX);
+  root += String(can.id, HEX);
   root += "\"  size=\"9\"><br>";
 
-  root += "<label for=\"can_is_extended\">29bit ID: </label>";
-  root += "<select id=\"can_is_extended\" name=\"can_is_extended\">";
-  if (can_is_extended == 1) {
-    root += "<option value=\"true\" selected>true</option>";
-    root += "<option value=\"false\">false</option>";
-  } else {
-    root += "<option value=\"true\">true</option>";
-    root += "<option value=\"false\" selected>false</option>";
-  }
-  root += "</select><br>";
+  // root += "<label for=\"can_is_extended\">29bit ID: </label>";
+  // root += "<select id=\"can_is_extended\" name=\"can_is_extended\">";
+  // if (can_is_extended == 1) {
+  //   root += "<option value=\"true\" selected>true</option>";
+  //   root += "<option value=\"false\">false</option>";
+  // } else {
+  //   root += "<option value=\"true\">true</option>";
+  //   root += "<option value=\"false\" selected>false</option>";
+  // }
+  // root += "</select><br>";
 
   root += "<label for=\"can_signal_start_bit\">Bit Position: </label>";
   root += "<input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
-  root += can_signal_start_bit;
+  root += can.signal_start_bit;
   root += "\" min=\"0\" max=\"32\" size=\"3\"><br>";
 
   root += "<label for=\"can_signal_bit_len\">Number of Bits: </label>";
   root += "<input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
-  root += can_signal_bit_len;
+  root += can.signal_bit_len;
   root += "\" min=\"1\" max=\"32\" size=\"3\"><br><br>";
 
   root += "<input type=\"submit\" value=\"Save\">";
@@ -341,16 +255,17 @@ void handleRoot() {
 }
 
 void handleSave() {
-  can_baud = server.arg("can_baud").toInt();
-  can_id = strtoul(server.arg("can_id").c_str(), NULL, 16);
-  can_is_extended = server.arg("can_is_extended").toInt();
-  can_signal_start_bit = server.arg("can_signal_start_bit").toInt();
-  can_signal_bit_len = server.arg("can_signal_bit_len").toInt();
+  can.baud = server.arg("can_baud").toInt();
+  can.id = strtoul(server.arg("can_id").c_str(), NULL, 16);
+  // can.is_extended = server.arg("can_is_extended").toInt();
+  can.signal_start_bit = server.arg("can_signal_start_bit").toInt();
+  can.signal_bit_len = server.arg("can_signal_bit_len").toInt();
 
   /* Send out parsable commands for stm32 */
   send_set_parameter(CMD_CAN_BAUD);
-  Serial.print(can_baud);
+  Serial.print(can.baud);
   Serial.print(CMD_EOL);
+  Serial.flush();
 
   bool cmd_accepted = false;
 
@@ -364,8 +279,9 @@ void handleSave() {
         cmd_accepted = true;
       } else {
         send_set_parameter(CMD_CAN_BAUD);
-        Serial.print(can_baud);
+        Serial.print(can.baud);
         Serial.print(CMD_EOL);
+        Serial.flush();
       }
 
       inputString = "";
@@ -373,16 +289,41 @@ void handleSave() {
   }
 
   send_set_parameter(CMD_CAN_ID);
-  Serial.print(can_id);
+  Serial.print(can.id);
   Serial.print(CMD_EOL);
+  Serial.flush();
 
   send_set_parameter(CMD_CAN_SIGNAL_START_BIT);
-  Serial.print(can_signal_start_bit);
+  Serial.print(can.signal_start_bit);
   Serial.print(CMD_EOL);
+  Serial.flush();
 
   send_set_parameter(CMD_CAN_SIGNAL_BIT_LEN);
-  Serial.print(can_signal_bit_len);
+  Serial.print(can.signal_bit_len);
   Serial.print(CMD_EOL);
+  Serial.flush();
+
+  /* save data to EEPROM */
+  EEPROM.put(0, can);
+  boolean ok = EEPROM.commit();
+  Serial.println((ok) ? "Commit OK" : "Commit failed");
+
+  String saved = "<!DOCTYPE html>";
+  saved += "<html>";
+  saved += "<head><title>CANalog</title>";
+  saved += "<style>";
+  saved += "h1 {font-size: 500%;}";
+  saved += "select {font-size: 300%;}";
+  saved += "input {font-size: 300%;}";
+  saved += "label {font-size: 300%;}";
+  saved += "</style>";
+  saved += "</head>";
+  saved += "<body>";
+  saved += "<h1>CANalog Settings Updated!</h1>";
+  saved += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+  saved += "</body></html>";
+
+  server.send(200, "text/html", saved);
 
   /*
   if( ! server.hasArg("username") || ! server.hasArg("password")  
@@ -398,8 +339,8 @@ void handleSave() {
   */
 
   // return to root  
-  server.sendHeader("Location", "/");       // Add a header to respond with a new location for the browser to go to the home page again
-  server.send(303);                         // Send it back to the browser with an HTTP status 303 (See Other) to redirect
+  // server.sendHeader("Location", "/");       // Add a header to respond with a new location for the browser to go to the home page again
+  // server.send(303);                         // Send it back to the browser with an HTTP status 303 (See Other) to redirect
 }
 
 void handleNotFound(){

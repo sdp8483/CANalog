@@ -21,7 +21,6 @@
 #include "main.h"
 #include "can.h"
 #include "dac.h"
-#include "rtc.h"
 #include "usart.h"
 #include "gpio.h"
 
@@ -49,13 +48,6 @@
 #define HW_VERSION				"V0.0.1.0"
 #define FW_VERSION				"V0.0.1.0"
 
-#define BKP_IS_SET				0x1234			/* if this value is found in the first backup register the values have been set before */
-#define BKP_SET_ADDR			RTC_BKP_DR0		/* backup register address where magic number is stored */
-#define BKP_CAN_BAUD_ADDR		RTC_BKP_DR1		/* backup register address where CAN baud rate is stored */
-#define BKP_CAN_ID_ADDR			RTC_BKP_DR2		/* backup register address where CAN ID is stored */
-#define BKP_CAN_SSB_ADDR		RTC_BKP_DR3		/* backup register address where CAN signal start bit is stored */
-#define BKP_CAD_SBL_ADDR		RTC_BKP_DR4		/* backup register address where CAN signal bit length is stored */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,12 +59,11 @@
 
 /* USER CODE BEGIN PV */
 UART_HandleTypeDef huart1;
-RTC_HandleTypeDef hrtc;
 
 CMD_Handle_t hcmd;
 
-uint32_t device_sn;	/* serial number created using 96bit unique device ID
- 	 	 	 	 	 * used to set SSID of WiFi */
+uint32_t device_sn; /* serial number created using 96bit unique device ID
+ * used to set SSID of WiFi */
 
 uint16_t can_baud; /* CAN baud rate, supports 250kbps and 500kbps */
 uint32_t can_id; /* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
@@ -122,29 +113,10 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_CAN_Init();
 	MX_DAC_Init();
-	MX_RTC_Init();
 	MX_USART1_UART_Init();
 	/* USER CODE BEGIN 2 */
 
-	device_sn = calc_sn();		/* get device 32bit sn */
-
-	/* read in saved data from RTC backup registers */
-	if (HAL_RTCEx_BKUPRead(&hrtc, BKP_SET_ADDR) != BKP_IS_SET) {
-		/* if backup register != BKP_IS_SET then set save data
-		 *   this should only run on first compile */
-		HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
-		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
-		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
-		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
-		HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
-	} else {
-		/* else read in the data from the backup registers
-		 *   this should run every other time */
-		can_baud 				= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_BAUD_ADDR);
-		can_id 					= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_ID_ADDR);
-		can_signal_start_bit 	= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAN_SSB_ADDR);
-		can_signal_bit_len 		= HAL_RTCEx_BKUPRead(&hrtc, BKP_CAD_SBL_ADDR);
-	}
+	device_sn = calc_sn(); /* get device 32bit sn */
 
 	HAL_UART_Receive_IT(&huart1, hcmd.rxBuffer, 1); /* receive one byte at a time */
 
@@ -156,28 +128,7 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-//		cmd_parse(&hcmd);
-		switch (cmd_parse(&hcmd)) {
-		case (CMD_NONE):
-
-				break;
-		case (CMD_RECEIVED_VALUE):	/* new value was received, save all to backup */
-			HAL_RTCEx_BKUPWrite(&hrtc, BKP_SET_ADDR, BKP_IS_SET);
-			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_BAUD_ADDR, can_baud);
-			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_ID_ADDR, can_id);
-			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAN_SSB_ADDR, can_signal_start_bit);
-			HAL_RTCEx_BKUPWrite(&hrtc, BKP_CAD_SBL_ADDR, can_signal_bit_len);
-			break;
-		case (CMD_SENT_VALUE):
-
-				break;
-		case (CMD_ERROR):
-
-				break;
-		default:
-
-			break;
-		}
+		cmd_parse(&hcmd);
 
 	}
 	/* USER CODE END 3 */
@@ -195,10 +146,9 @@ void SystemClock_Config(void) {
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
 	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI | RCC_OSCILLATORTYPE_LSI;
+	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
 	RCC_OscInitStruct.HSIState = RCC_HSI_ON;
 	RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-	RCC_OscInitStruct.LSIState = RCC_LSI_ON;
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
 	RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
@@ -217,9 +167,8 @@ void SystemClock_Config(void) {
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
 		Error_Handler();
 	}
-	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1 | RCC_PERIPHCLK_RTC;
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART1;
 	PeriphClkInit.Usart1ClockSelection = RCC_USART1CLKSOURCE_PCLK1;
-	PeriphClkInit.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
 	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
 		Error_Handler();
 	}
