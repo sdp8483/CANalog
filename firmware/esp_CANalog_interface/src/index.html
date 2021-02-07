@@ -41,7 +41,7 @@
         <td style="text-align: right;"><label for="can_id_bit_len">ID Type: </label></td>
         <td><select id="can_id_bit_len" name="can_id_bit_len">
             <option value="11">11bit</option>
-            <option value="29">29bit</option>
+            <option value="29" selected>29bit</option>   
         </select></td>
     </tr>
     <tr>
@@ -59,20 +59,19 @@
     <tr>
         <td style="text-align: right;"><label for="can_endianness">Signal Endianness: </label></td>
         <td><select id="can_endianness" name="can_endianness">
-            <option value="0">little</option>
-            <option value="1">big</option>
+            <option value="12">little</option>
+            <option value="21">big</option>
         </select></td>
     </tr>
     <tr>
         <td style="text-align: right;"><label for="can_signal_max">Signal Max: </label></td>
-        <td><input type="text" id="can_signal_max" name="can_signal_max" value="65536" min=0 size="9"></td>
+        <td><input type="text" id="can_signal_max" name="can_signal_max" value="65535" min=0 max=65535 size="6"></td>
     </tr>
     <tr>
         <td style="text-align: right;"><label for="can_signal_min">Signal Min: </label></td>
-        <td><input type="text" id="can_signal_min" name="can_signal_min" value="0" min=0 size="9"></td>
+        <td><input type="text" id="can_signal_min" name="can_signal_min" value="0" min=0 max=65535 size="6"></td>
     </tr>
 </table>
-</select>
 
 <input type="submit" value="Save">
 </form>

@@ -16,6 +16,12 @@
 /* Command parsing settings --------------------------------------------------*/
 #define CMD_BUFFER_LEN				16			/* how long the rx command buffer is */
 
+#define SIGNAL_LITTLE_ENDIAN   	12
+#define SIGNAL_BIG_ENDIAN      	21
+
+#define ID_TYPE_11BIT			      11
+#define ID_TYPE_29BIT			      29
+
 /* common characters and strings for command parser */
 #define CMD_START_CHAR				'$'			/* all commands start with this character */
 #define CMD_GET_CHAR				'?'			/* used by rx line to get value */
@@ -30,9 +36,13 @@
 /* parameters to set or get with command parser, case is important */
 #define CMD_SN						's'			/* 32bit unique device serial number */
 #define CMD_CAN_BAUD				'B'			/* CAN baud rate */
+#define CMD_CAN_ID_TYPE				'T'			/* CAN ID is 11bit or 29bit */
 #define CMD_CAN_ID					'I'			/* CAN ID in hex */
 #define CMD_CAN_SIGNAL_START_BIT 	'S'			/* CAN Signal Start Bit */
 #define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
+#define CMD_CAN_ENDIANNESS			'E'			/* CAN Signal endianness */
+#define CMD_CAN_SIGNAL_MAX			'M'			/* CAN signal max value */
+#define CMD_CAN_SIGNAL_MIN			'm'			/* CAN signal min value */
 
 String inputString = "";
 String outputString = "";
@@ -40,20 +50,24 @@ String expectedResponse = "";
 bool stringComplete = false;  // whether the string is complete
 
 struct MyEEPROMStruct {
-  uint16_t baud;
-  uint32_t id;
-  uint8_t signal_start_bit;
-  uint8_t signal_bit_len;
+  uint16_t baud;			  /* CAN baud rate in kbps */
+  uint8_t  type;			  /* ID type */
+	uint32_t id;			    /* CAN frame ID */
+	uint8_t  start_bit;		/* signal start bit */
+	uint8_t  bit_len;			/* signal bit length */
+  uint8_t  endianness;  /* signal endianness */
+	uint16_t max;				  /* signal max value */
+	uint16_t min;				  /* signal min value */
 } can;
 
 /* WiFi Settings -------------------------------------------------------------*/
-String ssid = "CANalog ";   /* first part of ssid, will append device sn to end */
+String ssid = "CANalog ";           /* first part of ssid, will append device sn to end */
 IPAddress local_IP(192,168,4,1);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
-#define NUMBER_CAN_BAUD_RATES  9
-uint16_t possible_can_baud[NUMBER_CAN_BAUD_RATES] = {10, 20, 50, 100, 125, 250, 500, 750, 1000};
+#define NUMBER_CAN_BAUD_RATES  10
+uint16_t possible_can_baud[NUMBER_CAN_BAUD_RATES] = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
 
 ESP8266WebServer server(80);
 
@@ -79,10 +93,14 @@ void setup(void){
   Serial.flush();
 
   /* setup default values */
-  can.baud = 500;
-  can.id = 0x18efb300;
-  can.signal_start_bit = 0;
-  can.signal_bit_len = 16;
+  can.baud        = 500;
+  can.type        = ID_TYPE_29BIT;
+  can.id          = 0x18efb300;
+  can.start_bit   = 0;
+  can.bit_len     = 16;
+  can.endianness  = SIGNAL_LITTLE_ENDIAN;
+  can.max         = 65535;
+  can.min         = 0;
 
   /* setup EEPROM */
   EEPROM.begin(sizeof(MyEEPROMStruct));
@@ -134,16 +152,20 @@ void handleRoot() {
   root += "select {font-size: 300%;}";
   root += "input {font-size: 300%;}";
   root += "label {font-size: 300%;}";
+  root += "input[type=submit] {height: 150px; width: 800px;}";
   root += "</style>";
   root += "</head>";
   root += "<body>";
+
   root += "<h1>CANalog Configuration</h1>";
 
   root += "<form action=\"/save\" method=\"POST\">";
   
-  root += "<label for=\"can_baud\">CAN Baud Rate: </label>";
-  root += "<select id=\"can_baud\" name=\"can_baud\">";
-
+  root += "<table>";
+  /* CAN Baud Rate */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_baud\">CAN Baud Rate: </label></td>";
+  root += "<td><select id=\"can_baud\" name=\"can_baud\">";
   for (uint8_t i=0; i<NUMBER_CAN_BAUD_RATES; i++) {
     if (can.baud == possible_can_baud[i]) {
         root += "<option value=\"";
@@ -159,37 +181,80 @@ void handleRoot() {
         root += "kbps</option>";
       }
   }
-  root += "</select><br>";
+  root += "</select></td>";
+  root += "</tr>";
 
-  root += "<label for=\"can_id\">CAN ID: </label>";
-  root += "<input type=\"text\" id=\"can_id\" name=\"can_id\" value=\"";
+  /* CAN ID type */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_id_bit_len\">ID Type: </label></td>";
+  root += "<td><select id=\"can_id_bit_len\" name=\"can_id_bit_len\">";
+  if (can.type == ID_TYPE_11BIT) {
+    root += "<option value=\"11\" selected>11bit</option>";
+    root += "<option value=\"29\">29bit</option>";
+  } else {
+    root += "<option value=\"11\">11bit</option>";
+    root += "<option value=\"29\" selected>29bit</option>";
+  }
+  root += "</select></td>";
+  root += "</tr>";
 
-  // String S_can_id = String(can_id, HEX);
-
+  /* CAN ID */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_id\">CAN ID: </label></td>";
+  root += "<td><input type=\"text\" id=\"can_id\" name=\"can_id\" value=\"";
   root += String(can.id, HEX);
-  root += "\"  size=\"9\"><br>";
+  root += "\"  size=\"9\"></td>";
+  root += "</tr>";
 
-  // root += "<label for=\"can_is_extended\">29bit ID: </label>";
-  // root += "<select id=\"can_is_extended\" name=\"can_is_extended\">";
-  // if (can_is_extended == 1) {
-  //   root += "<option value=\"true\" selected>true</option>";
-  //   root += "<option value=\"false\">false</option>";
-  // } else {
-  //   root += "<option value=\"true\">true</option>";
-  //   root += "<option value=\"false\" selected>false</option>";
-  // }
-  // root += "</select><br>";
+  /* signal start bit */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_signal_start_bit\">Bit Position: </label></td>";
+  root += "<td><input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
+  root += can.start_bit;
+  root += "\" min=\"0\" max=\"32\" size=\"3\"></td>";
+  root += "</tr>";
 
-  root += "<label for=\"can_signal_start_bit\">Bit Position: </label>";
-  root += "<input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
-  root += can.signal_start_bit;
-  root += "\" min=\"0\" max=\"32\" size=\"3\"><br>";
+  /* signal bit len */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_signal_bit_len\">Number of Bits: </label></td>";
+  root += "<td><input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
+  root += can.bit_len;
+  root += "\" min=\"1\" max=\"32\" size=\"3\"></td>";
+  root += "</tr>";
 
-  root += "<label for=\"can_signal_bit_len\">Number of Bits: </label>";
-  root += "<input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
-  root += can.signal_bit_len;
-  root += "\" min=\"1\" max=\"32\" size=\"3\"><br><br>";
+  /* signal endianness */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_endianness\">Signal Endianness: </label></td>";
+  root += "<td><select id=\"can_endianness\" name=\"can_endianness\">";
+  if (can.endianness == SIGNAL_LITTLE_ENDIAN) {
+    root += "<option value=\"12\" selected>little</option>";
+    root += "<option value=\"21\">big</option>";
+  } else {
+    root += "<option value=\"12\">little</option>";
+    root += "<option value=\"21\" selected>big</option>";
+  }
+  root += "</select></td>";
+  root += "</tr>";
 
+  /* signal max */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_signal_max\">Signal Max: </label></td>";
+  root += "<td><input type=\"text\" id=\"can_signal_max\" name=\"can_signal_max\" value=\"";
+  root += can.max;
+  root += "\" min=0 max=65535 size=\"6\"></td>";
+  root += "</tr>";
+
+  /* signal min */
+  root += "<tr>";
+  root += "<td style=\"text-align: right;\"><label for=\"can_signal_min\">Signal Min: </label></td>";
+  root += "<td><input type=\"text\" id=\"can_signal_min\" name=\"can_signal_min\" value=\"";
+  root += can.min;
+  root += "\" min=0 max=65535 size=\"6\"></td>";
+  root += "</tr>";
+
+  root += "</table>";
+
+  /* save button */
   root += "<input type=\"submit\" value=\"Save\">";
 
   root += "</form>";
@@ -199,16 +264,9 @@ void handleRoot() {
   server.send(200, "text/html", root);
 }
 
-void handleSave() {
-  can.baud = server.arg("can_baud").toInt();
-  can.id = strtoul(server.arg("can_id").c_str(), NULL, 16);
-  // can.is_extended = server.arg("can_is_extended").toInt();
-  can.signal_start_bit = server.arg("can_signal_start_bit").toInt();
-  can.signal_bit_len = server.arg("can_signal_bit_len").toInt();
-
-  /* Send out parsable commands for stm32 */
-  send_set_parameter(CMD_CAN_BAUD);
-  Serial.print(can.baud);
+void send_value(char cmd_char, uint16_t value) {
+  send_set_parameter(cmd_char);
+  Serial.print(value);
   Serial.print(CMD_EOL);
   Serial.flush();
 
@@ -223,8 +281,8 @@ void handleSave() {
       if(inputString.equals(CMD_IS_GOOD)) {
         cmd_accepted = true;
       } else {
-        send_set_parameter(CMD_CAN_BAUD);
-        Serial.print(can.baud);
+        send_set_parameter(cmd_char);
+        Serial.print(value);
         Serial.print(CMD_EOL);
         Serial.flush();
       }
@@ -232,21 +290,27 @@ void handleSave() {
       inputString = "";
     }
   }
+}
 
-  send_set_parameter(CMD_CAN_ID);
-  Serial.print(can.id);
-  Serial.print(CMD_EOL);
-  Serial.flush();
+void handleSave() {
+  can.baud        = server.arg("can_baud").toInt();
+  can.type        = server.arg("can_id_bit_len").toInt();
+  can.id          = strtoul(server.arg("can_id").c_str(), NULL, 16);
+  can.start_bit   = server.arg("can_signal_start_bit").toInt();
+  can.bit_len     = server.arg("can_signal_bit_len").toInt();
+  can.endianness  = server.arg("can_endianness").toInt();
+  can.max         = server.arg("can_signal_max").toInt();
+  can.min         = server.arg("can_signal_min").toInt();
 
-  send_set_parameter(CMD_CAN_SIGNAL_START_BIT);
-  Serial.print(can.signal_start_bit);
-  Serial.print(CMD_EOL);
-  Serial.flush();
-
-  send_set_parameter(CMD_CAN_SIGNAL_BIT_LEN);
-  Serial.print(can.signal_bit_len);
-  Serial.print(CMD_EOL);
-  Serial.flush();
+  /* Send out parsable commands for stm32 */
+  send_value(CMD_CAN_BAUD, can.baud);
+  send_value(CMD_CAN_ID_TYPE, can.type);
+  send_value(CMD_CAN_ID, can.id);
+  send_value(CMD_CAN_SIGNAL_START_BIT, can.start_bit);
+  send_value(CMD_CAN_SIGNAL_BIT_LEN, can.bit_len);
+  send_value(CMD_CAN_ENDIANNESS, can.endianness);
+  send_value(CMD_CAN_SIGNAL_MAX, can.max);
+  send_value(CMD_CAN_SIGNAL_MIN, can.min);
 
   /* save data to EEPROM */
   EEPROM.put(0, can);
