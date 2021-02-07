@@ -44,6 +44,11 @@
 #define CMD_CAN_SIGNAL_MAX			  'M'			/* CAN signal max value */
 #define CMD_CAN_SIGNAL_MIN			  'm'			/* CAN signal min value */
 
+#define CMD_MAX_RETRY             10      /* max retransmissions for cmd responding with NOK */
+#define CMD_TIMEOUT               10      /* if no response after ms move on */
+#define CMD_OK                    0       /* response if command is accepted */
+#define CMD_NOK                   1       /* response on command timeout */
+
 String inputString      = "";
 String outputString     = "";
 String expectedResponse = "";
@@ -77,7 +82,7 @@ void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
 void get_sn(char cmd_character);
-void send_value(char cmd_char, uint32_t value);
+uint8_t send_value(char cmd_char, uint32_t value);
 void send_get_parameter(char cmd_character);
 void send_set_parameter(char cmd_character);
 
@@ -286,54 +291,64 @@ void handleSave() {
   can.max         = server.arg("can_signal_max").toInt();
   can.min         = server.arg("can_signal_min").toInt();
 
+  uint8_t error_count = 0;
+
   /* Send out parsable commands for stm32 */
-  send_value(CMD_CAN_BAUD, can.baud);
-  send_value(CMD_CAN_ID_TYPE, can.type);
-  send_value(CMD_CAN_ID, can.id);
-  send_value(CMD_CAN_SIGNAL_START_BIT, can.start_bit);
-  send_value(CMD_CAN_SIGNAL_BIT_LEN, can.bit_len);
-  send_value(CMD_CAN_ENDIANNESS, can.endianness);
-  send_value(CMD_CAN_SIGNAL_MAX, can.max);
-  send_value(CMD_CAN_SIGNAL_MIN, can.min);
+  error_count += send_value(CMD_CAN_BAUD, can.baud);
+  error_count += send_value(CMD_CAN_ID_TYPE, can.type);
+  error_count += send_value(CMD_CAN_ID, can.id);
+  error_count += send_value(CMD_CAN_SIGNAL_START_BIT, can.start_bit);
+  error_count += send_value(CMD_CAN_SIGNAL_BIT_LEN, can.bit_len);
+  error_count += send_value(CMD_CAN_ENDIANNESS, can.endianness);
+  error_count += send_value(CMD_CAN_SIGNAL_MAX, can.max);
+  error_count += send_value(CMD_CAN_SIGNAL_MIN, can.min);
 
-  /* save data to EEPROM */
-  EEPROM.put(0, can);
-  boolean ok = EEPROM.commit();
-  Serial.println((ok) ? "Commit OK" : "Commit failed");
+  if(error_count == 0) {
+    /* save data to EEPROM */
+    EEPROM.put(0, can);
+    boolean ok = EEPROM.commit();
+    Serial.println((ok) ? "Commit OK" : "Commit failed");
 
-  String saved = "<!DOCTYPE html>";
-  saved += "<html>";
-  saved += "<head><title>CANalog</title>";
-  saved += "<style>";
-  saved += "h1 {font-size: 500%;}";
-  saved += "select {font-size: 300%;}";
-  saved += "input {font-size: 300%;}";
-  saved += "label {font-size: 300%;}";
-  saved += "</style>";
-  saved += "</head>";
-  saved += "<body>";
-  saved += "<h1>CANalog Settings Updated!</h1>";
-  saved += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
-  saved += "</body></html>";
+    String saved = "<!DOCTYPE html>";
+    saved += "<html>";
+    saved += "<head><title>CANalog</title>";
+    saved += "<style>";
+    saved += "h1 {font-size: 500%;}";
+    saved += "select {font-size: 300%;}";
+    saved += "input {font-size: 300%;}";
+    saved += "label {font-size: 300%;}";
+    saved += "</style>";
+    saved += "</head>";
+    saved += "<body>";
+    saved += "<h1>CANalog Settings Updated!</h1>";
+    saved += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+    saved += "</body></html>";
 
-  server.send(200, "text/html", saved);
+    server.send(200, "text/html", saved);
+  } else {
+    String error = "<!DOCTYPE html>";
+    error += "<html>";
+    error += "<head><title>CANalog</title>";
+    error += "<style>";
+    error += "h1 {font-size: 500%;}";
+    error += "h2 {font-size: 300%;}";
+    error += "select {font-size: 300%;}";
+    error += "input {font-size: 300%;}";
+    error += "label {font-size: 300%;}";
+    error += "</style>";
+    error += "</head>";
+    error += "<body>";
+    error += "<h1>Error Updating Settings!</h1>";
+    error += "<h2>";
+    error += error_count;
+    error += " settings were not updated. </h2>";
+    error += "<h2> Return to renter settings and retry </h2>";
+    error += "<h2> Restart if problem persists </h2>";
+    error += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+    error += "</body></html>";
 
-  /*
-  if( ! server.hasArg("username") || ! server.hasArg("password")  
-      || server.arg("username") == NULL || server.arg("password") == NULL) { // If the POST request doesn't have username and password data
-    server.send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
-    return;
+    server.send(200, "text/html", error);
   }
-  if(server.arg("username") == "John Doe" && server.arg("password") == "password123") { // If both the username and the password are correct
-    server.send(200, "text/html", "<h1>Welcome, " + server.arg("username") + "!</h1><p>Login successful</p>");
-  } else {                                                                              // Username and password don't match
-    server.send(401, "text/plain", "401: Unauthorized");
-  }
-  */
-
-  // return to root  
-  // server.sendHeader("Location", "/");       // Add a header to respond with a new location for the browser to go to the home page again
-  // server.send(303);                         // Send it back to the browser with an HTTP status 303 (See Other) to redirect
 }
 
 void handleNotFound(){
@@ -373,7 +388,10 @@ void get_sn(char cmd_character) {
   }
 }
 
-void send_value(char cmd_char, uint32_t value) {
+uint8_t send_value(char cmd_char, uint32_t value) {
+  uint8_t attemps = 0;
+  uint32_t cmd_start_time = millis();
+
   send_set_parameter(cmd_char);
   Serial.print(value);
   Serial.print(CMD_EOL);
@@ -383,6 +401,10 @@ void send_value(char cmd_char, uint32_t value) {
 
   while(cmd_accepted == false) {
     serialEvent();
+    
+    if((millis() - cmd_start_time) >= CMD_TIMEOUT) {  /* timput error, return */
+      return CMD_NOK;
+    }
 
     if(stringComplete) {
       stringComplete = false;
@@ -390,6 +412,7 @@ void send_value(char cmd_char, uint32_t value) {
       if(inputString.equals(CMD_IS_GOOD)) {
         cmd_accepted = true;
       } else {
+        attemps++;
         send_set_parameter(cmd_char);
         Serial.print(value);
         Serial.print(CMD_EOL);
@@ -398,7 +421,13 @@ void send_value(char cmd_char, uint32_t value) {
 
       inputString = "";
     }
+
+    if(attemps >= CMD_MAX_RETRY) {    /* max tx attempts, return with error */
+      return CMD_NOK;
+    }
   }
+
+  return CMD_OK;
 }
 
 void send_get_parameter(char cmd_character) {
