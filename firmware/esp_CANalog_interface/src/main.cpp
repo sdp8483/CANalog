@@ -314,6 +314,7 @@ void handleSave() {
     saved += "<head><title>CANalog</title>";
     saved += "<style>";
     saved += "h1 {font-size: 500%;}";
+    saved += "h2 {font-size: 300%;}";
     saved += "select {font-size: 300%;}";
     saved += "input {font-size: 300%;}";
     saved += "label {font-size: 300%;}";
@@ -342,7 +343,7 @@ void handleSave() {
     error += "<h2>";
     error += error_count;
     error += " settings were not updated. </h2>";
-    error += "<h2> Return to renter settings and retry </h2>";
+    error += "<h2> Renter settings and retry </h2>";
     error += "<h2> Restart if problem persists </h2>";
     error += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
     error += "</body></html>";
@@ -360,11 +361,18 @@ void handleInvalidRequest(void) {
 }
 
 void get_sn(char cmd_character) {
+  uint8_t attempts = 0;
+  uint32_t start_time = millis();
+
   uint32_t device_sn;
   bool parameter_was_fetched = false;
   send_get_parameter(cmd_character);
   while(parameter_was_fetched == false) {
     serialEvent();
+
+    if ((millis() - start_time) >= CMD_TIMEOUT) {
+      return;
+    }
 
     if(stringComplete) {
       stringComplete = false;
@@ -380,10 +388,15 @@ void get_sn(char cmd_character) {
         ssid += String(device_sn, HEX);
         parameter_was_fetched = true;
       } else {
+        attempts++;
         delay(10);
         send_get_parameter(cmd_character);
       }
       inputString = "";   /* clear the input */
+    }
+
+    if(attempts >= CMD_MAX_RETRY) {
+      return;
     }
   }
 }
