@@ -14,40 +14,40 @@
 #define FW_VERSION				"V0.0.1.0"
 
 /* Command parsing settings --------------------------------------------------*/
-#define CMD_BUFFER_LEN				16			/* how long the rx command buffer is */
+#define CMD_BUFFER_LEN				    16			/* how long the rx command buffer is */
 
-#define SIGNAL_LITTLE_ENDIAN   	12
-#define SIGNAL_BIG_ENDIAN      	21
+#define SIGNAL_LITTLE_ENDIAN   	  12
+#define SIGNAL_BIG_ENDIAN      	  21
 
-#define ID_TYPE_11BIT			      11
-#define ID_TYPE_29BIT			      29
+#define ID_TYPE_11BIT			        11
+#define ID_TYPE_29BIT			        29
 
 /* common characters and strings for command parser */
-#define CMD_START_CHAR				'$'			/* all commands start with this character */
-#define CMD_GET_CHAR				'?'			/* used by rx line to get value */
-#define CMD_SET_CHAR				'='			/* used by rx line to set value */
-#define CMD_RESPOND_CHAR			':'			/* use to respond with value */
-#define CMD_END_CHAR				'\n'		/* all valid commands end with this character */
-#define CMD_EOL						"\r\n"		/* used to terminate command */
-#define CMD_IS_GOOD					"OK\r\n"	/* response when command is accepted */
-#define CMD_IS_BAD					"NOK\r\n"	/* response when command is not accepted */
-#define CMD_IS_LONG					"OVF\r\n"	/* response when command is too long */
+#define CMD_START_CHAR			      '$'			  /* all commands start with this character */
+#define CMD_GET_CHAR				      '?'			  /* used by rx line to get value */
+#define CMD_SET_CHAR				      '='			  /* used by rx line to set value */
+#define CMD_RESPOND_CHAR		      ':'			  /* use to respond with value */
+#define CMD_END_CHAR				      '\n'		  /* all valid commands end with this character */
+#define CMD_EOL						        "\r\n"		/* used to terminate command */
+#define CMD_IS_GOOD					      "OK\r\n"	/* response when command is accepted */
+#define CMD_IS_BAD					      "NOK\r\n"	/* response when command is not accepted */
+#define CMD_IS_LONG					      "OVF\r\n"	/* response when command is too long */
 
 /* parameters to set or get with command parser, case is important */
-#define CMD_SN						's'			/* 32bit unique device serial number */
-#define CMD_CAN_BAUD				'B'			/* CAN baud rate */
-#define CMD_CAN_ID_TYPE				'T'			/* CAN ID is 11bit or 29bit */
-#define CMD_CAN_ID					'I'			/* CAN ID in hex */
-#define CMD_CAN_SIGNAL_START_BIT 	'S'			/* CAN Signal Start Bit */
+#define CMD_SN						        's'			/* 32bit unique device serial number */
+#define CMD_CAN_BAUD				      'B'			/* CAN baud rate */
+#define CMD_CAN_ID_TYPE				    'T'			/* CAN ID is 11bit or 29bit */
+#define CMD_CAN_ID					      'I'			/* CAN ID in hex */
+#define CMD_CAN_SIGNAL_START_BIT  'S'			/* CAN Signal Start Bit */
 #define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
-#define CMD_CAN_ENDIANNESS			'E'			/* CAN Signal endianness */
-#define CMD_CAN_SIGNAL_MAX			'M'			/* CAN signal max value */
-#define CMD_CAN_SIGNAL_MIN			'm'			/* CAN signal min value */
+#define CMD_CAN_ENDIANNESS			  'E'			/* CAN Signal endianness */
+#define CMD_CAN_SIGNAL_MAX			  'M'			/* CAN signal max value */
+#define CMD_CAN_SIGNAL_MIN			  'm'			/* CAN signal min value */
 
-String inputString = "";
-String outputString = "";
+String inputString      = "";
+String outputString     = "";
 String expectedResponse = "";
-bool stringComplete = false;  // whether the string is complete
+bool stringComplete     = false;  // whether the string is complete
 
 struct MyEEPROMStruct {
   uint16_t baud;			  /* CAN baud rate in kbps */
@@ -66,8 +66,8 @@ IPAddress local_IP(192,168,4,1);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
-#define NUMBER_CAN_BAUD_RATES  10
-uint16_t possible_can_baud[NUMBER_CAN_BAUD_RATES] = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
+uint16_t possible_can_baud[]    = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
+#define NUMBER_CAN_BAUD_RATES   (sizeof(possible_can_baud)/sizeof(uint16_t))
 
 ESP8266WebServer server(80);
 
@@ -77,6 +77,7 @@ void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
 void get_sn(char cmd_character);
+void send_value(char cmd_char, uint16_t value);
 void send_get_parameter(char cmd_character);
 void send_set_parameter(char cmd_character);
 
@@ -109,16 +110,27 @@ void setup(void){
   // If so, overwrite the 'default' values set up in our struct
   if(EEPROM.percentUsed()>=0) {
     EEPROM.get(0, can);
-    // Serial.println("EEPROM has data from a previous run.");
+    Serial.println("EEPROM has data from a previous run.");
     Serial.print(EEPROM.percentUsed());
-    // Serial.println("% of ESP flash space currently used");
+    Serial.println("% of ESP flash space currently used");
   } else {
-    // Serial.println("EEPROM size changed - EEPROM data zeroed - commit() to make permanent");    
+    Serial.println("EEPROM size changed - EEPROM data zeroed - commit() to make permanent");  
   }
 
   /* get SN to use in ssid */
+  Serial.print(CMD_EOL);
+  Serial.flush();
   get_sn(CMD_SN);
-  
+
+    /* Send out parsable commands for stm32 */
+  send_value(CMD_CAN_BAUD, can.baud);
+  send_value(CMD_CAN_ID_TYPE, can.type);
+  send_value(CMD_CAN_ID, can.id);
+  send_value(CMD_CAN_SIGNAL_START_BIT, can.start_bit);
+  send_value(CMD_CAN_SIGNAL_BIT_LEN, can.bit_len);
+  send_value(CMD_CAN_ENDIANNESS, can.endianness);
+  send_value(CMD_CAN_SIGNAL_MAX, can.max);
+  send_value(CMD_CAN_SIGNAL_MIN, can.min);
 
   /* start up WiFi Server */
   Serial.print("Setting AP configuration ... ");
@@ -264,34 +276,6 @@ void handleRoot() {
   server.send(200, "text/html", root);
 }
 
-void send_value(char cmd_char, uint16_t value) {
-  send_set_parameter(cmd_char);
-  Serial.print(value);
-  Serial.print(CMD_EOL);
-  Serial.flush();
-
-  bool cmd_accepted = false;
-
-  while(cmd_accepted == false) {
-    serialEvent();
-
-    if(stringComplete) {
-      stringComplete = false;
-      // Serial.print(inputString);
-      if(inputString.equals(CMD_IS_GOOD)) {
-        cmd_accepted = true;
-      } else {
-        send_set_parameter(cmd_char);
-        Serial.print(value);
-        Serial.print(CMD_EOL);
-        Serial.flush();
-      }
-
-      inputString = "";
-    }
-  }
-}
-
 void handleSave() {
   can.baud        = server.arg("can_baud").toInt();
   can.type        = server.arg("can_id_bit_len").toInt();
@@ -385,6 +369,34 @@ void get_sn(char cmd_character) {
         send_get_parameter(cmd_character);
       }
       inputString = "";   /* clear the input */
+    }
+  }
+}
+
+void send_value(char cmd_char, uint16_t value) {
+  send_set_parameter(cmd_char);
+  Serial.print(value);
+  Serial.print(CMD_EOL);
+  Serial.flush();
+
+  bool cmd_accepted = false;
+
+  while(cmd_accepted == false) {
+    serialEvent();
+
+    if(stringComplete) {
+      stringComplete = false;
+      // Serial.print(inputString);
+      if(inputString.equals(CMD_IS_GOOD)) {
+        cmd_accepted = true;
+      } else {
+        send_set_parameter(cmd_char);
+        Serial.print(value);
+        Serial.print(CMD_EOL);
+        Serial.flush();
+      }
+
+      inputString = "";
     }
   }
 }
