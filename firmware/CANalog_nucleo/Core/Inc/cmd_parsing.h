@@ -26,6 +26,8 @@
 #include "errno.h"
 #include "limits.h"
 
+#include "can_signal.h"
+
 #define CMD_BUFFER_LEN				32			/* how long the rx command buffer is */
 
 /* common characters and strings for command parser */
@@ -63,23 +65,26 @@ typedef struct __CMD_Handle_t {
 } CMD_Handle_t;
 
 /* external variables to parameters set/get by the command parser */
-extern uint32_t device_sn;						/* unique 32bit serial number */
-extern uint16_t can_baud; 						/* CAN baud rate, supports 250kbps and 500kbps */
-extern uint32_t can_id; 						/* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
-extern uint8_t can_is_extended; 				/* CAN ID is extended if 1 */
-extern uint32_t can_signal_start_bit; 			/* bit that signal to convert to analog starts */
-extern uint32_t can_signal_bit_len; 			/* bit length of signal to convert to analog */
+extern uint32_t device_sn;						/* unique 32bit serial number (maybe) */
+//extern Signal_Handle_t signal;					/* all signal parameters are stored in signal handle */
+//extern uint16_t can_baud; 						/* CAN baud rate, supports 250kbps and 500kbps */
+//extern uint32_t can_id; 						/* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
+//extern uint8_t can_is_extended; 				/* CAN ID is extended if 1 */
+//extern uint32_t can_signal_start_bit; 			/* bit that signal to convert to analog starts */
+//extern uint32_t can_signal_bit_len; 			/* bit length of signal to convert to analog */
 
 /* function prototypes */
-int8_t cmd_parse(CMD_Handle_t *hcmd);			/* parse the incoming command and determine if set/get
- 	 	 	 	 	 	 	 	 	 	 	 	 *  this is only function that should be called by main */
+int8_t cmd_parse(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal);
+												/* parse the incoming command and determine if set/get
+ 	 	 	 	 	 	 	 	 	 	 	 	 *  this is only function that should be called by main
+ 	 	 	 	 	 	 	 	 	 	 	 	 *  incoming commands are stored/retrieved from signal handle */
 void cmd_clear_buffer(CMD_Handle_t *hcmd); 		/* clear the command buffer */
 void cmd_tx_string(uint8_t *str);				/* send string over UART */
 void cmd_to_ul(CMD_Handle_t *hcmd, uint8_t base, uint32_t *ptrParameter);
 												/* set parameter using pointer, unsigned long number of specified base
 												 * doesn't set parameter if parsing error in strtoul and tx error message */
-void cmd_is_set(CMD_Handle_t *hcmd);			/* attached micro/user is setting a parameter */
-void cmd_is_get(CMD_Handle_t *hcmd);			/* attached micro/user is requesting parameter value */
+void cmd_is_set(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal);			/* attached micro/user is setting a parameter */
+void cmd_is_get(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal);			/* attached micro/user is requesting parameter value */
 void cmd_send_response(CMD_Handle_t *hcmd, uint8_t parameter_char, uint32_t value);
 												/* send response to requested parameter */
 

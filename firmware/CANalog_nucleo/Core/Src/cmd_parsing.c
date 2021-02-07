@@ -8,7 +8,7 @@
 #include "cmd_parsing.h"
 
 /* parse commands when handle has is_ready flag set */
-int8_t cmd_parse(CMD_Handle_t *hcmd) {
+int8_t cmd_parse(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal) {
 	int8_t rVal = CMD_NONE;							/* return value */
 
 	if(hcmd->is_overflow == 1) {					/* handle overflow condition */
@@ -28,11 +28,11 @@ int8_t cmd_parse(CMD_Handle_t *hcmd) {
 		} else {
 			switch(hcmd->buffer[2]) {
 			case CMD_SET_CHAR:						/* set parameter value */
-				cmd_is_set(hcmd);
+				cmd_is_set(hcmd, hsignal);
 				rVal = CMD_RECEIVED_VALUE;
 				break;
 			case CMD_GET_CHAR:						/* respond with parameter value */
-				cmd_is_get(hcmd);
+				cmd_is_get(hcmd, hsignal);
 				rVal = CMD_SENT_VALUE;
 				break;
 			default:								/* unsupported command type */
@@ -69,11 +69,11 @@ void cmd_tx_string(uint8_t *str) {
 /* convert valid input to unsigned long with base
  * 	https://stackoverflow.com/questions/26080829/detecting-strtol-failure/26083517 */
 void cmd_to_ul(CMD_Handle_t *hcmd, uint8_t base, uint32_t *ptrParameter) {
-	const char *nptr = (char *)&hcmd->buffer[3];	/* string to read */
-	char *endptr = NULL;							/* pointer to additional chars */
-	unsigned long number = 0;						/* variable holding return */
+	const char *nptr = (char *)&hcmd->buffer[3];			/* string to read */
+	char *endptr = NULL;									/* pointer to additional chars */
+	unsigned long number = 0;								/* variable holding return */
 
-	errno = 0;										/* reset errno to 0 before call */
+	errno = 0;												/* reset errno to 0 before call */
 
 	number = strtoul(nptr, &endptr, base);
 
@@ -97,19 +97,19 @@ void cmd_to_ul(CMD_Handle_t *hcmd, uint8_t base, uint32_t *ptrParameter) {
 }
 
 /* attached micro/user is trying to set a parameter */
-void cmd_is_set(CMD_Handle_t *hcmd) {
+void cmd_is_set(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal) {
 	switch(hcmd->buffer[1]) {
 	case CMD_CAN_BAUD:								/* set the can baud rate */
-		cmd_to_ul(hcmd, 10, (uint32_t *) &can_baud);
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->can_baud);
 		break;
 	case CMD_CAN_ID:								/* set the can ID */
-		cmd_to_ul(hcmd, 10, &can_id);
+		cmd_to_ul(hcmd, 10, &hsignal->can_id);
 		break;
 	case CMD_CAN_SIGNAL_START_BIT:					/* set the signal start bit */
-		cmd_to_ul(hcmd, 10, &can_signal_start_bit);
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->start_bit);
 		break;
 	case CMD_CAN_SIGNAL_BIT_LEN:					/* set the signal length */
-		cmd_to_ul(hcmd, 10, &can_signal_bit_len);
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->bit_len);
 		break;
 	default:										/* unsupported parameter */
 		cmd_tx_string((uint8_t *)CMD_IS_BAD);
@@ -118,22 +118,22 @@ void cmd_is_set(CMD_Handle_t *hcmd) {
 }
 
 /* attached micro/user is asking for a parameter value */
-void cmd_is_get(CMD_Handle_t *hcmd) {
+void cmd_is_get(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal) {
 	switch(hcmd->buffer[1]) {
 	case CMD_SN:									/* send serial number, no set command */
 		cmd_send_response(hcmd, CMD_SN, (uint32_t) device_sn);
 		break;
 	case CMD_CAN_BAUD:								/* send the can baud rate */
-		cmd_send_response(hcmd, CMD_CAN_BAUD, (uint32_t) can_baud);
+		cmd_send_response(hcmd, CMD_CAN_BAUD, (uint32_t) hsignal->can_baud);
 		break;
 	case CMD_CAN_ID:								/* send the can ID */
-		cmd_send_response(hcmd, CMD_CAN_ID, can_id);
+		cmd_send_response(hcmd, CMD_CAN_ID, hsignal->can_id);
 		break;
 	case CMD_CAN_SIGNAL_START_BIT:					/* send the signal start bit */
-		cmd_send_response(hcmd, CMD_CAN_SIGNAL_START_BIT, can_signal_start_bit);
+		cmd_send_response(hcmd, CMD_CAN_SIGNAL_START_BIT, hsignal->start_bit);
 		break;
 	case CMD_CAN_SIGNAL_BIT_LEN:					/* send the signal length */
-		cmd_send_response(hcmd, CMD_CAN_SIGNAL_BIT_LEN, can_signal_bit_len);
+		cmd_send_response(hcmd, CMD_CAN_SIGNAL_BIT_LEN, hsignal->bit_len);
 		break;
 	default:										/* unsupported parameter */
 		cmd_tx_string((uint8_t *)CMD_IS_BAD);
