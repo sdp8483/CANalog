@@ -22,7 +22,7 @@
 
 /* default values used in init */
 #define CAN_BAUD				250 					/* CAN baud rate*/
-#define CAN_ID	 				0x18EFB300 				/* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
+#define CAN_ID	 				0x18EFB400 				/* CAN ID, supports 11-bit (standard) and 29-bit (extended) */
 #define CAN_ID_TYPE 			ID_TYPE_29BIT			/* CAN ID bit len */
 #define CAN_SIGNAL_ENDIAN		SIGNAL_LITTLE_ENDIAN	/* signal endianness */
 #define CAN_SIGNAL_START_BIT	0 						/* bit that signal to convert to analog starts */

@@ -45,13 +45,16 @@ void signal_calc(Signal_Handle_t *hsignal) {
 		for (uint8_t i=0; i<sizeof(hsignal->frame); i++) {
 			temp += ((uint64_t) hsignal->frame[i] << (i * 8));
 		}
+
+		temp = temp >> hsignal->start_bit;
 	} else {
         for(uint8_t i=0; i<sizeof(hsignal->frame); i++) {
         	temp += ((uint64_t)hsignal->frame[i] << (56 - (i * 8)));
         }
+
+        temp = temp >> (64 - (hsignal->start_bit + hsignal->bit_len));
 	}
 
-	temp = temp >> hsignal->start_bit;
 	temp &= hsignal->mask;
 
 	hsignal->value = (uint16_t) temp;

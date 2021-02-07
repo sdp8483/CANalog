@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdint.h>
 
-#define LITTLE_ENDIAN   0
-#define BIG_ENDIAN      1
+#define LITTLE_ENDIAN   12
+#define BIG_ENDIAN      21
 
 int main() {   
     /* signal settings */
-    uint8_t signal_endianness   = LITTLE_ENDIAN;
-    uint8_t signal_start_bit    = 0;
+    uint8_t signal_endianness   = BIG_ENDIAN;
+    uint8_t signal_start_bit    = 48;
     uint8_t signal_bit_len      = 16;
     
     uint64_t signal = 0;
     
-    uint8_t frame[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+    uint8_t frame[] = {0xC0, 0x5D, 0xFA, 0xF0, 0x0F, 0xFF, 0x5D, 0xC0};
     uint8_t *ptFrame = frame;
     
     printf("frame pointer value: %p\r\n", ptFrame);
@@ -48,7 +48,8 @@ int main() {
         
         printf("Signal so far: 0x%lX\r\n", signal);
 
-        signal = signal >> signal_start_bit;
+        uint8_t signal_shift = 64 - (signal_start_bit + signal_bit_len);
+        signal = signal >> signal_shift;
 
         // uint64_t mask = 0;
         // for(uint8_t i=0; i<(64-signal_bit_len); i++) {
