@@ -14,11 +14,11 @@
 
 #include <stdint.h>
 
-#define SIGNAL_LITTLE_ENDIAN   12
-#define SIGNAL_BIG_ENDIAN      21
+#define SIGNAL_LITTLE_ENDIAN   	12
+#define SIGNAL_BIG_ENDIAN      	21
 
-#define ID_TYPE_11BIT	0
-#define ID_TYPE_29BIT	1
+#define ID_TYPE_11BIT			11
+#define ID_TYPE_29BIT			29
 
 /* default values used in init */
 #define CAN_BAUD				250 					/* CAN baud rate*/
@@ -32,16 +32,16 @@
 
 /* CAN Signal handle typedef */
 typedef struct {
-	uint8_t frame[8];			/* CAN frame data */
+	uint8_t  frame[8];			/* CAN frame data */
 	uint16_t can_baud;			/* CAN baud rate in kbps */
+	uint8_t  can_type;			/* ID type */
 	uint32_t can_id;			/* CAN frame ID */
-	uint8_t can_type;			/* ID type */
-	uint8_t endianness;			/* signal endianness */
-	uint8_t start_bit;			/* signal start bit */
-	uint8_t bit_len;			/* signal bit length */
-	uint16_t value;				/* signal value extracted from frame */
+	uint8_t  start_bit;			/* signal start bit */
+	uint8_t  bit_len;			/* signal bit length */
+	uint8_t  endianness;		/* signal endianness */
 	uint16_t max;				/* signal max value */
 	uint16_t min;				/* signal min value */
+	uint16_t value;				/* signal value extracted from frame */
 	uint64_t mask;				/* bit mask to use when getting signal from frame */
 	uint16_t dac_out;			/* dac output value */
 } Signal_Handle_t;
@@ -49,8 +49,8 @@ typedef struct {
 /* function prototypes */
 void signal_init(Signal_Handle_t *hsignal);		/* initialize to default values */
 void signal_reInit(Signal_Handle_t *hsignal);	/* new parameters, update calculated values */
-uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max);
 void signal_calc(Signal_Handle_t *hsignal);		/* get signal from frame */
 
+uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max);
 
 #endif /* INC_CAN_SIGNAL_H_ */

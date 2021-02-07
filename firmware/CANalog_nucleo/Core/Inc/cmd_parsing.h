@@ -42,11 +42,16 @@
 #define CMD_IS_LONG					"OVF\r\n"	/* response when command is too long */
 
 /* parameters to set or get with command parser, case is important */
+#define CMD_BAD						'!'			/* command received was bad, only used to signal main loop on cmd_parse return */
 #define CMD_SN						's'			/* 32bit unique device serial number */
 #define CMD_CAN_BAUD				'B'			/* CAN baud rate */
+#define CMD_CAN_ID_TYPE				'T'			/* CAN ID is 11bit or 29bit */
 #define CMD_CAN_ID					'I'			/* CAN ID in hex */
 #define CMD_CAN_SIGNAL_START_BIT 	'S'			/* CAN Signal Start Bit */
 #define CMD_CAN_SIGNAL_BIT_LEN		'L'			/* CAN Signal Bit Length */
+#define CMD_CAN_ENDIANNESS			'E'			/* CAN Signal endianness */
+#define CMD_CAN_SIGNAL_MAX			'M'			/* CAN signal max value */
+#define CMD_CAN_SIGNAL_MIN			'm'			/* CAN signal min value */
 
 /* command parsing return codes, used to signal main loop */
 #define CMD_NONE					0			/* no action needed by main loop */
@@ -62,6 +67,7 @@ typedef struct __CMD_Handle_t {
 	volatile uint8_t is_ready; 					/* signal to super loop that a serial command is ready */
 	volatile uint8_t is_overflow;				/* signal to super loop that the serial data received was too long */
 	volatile uint8_t index; 					/* where to place next incoming byte in the buffer */
+	uint8_t cmd_char;							/* store cmd character that was received, signal to main loop what parameter was updated */
 } CMD_Handle_t;
 
 /* external variables to parameters set/get by the command parser */

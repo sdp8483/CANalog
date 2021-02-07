@@ -101,18 +101,38 @@ void cmd_is_set(CMD_Handle_t *hcmd, Signal_Handle_t *hsignal) {
 	switch(hcmd->buffer[1]) {
 	case CMD_CAN_BAUD:								/* set the can baud rate */
 		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->can_baud);
+		hcmd->cmd_char = CMD_CAN_BAUD;
+		break;
+	case CMD_CAN_ID_TYPE:
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->can_type);	/* set can ID to 11bit/29bit */
+		hcmd->cmd_char = CMD_CAN_ID_TYPE;
 		break;
 	case CMD_CAN_ID:								/* set the can ID */
 		cmd_to_ul(hcmd, 10, &hsignal->can_id);
+		hcmd->cmd_char = CMD_CAN_ID;
 		break;
 	case CMD_CAN_SIGNAL_START_BIT:					/* set the signal start bit */
 		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->start_bit);
+		hcmd->cmd_char = CMD_CAN_SIGNAL_START_BIT;
 		break;
 	case CMD_CAN_SIGNAL_BIT_LEN:					/* set the signal length */
 		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->bit_len);
+		hcmd->cmd_char = CMD_CAN_SIGNAL_BIT_LEN;
 		break;
+	case CMD_CAN_ENDIANNESS:						/* set endianness of signal */
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->endianness);
+		hcmd->cmd_char = CMD_CAN_ENDIANNESS;
+		break;
+	case CMD_CAN_SIGNAL_MAX:
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->max);
+		hcmd->cmd_char = CMD_CAN_SIGNAL_MAX;
+		break;
+	case CMD_CAN_SIGNAL_MIN:
+		cmd_to_ul(hcmd, 10, (uint32_t *) &hsignal->min);
+		hcmd->cmd_char = CMD_CAN_SIGNAL_MIN;
 	default:										/* unsupported parameter */
 		cmd_tx_string((uint8_t *)CMD_IS_BAD);
+		hcmd->cmd_char = CMD_BAD;
 		break;
 	}
 }

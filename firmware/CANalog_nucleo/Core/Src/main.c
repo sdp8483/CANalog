@@ -138,45 +138,41 @@ int main(void) {
 		switch (cmd_parse(&hcmd, &signal)) {
 		case CMD_NONE:
 			break;
-		case CMD_RECEIVED_VALUE:
-			/* get new signal mask */
-			signal_reInit(&signal);
+		case CMD_RECEIVED_VALUE:								/* new parameter values received, react to changes */
+			if (hcmd.cmd_char == CMD_CAN_SIGNAL_BIT_LEN) {		/* only need to recalculate on bit length change */
+				/* get new signal mask */
+				signal_reInit(&signal);
+			} // end CMD_CAN_SIGNAL_BIT_LEN
 
-			/* stop CAN and deinit so we can configure it */
-			if (HAL_CAN_DeInit(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
+			if (hcmd.cmd_char == CMD_CAN_BAUD) {				/* only restart CAN when baud rate changes */
+				if (HAL_CAN_DeInit(&hcan) != HAL_OK) {			/* stop CAN and deinit so we can configure it */
+					Error_Handler();
+				}
+				can_set_bit_timing(&signal, &hcan);				/* set new bit timing */
 
-			/* set new bit timing */
-			can_set_bit_timing(&signal, &hcan);
-
-			/* reinitialize CAN */
-			if (HAL_CAN_Init(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
-
-			/* restart can */
-			if (HAL_CAN_Start(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
-
+				if (HAL_CAN_Init(&hcan) != HAL_OK) {			/* reinitialize CAN */
+					Error_Handler();
+				}
+				if (HAL_CAN_Start(&hcan) != HAL_OK) {			/* restart can */
+					Error_Handler();
+				}
+			} // end CMD_CAN_BAUD
 			break;
-		case CMD_SENT_VALUE:
+		case CMD_SENT_VALUE:									/* parameter values sent */
 			break;
-		case CMD_ERROR:
+		case CMD_ERROR:											/* command received was an error */
 			break;
 		default:
 			break;
-		}
+		} // end switch(cmd_parse)
 
 		/* CAN */
-
 		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);	// for timing
 
 		if (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) != 0) {
 			if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canRxHeader, signal.frame) != HAL_OK) {
 				Error_Handler();
-			}
+			} // end HAL_CAN_GetRxMessage
 
 			switch (signal.can_type) {
 			case ID_TYPE_11BIT:
@@ -193,8 +189,8 @@ int main(void) {
 				break;
 			default:
 				break;
-			}
-		}
+			} // end switch(signal.can_type)
+		} // end HAL_CAN_GetRxFifoFillLevel
 
 		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);	// for timing
 	}
