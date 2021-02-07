@@ -77,7 +77,7 @@ void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
 void get_sn(char cmd_character);
-void send_value(char cmd_char, uint16_t value);
+void send_value(char cmd_char, uint32_t value);
 void send_get_parameter(char cmd_character);
 void send_set_parameter(char cmd_character);
 
@@ -223,7 +223,7 @@ void handleRoot() {
   root += "<td style=\"text-align: right;\"><label for=\"can_signal_start_bit\">Bit Position: </label></td>";
   root += "<td><input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
   root += can.start_bit;
-  root += "\" min=\"0\" max=\"32\" size=\"3\"></td>";
+  root += "\" min=\"0\" max=\"64\" size=\"3\"></td>";
   root += "</tr>";
 
   /* signal bit len */
@@ -231,7 +231,7 @@ void handleRoot() {
   root += "<td style=\"text-align: right;\"><label for=\"can_signal_bit_len\">Number of Bits: </label></td>";
   root += "<td><input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
   root += can.bit_len;
-  root += "\" min=\"1\" max=\"32\" size=\"3\"></td>";
+  root += "\" min=\"1\" max=\"64\" size=\"3\"></td>";
   root += "</tr>";
 
   /* signal endianness */
@@ -373,7 +373,7 @@ void get_sn(char cmd_character) {
   }
 }
 
-void send_value(char cmd_char, uint16_t value) {
+void send_value(char cmd_char, uint32_t value) {
   send_set_parameter(cmd_char);
   Serial.print(value);
   Serial.print(CMD_EOL);
@@ -414,6 +414,7 @@ void send_get_parameter(char cmd_character) {
 }
 
 void send_set_parameter(char cmd_character) {
+  delay(1);
   outputString = "";
   outputString += CMD_START_CHAR;
   outputString += cmd_character;
