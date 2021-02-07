@@ -145,6 +145,10 @@ int main(void) {
 			} // end CMD_CAN_SIGNAL_BIT_LEN
 
 			if (hcmd.cmd_char == CMD_CAN_BAUD) {				/* only restart CAN when baud rate changes */
+				if (HAL_CAN_Stop(&hcan) != HAL_OK) {
+					Error_Handler();
+				}
+
 				if (HAL_CAN_DeInit(&hcan) != HAL_OK) {			/* stop CAN and deinit so we can configure it */
 					Error_Handler();
 				}
@@ -156,6 +160,8 @@ int main(void) {
 				if (HAL_CAN_Start(&hcan) != HAL_OK) {			/* restart can */
 					Error_Handler();
 				}
+
+				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);	/* set DAC to zero */
 			} // end CMD_CAN_BAUD
 			break;
 		case CMD_SENT_VALUE:									/* parameter values sent */
