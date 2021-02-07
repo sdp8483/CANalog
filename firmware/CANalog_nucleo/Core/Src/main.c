@@ -139,11 +139,27 @@ int main(void) {
 		case CMD_NONE:
 			break;
 		case CMD_RECEIVED_VALUE:
-			signal_reInit(&signal); /* get new signal mask */
-			// stop can
-			// set new bit timing
-			// reinit can
-			// start can
+			/* get new signal mask */
+			signal_reInit(&signal);
+
+			/* stop CAN and deinit so we can configure it */
+			if (HAL_CAN_DeInit(&hcan) != HAL_OK) {
+				Error_Handler();
+			}
+
+			/* set new bit timing */
+			can_set_bit_timing(&signal, &hcan);
+
+			/* reinitialize CAN */
+			if (HAL_CAN_Init(&hcan) != HAL_OK) {
+				Error_Handler();
+			}
+
+			/* restart can */
+			if (HAL_CAN_Start(&hcan) != HAL_OK) {
+				Error_Handler();
+			}
+
 			break;
 		case CMD_SENT_VALUE:
 			break;

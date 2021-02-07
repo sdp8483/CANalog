@@ -15,8 +15,21 @@
 #define INC_CAN_BIT_TIMING_H_
 
 #include "can.h"
+#include "can_signal.h"
 
 #include <stdint.h>
+
+/* CAN baud rates */
+#define BAUD_RATE_10kbps	10
+#define BAUD_RATE_20kbps	20
+#define BAUD_RATE_50kbps	50
+#define BAUD_RATE_83kbps	83
+#define BAUD_RATE_100kbps	100
+#define BAUD_RATE_125kbps	125
+#define BAUD_RATE_250kbps	250
+#define BAUD_RATE_500kbps	500
+#define BAUD_RATE_800kbps	800
+#define BAUD_RATE_1000kbps	1000
 
 /* CAN_BTR register value for specific bit timing */
 #define CAN_BTR_1000kbps 	0x001c0001
@@ -37,74 +50,18 @@ typedef struct {
 	  uint32_t TimeSeg2;
 } BitTiming_Handle_t;
 
-const BitTiming_Handle_t bitRate_10kbps = {
-		.Prescaler = 200,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
+extern const BitTiming_Handle_t bitRate_10kbps;
+extern const BitTiming_Handle_t bitRate_20kbps;
+extern const BitTiming_Handle_t bitRate_50kbps;
+extern const BitTiming_Handle_t bitRate_83kbps;
+extern const BitTiming_Handle_t bitRate_100kbps;
+extern const BitTiming_Handle_t bitRate_125kbps;
+extern const BitTiming_Handle_t bitRate_250kbps;
+extern const BitTiming_Handle_t bitRate_500kbps;
+extern const BitTiming_Handle_t bitRate_800kbps;
+extern const BitTiming_Handle_t bitRate_1000kbps;
 
-const BitTiming_Handle_t bitRate_20kbps = {
-		.Prescaler = 100,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_50kbps = {
-		.Prescaler = 40,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_83kbps = {
-		.Prescaler = 24,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_100kbps = {
-		.Prescaler = 20,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_125kbps = {
-		.Prescaler = 16,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_250kbps = {
-		.Prescaler = 8,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_500kbps = {
-		.Prescaler = 4,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
-
-const BitTiming_Handle_t bitRate_800kbps = {
-		.Prescaler = 4,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_8TQ,
-		.TimeSeg2 = CAN_BS2_1TQ
-};
-
-const BitTiming_Handle_t bitRate_1000kbps = {
-		.Prescaler = 2,
-		.SyncJumpWidth = CAN_SJW_1TQ,
-		.TimeSeg1 = CAN_BS1_13TQ,
-		.TimeSeg2 = CAN_BS2_2TQ
-};
+/* function prototypes */
+void can_set_bit_timing(Signal_Handle_t *hsignal, CAN_HandleTypeDef *hcan);
 
 #endif /* INC_CAN_BIT_TIMING_H_ */
