@@ -1,10 +1,11 @@
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
-#include <WiFiClient.h>
+#include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP_EEPROM.h>
 
 #define DEVICE_NAME				"CANalog WiFi"
+#define SERVER_ADDRESS    "www.canalog.io"
 /* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
  * 		MAIN marks major milestones of the project such as release
  * 		TOPIC marks the introduction of a new functionality or major changes
@@ -54,6 +55,7 @@ String outputString     = "";
 String expectedResponse = "";
 bool stringComplete     = false;  // whether the string is complete
 
+/* EEPROM parameters ---------------------------------------------------------*/
 struct MyEEPROMStruct {
   uint16_t baud;			  /* CAN baud rate in kbps */
   uint8_t  type;			  /* ID type */
@@ -65,18 +67,20 @@ struct MyEEPROMStruct {
 	uint16_t min;				  /* signal min value */
 } can;
 
-/* WiFi Settings -------------------------------------------------------------*/
-String ssid = "CANalog ";           /* first part of ssid, will append device sn to end */
-IPAddress local_IP(192,168,4,1);
-IPAddress gateway(192,168,4,9);
-IPAddress subnet(255,255,255,0);
-
 uint16_t possible_can_baud[]    = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
 #define NUMBER_CAN_BAUD_RATES   (sizeof(possible_can_baud)/sizeof(uint16_t))
 
+/* WiFi Settings -------------------------------------------------------------*/
+String ssid = "CANalog ";           /* first part of ssid, will append device sn to end */
+IPAddress apIP(192, 168, 1, 1);
+IPAddress subnet(255,255,255,0);
+const byte DNS_PORT = 53;
+DNSServer dnsServer;
+
 ESP8266WebServer server(80);
 
-void handleRoot(void);              // function prototypes for HTTP handlers
+/* funcition prototypes ------------------------------------------------------*/
+void handleRoot(void);
 void handleSave(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
@@ -111,8 +115,8 @@ void setup(void){
   /* setup EEPROM */
   EEPROM.begin(sizeof(MyEEPROMStruct));
 
-  // Check if the EEPROM contains valid data from another run
-  // If so, overwrite the 'default' values set up in our struct
+  /* Check if the EEPROM contains valid data from another run
+   * If so, overwrite the 'default' values set up in our struct */
   if(EEPROM.percentUsed()>=0) {
     EEPROM.get(0, can);
     Serial.println("EEPROM has data from a previous run.");
@@ -139,13 +143,26 @@ void setup(void){
 
   /* start up WiFi Server */
   Serial.print("Setting AP configuration ... ");
-  Serial.println(WiFi.softAPConfig(local_IP, gateway, subnet) ? "Ready" : "Failed!");
+  Serial.println(WiFi.softAPConfig(apIP, apIP, subnet) ? "Ready" : "Failed!");
 
   Serial.print("Setting AP ... ");
   Serial.println(WiFi.softAP(ssid) ? "Ready" : "Failed!");
 
   Serial.print("AP IP address = ");
   Serial.println(WiFi.softAPIP());
+
+  /* DNS Server */
+  // modify TTL associated  with the domain name (in seconds)
+  // default is 60 seconds
+  dnsServer.setTTL(300);
+  // set which return code will be used for all other domains (e.g. sending
+  // ServerFailure instead of NonExistentDomain will reduce number of queries
+  // sent by clients)
+  // default is DNSReplyCode::NonExistentDomain
+  dnsServer.setErrorReplyCode(DNSReplyCode::ServerFailure);
+
+  // start DNS server for a specific domain name
+  dnsServer.start(DNS_PORT, SERVER_ADDRESS, apIP);
 
   server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
   server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
@@ -157,6 +174,7 @@ void setup(void){
 
 void loop(void){
   serialEvent();                              /* check for serial data */
+  dnsServer.processNextRequest();
   server.handleClient();                      /* Listen for HTTP requests from clients */
 }
 
