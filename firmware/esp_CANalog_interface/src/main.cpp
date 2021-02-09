@@ -246,7 +246,7 @@ void handleRoot() {
   root += "<td style=\"text-align: right;\"><label for=\"can_signal_start_bit\">Bit Position: </label></td>";
   root += "<td><input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
   root += can.start_bit;
-  root += "\" min=\"0\" max=\"64\" size=\"3\"></td>";
+  root += "\" min=\"0\" max=\"63\" size=\"3\"></td>";
   root += "</tr>";
 
   /* signal bit len */
@@ -274,7 +274,7 @@ void handleRoot() {
   /* signal max */
   root += "<tr>";
   root += "<td style=\"text-align: right;\"><label for=\"can_signal_max\">Signal Max: </label></td>";
-  root += "<td><input type=\"text\" id=\"can_signal_max\" name=\"can_signal_max\" value=\"";
+  root += "<td><input type=\"number\" id=\"can_signal_max\" name=\"can_signal_max\" value=\"";
   root += can.max;
   root += "\" min=0 max=65535 size=\"6\"></td>";
   root += "</tr>";
@@ -282,7 +282,7 @@ void handleRoot() {
   /* signal min */
   root += "<tr>";
   root += "<td style=\"text-align: right;\"><label for=\"can_signal_min\">Signal Min: </label></td>";
-  root += "<td><input type=\"text\" id=\"can_signal_min\" name=\"can_signal_min\" value=\"";
+  root += "<td><input type=\"number\" id=\"can_signal_min\" name=\"can_signal_min\" value=\"";
   root += can.min;
   root += "\" min=0 max=65535 size=\"6\"></td>";
   root += "</tr>";
@@ -309,9 +309,83 @@ void handleSave() {
   can.max         = server.arg("can_signal_max").toInt();
   can.min         = server.arg("can_signal_min").toInt();
 
-  uint8_t error_count = 0;
+  /* parameter verification */
+  if((can.id > 0x7FF) && (can.type == ID_TYPE_11BIT)){
+    String over = "<!DOCTYPE html>";
+    over += "<html>";
+    over += "<head><title>CANalog</title>";
+    over += "<style>";
+    over += "h1 {font-size: 500%;}";
+    over += "h2 {font-size: 300%;}";
+    over += "</style>";
+    over += "</head>";
+    over += "<body>";
+    over += "<h1>CAN ID Type Error!</h1>";
+    over += "<h2> CAN ID: ";
+    String cid = String(can.id, HEX);
+    cid.toUpperCase();
+    over += cid;
+    over += "</h2>";
+    over += "<h2>ID Type: 11bit</h2>";
+    over += "<h2>11bit ID Type has a max of 0x7FF</h2>";
+    over += "<h2>Lower CAN ID or change to 29bit ID Type</h2>";
+    over += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+    over += "</body></html>";
+
+    server.send(200, "text/html", over);
+
+    return;
+  }
+
+  if (can.min >= can.max) {
+    String minmax = "<!DOCTYPE html>";
+    minmax += "<html>";
+    minmax += "<head><title>CANalog</title>";
+    minmax += "<style>";
+    minmax += "h1 {font-size: 500%;}";
+    minmax += "h2 {font-size: 300%;}";
+    minmax += "</style>";
+    minmax += "</head>";
+    minmax += "<body>";
+    minmax += "<h1>Signal Min >= Signal Max!</h1>";
+    minmax += "<h2>";
+    minmax += can.min;
+    minmax += " >= ";
+    minmax += can.max;
+    minmax += "</h2>";
+    minmax += "<h2>signal min must be less than signal max</h2>";
+    minmax += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+    minmax += "</body></html>";
+
+    server.send(200, "text/html", minmax);
+
+    return;
+  }
+
+  if(can.endianness == SIGNAL_LITTLE_ENDIAN) {
+    int8_t end_bit = (int8_t)can.start_bit + (int8_t)can.bit_len;
+    if(end_bit >= 64) {
+    String sigover = "<!DOCTYPE html>";
+    sigover += "<html>";
+    sigover += "<head><title>CANalog</title>";
+    sigover += "<style>";
+    sigover += "h1 {font-size: 500%;}";
+    sigover += "h2 {font-size: 300%;}";
+    sigover += "</style>";
+    sigover += "</head>";
+    sigover += "<body>";
+    sigover += "<h1>Signal Exceeds Frame!</h1>";
+    sigover += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
+    sigover += "</body></html>";
+
+    server.send(200, "text/html", sigover);
+    }
+  } else {
+    /* TODO: start, end bit checks for big endian */
+  }
 
   /* Send out parsable commands for stm32 */
+  uint8_t error_count = 0;
   error_count += send_value(CMD_CAN_BAUD, can.baud);
   error_count += send_value(CMD_CAN_ID_TYPE, can.type);
   error_count += send_value(CMD_CAN_ID, can.id);
@@ -333,9 +407,6 @@ void handleSave() {
     saved += "<style>";
     saved += "h1 {font-size: 500%;}";
     saved += "h2 {font-size: 300%;}";
-    saved += "select {font-size: 300%;}";
-    saved += "input {font-size: 300%;}";
-    saved += "label {font-size: 300%;}";
     saved += "</style>";
     saved += "</head>";
     saved += "<body>";
@@ -351,9 +422,6 @@ void handleSave() {
     error += "<style>";
     error += "h1 {font-size: 500%;}";
     error += "h2 {font-size: 300%;}";
-    error += "select {font-size: 300%;}";
-    error += "input {font-size: 300%;}";
-    error += "label {font-size: 300%;}";
     error += "</style>";
     error += "</head>";
     error += "<body>";
