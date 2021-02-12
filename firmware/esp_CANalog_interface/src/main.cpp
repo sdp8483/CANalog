@@ -4,6 +4,9 @@
 #include <ESP8266WebServer.h>
 #include <ESP_EEPROM.h>
 
+/* Raw String Literals for webpages */
+#include "frame.html.h"
+
 #define DEVICE_NAME				"CANalog WiFi"
 #define SERVER_ADDRESS    "www.canalog.io"
 /* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
@@ -82,6 +85,7 @@ ESP8266WebServer server(80);
 /* funcition prototypes ------------------------------------------------------*/
 void handleRoot(void);
 void handleSave(void);
+void handleFrame(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
@@ -166,6 +170,7 @@ void setup(void){
 
   server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
   server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
+  server.on("/frame", handleFrame);            // Call the 'handleFrame' function when /frame page is requested
   server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
   server.begin();                            // Actually start the server
@@ -436,6 +441,10 @@ void handleSave() {
 
     server.send(200, "text/html", error);
   }
+}
+
+void handleFrame() {
+  server.send(200, "text/html", PAGE_Frame_HTML);
 }
 
 void handleNotFound(){

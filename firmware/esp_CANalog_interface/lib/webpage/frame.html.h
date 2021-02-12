@@ -1,3 +1,7 @@
+#ifndef INC_FRAME_HTML_H_
+#define INC_FRAME_HTML_H_
+
+const char PAGE_Frame_HTML[] = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,8 +17,7 @@
     </style>
     <script>
         function resetBits() {
-            // var canEndianness = document.getElementById("can_endianness").value;
-            var canEndianness = "12";
+            var canEndianness = document.getElementById("can_endianness").value;
             var table = document.getElementById('frame')
             var bitNumber = 0;
 
@@ -210,3 +213,6 @@
 
 </body>
 </html>
+)=====";
+
+#endif
