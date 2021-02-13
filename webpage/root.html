@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CANalog Configuration</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CANalog Configuration (V0.0.1.0)">
+    <meta name="author" content="Sam Perry">
+    <style>
+        * {
+            box-sizing: border-box
+        }
+        header {
+            width: 100%;
+            background-color: darkorange;
+            text-align: center;
+            font-size: 20px;
+        }
+        .main {
+            width: 100%;
+            clear: both;
+            content: "";
+            display: table;
+        }
+        .usrInput {
+            padding: 15px;
+            float: left;
+            width: 50%;
+        }
+        .frameDisplay {
+            font-size: 12px;
+            padding: 25px;
+            float: left;
+            width: 50%;
+        }
+        .row {
+            margin-bottom: 0;
+            padding: 1px 0 1px 0;
+            width: 100%;
+            clear: both;
+            content: "";
+            display: table
+        }
+        .label {
+            padding-right: 15px;
+            font-size: 20px;
+            display: inline-block;
+            float: left;
+            text-align: right;
+            width: 50%
+        }
+        .value {
+            font-size: 18px;
+            display: inline-block;
+            float: left;
+            text-align: left;
+            width: 50%
+        }
+        .line {
+            border-bottom: 1px solid orange;
+            padding-bottom: 1px;
+            width: 90%;
+        }
+        select {
+            font-size: inherit;
+            width: 100%;
+        }
+        input {
+            font-size: inherit;
+            width: 100%;
+        }
+        input[type=submit] {
+            width: 50%;
+            font-size: 20px;
+        }
+        table, th, tr, td {
+            font-size: inherit;
+            border: 2px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+            text-align: center;
+        }
+        th {
+            font-weight: bold;
+            background-color: darkorange;
+        }
+        @media (max-width: 1250px) {
+            .usrInput, .frameDisplay {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
+    <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script>
+</head>
+<body onload="loadDoc()">
+    <header><h2>CANalog Configuration</h2></header>
+
+    <section class="main">
+        <aside class="usrInput">
+            <form action="/save" method="POST">
+                <div class="row">
+                    <div class="label">Baud Rate</div>
+                    <div class="value">
+                        <select id="can_baud" name="can_baud">
+                            <option value="125">125kbps</option>
+                            <option value="250">250kbps</option>
+                            <option value="500">500kbps</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">ID Type</div>
+                    <div class="value">
+                        <select id="can_id_bit_len" name="can_id_bit_len">
+                            <option value="11">11bit</option>
+                            <option value="29">29bit</option>   
+                        </select>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">CAN ID</div>
+                    <div class="value"><input type="text" id="can_id" name="can_id" value="18EFB300"></div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">Signal Start Bit</div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="63"></div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">Signal Bit Length</div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64"></div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">Signal Endianness</div>
+                    <div class="value">
+                        <select onchange="setBits()" id="can_endianness" name="can_endianness">
+                            <option value="12">little</option>
+                            <option value="21">big</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">Signal Max</div>
+                    <div class="value"><input type="number" id="can_signal_max" name="can_signal_max" value="65535" min=0 max=65535></div>
+                </div>
+                <div class="line"></div>
+                <div class="row">
+                    <div class="label">Signal Min</div>
+                    <div class="value"><input type="number" id="can_signal_min" name="can_signal_min" value="0" min=0 max=65535></div>
+                </div>
+                <div class="row">
+                    <input type="submit" value="Save">
+                </div>
+            </form>
+        </aside>
+        <aside class="frameDisplay">
+            <table id='frame'>
+                <tr>
+                    <th></th>
+                    <th>bit 7</th>
+                    <th>bit 6</th>
+                    <th>bit 5</th>
+                    <th>bit 4</th>
+                    <th>bit 3</th>
+                    <th>bit 2</th>
+                    <th>bit 1</th>
+                    <th>bit 0</th>
+                </tr>
+                <tr>
+                    <th>Byte 0</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+        
+                </tr>
+                <tr>
+                    <th>Byte 1</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 2</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 3</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 4</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 5</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 6</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <th>Byte 7</th>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </aside>
+    </section>
+</body>
+</html>

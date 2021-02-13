@@ -11,89 +11,7 @@
             text-align: center;
         }
     </style>
-    <script>
-        function resetBits() {
-            // var canEndianness = document.getElementById("can_endianness").value;
-            var canEndianness = "12";
-            var table = document.getElementById('frame')
-            var bitNumber = 0;
-
-            if (canEndianness == "12") {
-                for(var r=1; r<=8; r++) {
-                    for(var c=8; c>=1; c--) {
-                        table.rows[r].cells[c].style.backgroundColor = "white";
-                        table.rows[r].cells[c].style.color = "grey";
-                        table.rows[r].cells[c].innerHTML = bitNumber;
-                        bitNumber++;
-                    }
-                }
-            } else {
-                for(var r=8; r>=1; r--) {
-                    for(var c=8; c>=1; c--) {
-                        table.rows[r].cells[c].style.backgroundColor = "white";
-                        table.rows[r].cells[c].style.color = "grey";
-                        table.rows[r].cells[c].innerHTML = bitNumber;
-                        bitNumber++;
-                    }
-                }
-            }
-
-        }
-
-        function setBits() {
-            var bitNumber = 0;
-            var newBitNumber = 0;
-            var startBit = parseInt(document.getElementById("can_signal_start_bit").value);
-            var endBit = startBit + parseInt(document.getElementById("can_signal_bit_len").value) - 1;
-            var canEndianness = document.getElementById("can_endianness").value;
-
-            var table = document.getElementById('frame');
-
-            resetBits();
-
-            if (canEndianness == "12") {
-                for (var r=1; r<=8; r++) {
-                    for (var c=8; c>=1; c--) {
-                        var cellObject = table.rows[r].cells[c]
-
-                        if (bitNumber >= startBit && bitNumber <= endBit) {
-                            if (endBit < 64) {
-                                cellObject.style.backgroundColor = "green";
-                                cellObject.style.color = "black";
-                                cellObject.innerHTML = newBitNumber;
-                                newBitNumber++;
-                            } else {
-                                cellObject.style.backgroundColor = "red";
-                                cellObject.style.color = "green";
-                                cellObject.innerHTML = "X";
-                            }
-                        }
-                        bitNumber++;
-                    }
-                }
-            } else {
-                for (var r=8; r>=1; r--) {
-                    for (var c=8; c>=1; c--) {
-                        var cellObject = table.rows[r].cells[c]
-
-                        if (bitNumber >= startBit && bitNumber <= endBit) {
-                            if (endBit < 64) {
-                                cellObject.style.backgroundColor = "green";
-                                cellObject.style.color = "black";
-                                cellObject.innerHTML = newBitNumber;
-                                newBitNumber++;
-                            } else {
-                                cellObject.style.backgroundColor = "red";
-                                cellObject.style.color = "green";
-                                cellObject.innerHTML = "X";
-                            }
-                        }
-                        bitNumber++;
-                    }
-                }
-            }
-        }
-    </script>
+    <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script>
 </head>
 <body onload="setBits()">
     <label for="can_endianness">Signal Endianness: </label>
@@ -104,7 +22,7 @@
     <label for="can_signal_start_bit">Signal Start Bit: </label>
         <input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="63" size="3"><br>
     <label for="can_signal_bit_len">Signal Bit Length: </label>
-            <input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64" size="3"><br>
+            <input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64" size="3"><br><br>
     <table id='frame'>
         <tr>
             <th></th>
