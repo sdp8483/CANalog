@@ -3,9 +3,12 @@
 #include <DNSServer.h>
 #include <ESP8266WebServer.h>
 #include <ESP_EEPROM.h>
+#include <ArduinoJson.h>
 
 /* Raw String Literals for webpages */
-#include "frame.html.h"
+#include "root.html.h"
+#include "style.css.h"
+#include "libs.js.h"
 
 #define DEVICE_NAME				"CANalog WiFi"
 #define SERVER_ADDRESS    "www.canalog.io"
@@ -85,7 +88,9 @@ ESP8266WebServer server(80);
 /* funcition prototypes ------------------------------------------------------*/
 void handleRoot(void);
 void handleSave(void);
-void handleFrame(void);
+void handleJavascript(void);
+void handleStyle(void);
+void handleData(void);
 void handleNotFound(void);
 void handleInvalidRequest(void);
 void serialEvent(void);
@@ -109,7 +114,7 @@ void setup(void){
   /* setup default values */
   can.baud        = 500;
   can.type        = ID_TYPE_29BIT;
-  can.id          = 0x18efb300;
+  can.id          = 0x18efb400;
   can.start_bit   = 0;
   can.bit_len     = 16;
   can.endianness  = SIGNAL_LITTLE_ENDIAN;
@@ -133,6 +138,7 @@ void setup(void){
   /* get SN to use in ssid */
   Serial.print(CMD_EOL);
   Serial.flush();
+  delay(1);
   get_sn(CMD_SN);
 
     /* Send out parsable commands for stm32 */
@@ -170,7 +176,9 @@ void setup(void){
 
   server.on("/", HTTP_GET, handleRoot);        // Call the 'handleRoot' function when a client requests URI "/"
   server.on("/save", HTTP_POST, handleSave);   // Call the 'handleSave' function when a POST request is made to URI "/save"
-  server.on("/frame", handleFrame);            // Call the 'handleFrame' function when /frame page is requested
+  server.on("/libs.js", handleJavascript);
+  server.on("/style.css", handleStyle);
+  server.on("/data.txt", handleData);
   server.onNotFound(handleNotFound);           // When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound"
 
   server.begin();                            // Actually start the server
@@ -184,124 +192,7 @@ void loop(void){
 }
 
 void handleRoot() {
-  String root = "<!DOCTYPE html>";
-  root += "<html>";
-  root += "<head><title>CANalog</title>";
-  root += "<style>";
-  root += "h1 {font-size: 500%;}";
-  root += "select {font-size: 300%;}";
-  root += "input {font-size: 300%;}";
-  root += "label {font-size: 300%;}";
-  root += "input[type=submit] {height: 150px; width: 800px;}";
-  root += "</style>";
-  root += "</head>";
-  root += "<body>";
-
-  root += "<h1>CANalog Configuration</h1>";
-
-  root += "<form action=\"/save\" method=\"POST\">";
-  
-  root += "<table>";
-  /* CAN Baud Rate */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_baud\">CAN Baud Rate: </label></td>";
-  root += "<td><select id=\"can_baud\" name=\"can_baud\">";
-  for (uint8_t i=0; i<NUMBER_CAN_BAUD_RATES; i++) {
-    if (can.baud == possible_can_baud[i]) {
-        root += "<option value=\"";
-        root += possible_can_baud[i];
-        root += "\" selected>";
-        root += possible_can_baud[i];
-        root += "kbps</option>";
-      } else {
-        root += "<option value=\"";
-        root += possible_can_baud[i];
-        root += "\">";
-        root += possible_can_baud[i];
-        root += "kbps</option>";
-      }
-  }
-  root += "</select></td>";
-  root += "</tr>";
-
-  /* CAN ID type */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_id_bit_len\">ID Type: </label></td>";
-  root += "<td><select id=\"can_id_bit_len\" name=\"can_id_bit_len\">";
-  if (can.type == ID_TYPE_11BIT) {
-    root += "<option value=\"11\" selected>11bit</option>";
-    root += "<option value=\"29\">29bit</option>";
-  } else {
-    root += "<option value=\"11\">11bit</option>";
-    root += "<option value=\"29\" selected>29bit</option>";
-  }
-  root += "</select></td>";
-  root += "</tr>";
-
-  /* CAN ID */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_id\">CAN ID: </label></td>";
-  root += "<td><input type=\"text\" id=\"can_id\" name=\"can_id\" value=\"";
-  root += String(can.id, HEX);
-  root += "\"  size=\"9\"></td>";
-  root += "</tr>";
-
-  /* signal start bit */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_signal_start_bit\">Bit Position: </label></td>";
-  root += "<td><input type=\"number\" id=\"can_signal_start_bit\" name=\"can_signal_start_bit\" value=\"";
-  root += can.start_bit;
-  root += "\" min=\"0\" max=\"63\" size=\"3\"></td>";
-  root += "</tr>";
-
-  /* signal bit len */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_signal_bit_len\">Number of Bits: </label></td>";
-  root += "<td><input type=\"number\" id=\"can_signal_bit_len\" name=\"can_signal_bit_len\" value=\"";
-  root += can.bit_len;
-  root += "\" min=\"1\" max=\"64\" size=\"3\"></td>";
-  root += "</tr>";
-
-  /* signal endianness */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_endianness\">Signal Endianness: </label></td>";
-  root += "<td><select id=\"can_endianness\" name=\"can_endianness\">";
-  if (can.endianness == SIGNAL_LITTLE_ENDIAN) {
-    root += "<option value=\"12\" selected>little</option>";
-    root += "<option value=\"21\">big</option>";
-  } else {
-    root += "<option value=\"12\">little</option>";
-    root += "<option value=\"21\" selected>big</option>";
-  }
-  root += "</select></td>";
-  root += "</tr>";
-
-  /* signal max */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_signal_max\">Signal Max: </label></td>";
-  root += "<td><input type=\"number\" id=\"can_signal_max\" name=\"can_signal_max\" value=\"";
-  root += can.max;
-  root += "\" min=0 max=65535 size=\"6\"></td>";
-  root += "</tr>";
-
-  /* signal min */
-  root += "<tr>";
-  root += "<td style=\"text-align: right;\"><label for=\"can_signal_min\">Signal Min: </label></td>";
-  root += "<td><input type=\"number\" id=\"can_signal_min\" name=\"can_signal_min\" value=\"";
-  root += can.min;
-  root += "\" min=0 max=65535 size=\"6\"></td>";
-  root += "</tr>";
-
-  root += "</table>";
-
-  /* save button */
-  root += "<input type=\"submit\" value=\"Save\">";
-
-  root += "</form>";
-  root += "</body>";
-  root += "</html>";
-
-  server.send(200, "text/html", root);
+  server.send(200, "text/html", PAGE_Root_HTML);
 }
 
 void handleSave() {
@@ -443,8 +334,30 @@ void handleSave() {
   }
 }
 
-void handleFrame() {
-  server.send(200, "text/html", PAGE_Frame_HTML);
+void handleJavascript(void) {
+  server.send(200, "application/javascript", PAGE_libs_js);
+}
+
+void handleStyle(void) {
+  server.send(200, "text/css", PAGE_style_css);
+}
+
+void handleData(void) {
+  StaticJsonDocument<192> data;
+
+  data["baud"] = can.baud;
+  data["type"] = can.type;
+  data["id"] = String(can.id, HEX);
+  data["start_bit"] = can.start_bit;
+  data["bit_len"] = can.bit_len;
+  data["endianness"] = can.endianness;
+  data["max"] = can.max;
+  data["min"] = can.min;
+
+  String json;
+  serializeJson(data, json);
+
+  server.send(200, "application/json", json);
 }
 
 void handleNotFound(){
@@ -459,13 +372,16 @@ void get_sn(char cmd_character) {
   uint8_t attempts = 0;
   uint32_t start_time = millis();
 
+  Serial.println(start_time);
+
   uint32_t device_sn;
   bool parameter_was_fetched = false;
   send_get_parameter(cmd_character);
   while(parameter_was_fetched == false) {
+    delay(1);
     serialEvent();
 
-    if ((millis() - start_time) >= CMD_TIMEOUT) {
+    if ((millis() - start_time) >= 100) {
       return;
     }
 
@@ -484,7 +400,7 @@ void get_sn(char cmd_character) {
         parameter_was_fetched = true;
       } else {
         attempts++;
-        delay(10);
+        delay(1);
         send_get_parameter(cmd_character);
       }
       inputString = "";   /* clear the input */

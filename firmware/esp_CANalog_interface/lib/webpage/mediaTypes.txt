@@ -1,0 +1,4 @@
+Look at :
+    http://www.iana.org/assignments/media-types/media-types.xhtml
+
+when using server.send()
