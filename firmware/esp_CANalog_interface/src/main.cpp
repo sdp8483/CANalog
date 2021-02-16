@@ -24,18 +24,6 @@
  */
 #define FW_VERSION				"V0.0.2.0"
 
-/* EEPROM parameters ---------------------------------------------------------*/
-// struct MyEEPROMStruct {
-//   uint16_t baud;			  /* CAN baud rate in kbps */
-//   uint8_t  type;			  /* ID type */
-// 	uint32_t id;			    /* CAN frame ID */
-// 	uint8_t  start_bit;		/* signal start bit */
-// 	uint8_t  bit_len;			/* signal bit length */
-//   uint8_t  endianness;  /* signal endianness */
-// 	uint16_t max;				  /* signal max value */
-// 	uint16_t min;				  /* signal min value */
-// } can;
-
 Signal_Handle_t can;      /* data used on webpages and passed between esp and STM32 */
 ESPMaster spiMaster(SS);        /* ESP master SPI mode */
 
@@ -143,82 +131,6 @@ void handleSave() {
   can.max         = server.arg("can_signal_max").toInt();
   can.min         = server.arg("can_signal_min").toInt();
 
-  /* TODO: handle parameter verification using javascript client side */
-  /* parameter verification */
-  // if((can.can_id > 0x7FF) && (can.can_type == ID_TYPE_11BIT)){
-  //   String over = "<!DOCTYPE html>";
-  //   over += "<html>";
-  //   over += "<head><title>CANalog</title>";
-  //   over += "<style>";
-  //   over += "h1 {font-size: 500%;}";
-  //   over += "h2 {font-size: 300%;}";
-  //   over += "</style>";
-  //   over += "</head>";
-  //   over += "<body>";
-  //   over += "<h1>CAN ID Type Error!</h1>";
-  //   over += "<h2> CAN ID: ";
-  //   String cid = String(can.can_id, HEX);
-  //   cid.toUpperCase();
-  //   over += cid;
-  //   over += "</h2>";
-  //   over += "<h2>ID Type: 11bit</h2>";
-  //   over += "<h2>11bit ID Type has a max of 0x7FF</h2>";
-  //   over += "<h2>Lower CAN ID or change to 29bit ID Type</h2>";
-  //   over += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
-  //   over += "</body></html>";
-
-  //   server.send(200, "text/html", over);
-
-  //   return;
-  // }
-
-  // if (can.min >= can.max) {
-  //   String minmax = "<!DOCTYPE html>";
-  //   minmax += "<html>";
-  //   minmax += "<head><title>CANalog</title>";
-  //   minmax += "<style>";
-  //   minmax += "h1 {font-size: 500%;}";
-  //   minmax += "h2 {font-size: 300%;}";
-  //   minmax += "</style>";
-  //   minmax += "</head>";
-  //   minmax += "<body>";
-  //   minmax += "<h1>Signal Min >= Signal Max!</h1>";
-  //   minmax += "<h2>";
-  //   minmax += can.min;
-  //   minmax += " >= ";
-  //   minmax += can.max;
-  //   minmax += "</h2>";
-  //   minmax += "<h2>signal min must be less than signal max</h2>";
-  //   minmax += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
-  //   minmax += "</body></html>";
-
-  //   server.send(200, "text/html", minmax);
-
-  //   return;
-  // }
-
-  // if(can.endianness == SIGNAL_LITTLE_ENDIAN) {
-  //   int8_t end_bit = (int8_t)can.start_bit + (int8_t)can.bit_len;
-  //   if(end_bit >= 64) {
-  //   String sigover = "<!DOCTYPE html>";
-  //   sigover += "<html>";
-  //   sigover += "<head><title>CANalog</title>";
-  //   sigover += "<style>";
-  //   sigover += "h1 {font-size: 500%;}";
-  //   sigover += "h2 {font-size: 300%;}";
-  //   sigover += "</style>";
-  //   sigover += "</head>";
-  //   sigover += "<body>";
-  //   sigover += "<h1>Signal Exceeds Frame!</h1>";
-  //   sigover += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
-  //   sigover += "</body></html>";
-
-  //   server.send(200, "text/html", sigover);
-  //   }
-  // } else {
-  //   /* TODO: start, end bit checks for big endian */
-  // }
-
   /* save data to EEPROM */
   EEPROM.put(0, can);
   boolean ok = EEPROM.commit();
@@ -226,6 +138,7 @@ void handleSave() {
 
   /* send data to STM32 */
   spiMaster.write((uint8_t *) &can, sizeof(Signal_Handle_t));
+  printData(&can);
 
   String saved = "<!DOCTYPE html>";
   saved += "<html>";

@@ -9,6 +9,9 @@
 
 /* initialize signal handle with default values at startup */
 void signal_init(Signal_Handle_t *hsignal) {
+	signal_status_flag = SIGNAL_NO_CHANGE;		/* set global flag */
+
+	hsignal->sn = calc_sn();
 	hsignal->can_baud = CAN_BAUD;
 	hsignal->can_id = CAN_ID;
 	hsignal->can_type = CAN_ID_TYPE;
@@ -26,7 +29,9 @@ void signal_init(Signal_Handle_t *hsignal) {
 }
 
 /* new parameters were received, update calculated values */
-void signal_reInit(Signal_Handle_t *hsignal) {
+void signal_update(Signal_Handle_t *hsignal) {
+	signal_status_flag = SIGNAL_NO_CHANGE;		/* reset global flag */
+
 	hsignal->mask = 0;
 	for (uint8_t i=0; i<hsignal->bit_len; i++) {
 		hsignal->mask += 1ULL << i;

@@ -13,12 +13,26 @@
 #define INC_CAN_SIGNAL_H_
 
 #include <stdint.h>
+#include "device_sn.h"
 
 #define SIGNAL_LITTLE_ENDIAN   	12
 #define SIGNAL_BIG_ENDIAN      	21
 
 #define ID_TYPE_11BIT			11
 #define ID_TYPE_29BIT			29
+
+/* SPI Master Commands
+ *   SPI communication between ESP8266 and STM32
+ *     	- ESP8266 is master, STM32 is slave
+ * 		- STM32 responds to ss pin low using EXTI, responding code is in HAL_GPIO_EXTI_Callback
+ * 		- the below commands determine if STM32 is sending signal or updating signal
+ */
+#define SPI_SIGNAL_READ			'?'
+#define SPI_SIGNAL_WRITE		'='
+
+/* signal status flag values */
+#define SIGNAL_NO_CHANGE		0
+#define SIGNAL_UPDATE			1
 
 /* default values used in init */
 #define CAN_BAUD				250 					/* CAN baud rate*/
@@ -30,8 +44,12 @@
 #define CAN_SIGNAL_MAX			40000					/* max signal value, not necessarily max signal bit len */
 #define CAN_SIGNAL_MIN			0						/* min signal value */
 
-/* CAN Signal handle typedef */
+/* CAN signal data struct
+ *  !this is the same exact struct on the ESP8266!
+ *  For SPI bulk transmission of this struct to work these have to be the same (order and everything)
+ *  If you update this be sure to update the ESP8266 struct as well */
 typedef struct {
+	uint32_t sn;				/* stm32 SN used to set unique SSID per device */
 	uint8_t  frame[8];			/* CAN frame data */
 	uint16_t can_baud;			/* CAN baud rate in kbps */
 	uint8_t  can_type;			/* ID type */
@@ -46,9 +64,12 @@ typedef struct {
 	uint16_t dac_out;			/* dac output value */
 } Signal_Handle_t;
 
+/* external globals */
+extern volatile uint8_t signal_status_flag;
+
 /* function prototypes */
 void signal_init(Signal_Handle_t *hsignal);		/* initialize to default values */
-void signal_reInit(Signal_Handle_t *hsignal);	/* new parameters, update calculated values */
+void signal_update(Signal_Handle_t *hsignal);	/* new parameters, update calculated values */
 void signal_calc(Signal_Handle_t *hsignal);		/* get signal from frame */
 
 uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max);
