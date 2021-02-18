@@ -64,9 +64,6 @@ typedef struct {
 	uint16_t dac_out;			/* dac output value */
 } Signal_Handle_t;
 
-/* external globals */
-extern volatile uint8_t signal_status_flag;
-
 /* function prototypes */
 void signal_init(Signal_Handle_t *hsignal);		/* initialize to default values */
 void signal_update(Signal_Handle_t *hsignal);	/* new parameters, update calculated values */

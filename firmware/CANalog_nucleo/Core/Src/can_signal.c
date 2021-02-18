@@ -9,7 +9,6 @@
 
 /* initialize signal handle with default values at startup */
 void signal_init(Signal_Handle_t *hsignal) {
-	signal_status_flag = SIGNAL_NO_CHANGE;		/* set global flag */
 
 	hsignal->sn = calc_sn();
 	hsignal->can_baud = CAN_BAUD;
@@ -30,7 +29,6 @@ void signal_init(Signal_Handle_t *hsignal) {
 
 /* new parameters were received, update calculated values */
 void signal_update(Signal_Handle_t *hsignal) {
-	signal_status_flag = SIGNAL_NO_CHANGE;		/* reset global flag */
 
 	hsignal->mask = 0;
 	for (uint8_t i=0; i<hsignal->bit_len; i++) {
