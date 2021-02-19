@@ -37,7 +37,7 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define HW_VERSION				"V0.0.1.0"
-#define FW_VERSION				"V0.0.2.0"
+#define FW_VERSION				"V0.0.3.0"
 
 /* USER CODE END PD */
 
@@ -57,7 +57,6 @@ CAN_FilterTypeDef canFilter;
 CAN_RxHeaderTypeDef canRxHeader;
 
 Signal_Handle_t signal;
-uint8_t signal_status_flag = SIGNAL_NO_CHANGE;
 
 /* USER CODE END PV */
 
@@ -124,36 +123,51 @@ int main(void) {
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		/* Signal status check -----------------------------------------------*/
-		if (signal_status_flag == SIGNAL_UPDATE) {
-			/* new parameter values received, react to changes ---------------*/
-			signal_update(&signal); /* recalculate signal values */
+		/* SPI Check ---------------------------------------------------------*/
+		if (HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0) { /* esp8266 wants to talk */
+			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_RESET); /* signal to esp8266 we are ready to talk */
 
-			/* restart CAN interface with new baud rate -----------------------*/
-			if (HAL_CAN_Stop(&hcan) != HAL_OK) {
-				Error_Handler();
+			uint8_t command_bit = 0;
+			HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1);
+
+			switch (command_bit) {
+			case SPI_SIGNAL_READ: /* esp is requesting parameters */
+				HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5);
+				break;
+			case SPI_SIGNAL_WRITE: /* esp is sending new parameters*/
+				HAL_SPI_Receive(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5);
+
+				signal_update(&signal); /* recalculate signal values */
+
+				/* restart CAN interface with new baud rate -----------------------*/
+				if (HAL_CAN_Stop(&hcan) != HAL_OK) {
+					Error_Handler();
+				}
+
+				/* stop CAN and deinit so we can configure it */
+				if (HAL_CAN_DeInit(&hcan) != HAL_OK) {
+					Error_Handler();
+				}
+
+				/* set new bit timing */
+				can_set_bit_timing(&signal, &hcan);
+
+				/* reinitialize CAN */
+				if (HAL_CAN_Init(&hcan) != HAL_OK) {
+					Error_Handler();
+				}
+
+				/* restart can */
+				if (HAL_CAN_Start(&hcan) != HAL_OK) {
+					Error_Handler();
+				}
+
+				/* set DAC to zero */
+				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+				break;
+			default:
+				break;
 			}
-
-			/* stop CAN and deinit so we can configure it */
-			if (HAL_CAN_DeInit(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
-
-			/* set new bit timing */
-			can_set_bit_timing(&signal, &hcan);
-
-			/* reinitialize CAN */
-			if (HAL_CAN_Init(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
-
-			/* restart can */
-			if (HAL_CAN_Start(&hcan) != HAL_OK) {
-				Error_Handler();
-			}
-
-			/* set DAC to zero */
-			HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 		}
 
 		/* CAN ---------------------------------------------------------------*/
@@ -217,25 +231,6 @@ void SystemClock_Config(void) {
 }
 
 /* USER CODE BEGIN 4 */
-/* UART Rx Interrupt Handler */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (GPIO_Pin == GPIO_PIN_6) { /* handle interrupt on CS pin, SPI data transfer */
-		uint8_t command;
-		HAL_SPI_Receive(&hspi2, &command, sizeof(command), 1);
-
-		switch (command) {
-		case SPI_SIGNAL_READ: /* esp is requesting parameters */
-			HAL_SPI_Transmit_IT(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t));
-			break;
-		case SPI_SIGNAL_WRITE: /* esp is sending new parameters*/
-			HAL_SPI_Receive_IT(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t));
-			signal_status_flag = SIGNAL_UPDATE; /* update signal in main loop */
-		default:
-			break;
-		}
-	}
-}
-
 /* Initialize CAN Filter */
 void can_filter_init(CAN_HandleTypeDef *hcan, CAN_FilterTypeDef *canFilter) {
 	canFilter->FilterBank = 0;
