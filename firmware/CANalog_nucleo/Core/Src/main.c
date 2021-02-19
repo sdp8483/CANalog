@@ -168,6 +168,10 @@ int main(void) {
 			default:
 				break;
 			}
+
+			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_SET); /* return ready pin to high */
+
+			while(HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0);			/* loop until esp8266 pulls CS high */
 		}
 
 		/* CAN ---------------------------------------------------------------*/
