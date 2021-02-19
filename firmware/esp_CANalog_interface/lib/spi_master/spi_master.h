@@ -12,10 +12,11 @@
 
 class ESPMaster {
   private:
-    uint8_t _ss_pin;
+    uint8_t _ss_pin;                    /* chip select pin, signal STM32 want to talk */
+    uint8_t _rdy_pin;                   /* ready input, STM32 will pull low when ready to respond */
 
   public:
-    ESPMaster(uint8_t ss_pin);
+    ESPMaster(uint8_t ss_pin, uint8_t rdy_pin);
     void begin();
     void write(uint8_t *pData, uint16_t len);
     void read(uint8_t *pData, uint16_t len);

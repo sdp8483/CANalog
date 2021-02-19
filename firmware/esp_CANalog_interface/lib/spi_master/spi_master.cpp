@@ -1,17 +1,23 @@
 #include "spi_master.h"
 
-ESPMaster::ESPMaster(uint8_t ss_pin) {
+ESPMaster::ESPMaster(uint8_t ss_pin, uint8_t rdy_pin) {
   _ss_pin = ss_pin;
+  _rdy_pin = rdy_pin;
 }
 
 void ESPMaster::begin() {
   digitalWrite(_ss_pin, HIGH);
   pinMode(_ss_pin, OUTPUT);
 
+  pinMode(_rdy_pin, INPUT);
+
   SPI.begin();
 }
 
 void ESPMaster::write(uint8_t *pData, uint16_t len) {
+  /* wait for STM32 to pull ready pin low */
+  // while (digitalRead(_rdy_pin) == HIGH);
+
   SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE0));
   digitalWrite(_ss_pin, LOW);
   
@@ -29,6 +35,9 @@ void ESPMaster::write(uint8_t *pData, uint16_t len) {
 }
 
 void ESPMaster::read(uint8_t *pData, uint16_t len) {
+  /* wait for STM32 to pull ready pin low */
+  // while (digitalRead(_rdy_pin) == HIGH);
+
   SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE0));
   digitalWrite(_ss_pin, LOW);
   

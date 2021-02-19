@@ -22,10 +22,11 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V0.0.2.0"
+#define FW_VERSION				"V0.0.3.0"
 
 Signal_Handle_t can;      /* data used on webpages and passed between esp and STM32 */
-ESPMaster spiMaster(SS);        /* ESP master SPI mode */
+#define RDY_PIN   4
+ESPMaster spiMaster(SS, RDY_PIN);        /* ESP master SPI mode */
 
 uint16_t possible_can_baud[]    = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
 #define NUMBER_CAN_BAUD_RATES   (sizeof(possible_can_baud)/sizeof(uint16_t))
