@@ -10,6 +10,8 @@
 #define SPI_DELAY_us        10          /* delay for uS before each SPI.transmit to allow STM32 time to catch up, STM32 needs a few uS between bytes */
 #define SPI_BAUD            500000UL    /* SPI clock baud rate in Mbits/sec */
 
+#define TIMEOUT_ms          10          /* if rdy pins is not pulled low after timout period error out */
+
 class ESPMaster {
   private:
     uint8_t _ss_pin;                    /* chip select pin, signal STM32 want to talk */

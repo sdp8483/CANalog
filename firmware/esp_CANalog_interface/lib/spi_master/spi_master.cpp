@@ -15,11 +15,17 @@ void ESPMaster::begin() {
 }
 
 void ESPMaster::write(uint8_t *pData, uint16_t len) {
-  /* wait for STM32 to pull ready pin low */
-  // while (digitalRead(_rdy_pin) == HIGH);
-
   SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE0));
   digitalWrite(_ss_pin, LOW);
+
+  /* wait for STM32 to pull ready pin low */
+  uint32_t polling_start = millis();
+  while (digitalRead(_rdy_pin) == HIGH) {
+    if ((millis() - polling_start) >= TIMEOUT_ms) {
+      Serial.println(F("SPI timeout while waiting for ready signal from STM32"));
+      return;
+    }
+  }
   
   delayMicroseconds(SPI_DELAY_us);
   SPI.transfer(SPI_COMMAND_WRITE); /* signal esp8266 wants to read data */
@@ -35,11 +41,17 @@ void ESPMaster::write(uint8_t *pData, uint16_t len) {
 }
 
 void ESPMaster::read(uint8_t *pData, uint16_t len) {
-  /* wait for STM32 to pull ready pin low */
-  // while (digitalRead(_rdy_pin) == HIGH);
-
   SPI.beginTransaction(SPISettings(SPI_BAUD, MSBFIRST, SPI_MODE0));
   digitalWrite(_ss_pin, LOW);
+
+  /* wait for STM32 to pull ready pin low */
+  uint32_t polling_start = millis();
+  while (digitalRead(_rdy_pin) == HIGH) {
+    if ((millis() - polling_start) >= TIMEOUT_ms) {
+      Serial.println(F("SPI timeout while waiting for ready signal from STM32"));
+      return;
+    }
+  }
   
   delayMicroseconds(SPI_DELAY_us);
   SPI.transfer(SPI_COMMAND_READ); /* signal esp8266 wants to read data */
