@@ -25,8 +25,9 @@
 #define FW_VERSION				"V0.0.3.0"
 
 Signal_Handle_t can;      /* data used on webpages and passed between esp and STM32 */
-#define RDY_PIN   4
-ESPMaster spiMaster(SS, RDY_PIN);        /* ESP master SPI mode */
+#define STM32_RESET_PIN 5 /* esp pin used to reset STM32 on startup */
+#define STM32_RDY_PIN   4 /* STM32 will pull this pin low when it is ready to receive SPI data */
+ESPMaster spiMaster(SS, STM32_RDY_PIN);        /* ESP master SPI mode */
 
 uint16_t possible_can_baud[]    = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
 #define NUMBER_CAN_BAUD_RATES   (sizeof(possible_can_baud)/sizeof(uint16_t))
@@ -55,6 +56,12 @@ void setup(void){
 
   /* start SPI master --------------------------------------------------------*/
   spiMaster.begin();
+
+  // reset STM32 to avoid error states
+  pinMode(STM32_RESET_PIN, OUTPUT);
+  digitalWrite(STM32_RESET_PIN, LOW);
+  delay(100);
+  digitalWrite(STM32_RESET_PIN, HIGH);
   delay(10000);         /* wait for STM32 to startup */
 
   /* get data from STM32 so we can use sn to set the SSID --------------------*/
