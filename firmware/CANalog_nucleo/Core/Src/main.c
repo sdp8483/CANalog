@@ -128,14 +128,20 @@ int main(void) {
 			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_RESET); /* signal to esp8266 we are ready to talk */
 
 			uint8_t command_bit = 0;
-			HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1);
+			if (HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1) != HAL_OK){
+				Error_Handler();
+			}
 
 			switch (command_bit) {
 			case SPI_SIGNAL_READ: /* esp is requesting parameters */
-				HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5);
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
+					Error_Handler();
+				}
 				break;
 			case SPI_SIGNAL_WRITE: /* esp is sending new parameters*/
-				HAL_SPI_Receive(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5);
+				if (HAL_SPI_Receive(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
+					Error_Handler();
+				}
 
 				signal_update(&signal); /* recalculate signal values */
 
