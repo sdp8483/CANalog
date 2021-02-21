@@ -3,4 +3,6 @@
   (lib (name ESP8266)(type KiCad)(uri ${KIPRJMOD}/lib_fp/ESP8266.pretty)(options "")(descr ""))
   (lib (name pl_TerminalBlock)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_TerminalBlock.pretty)(options "")(descr ""))
   (lib (name pl_Nucleo)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Nucleo.pretty)(options "")(descr ""))
+  (lib (name pl_Diode)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Diode.pretty)(options "")(descr ""))
+  (lib (name pl_Inductor)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Inductor.pretty)(options "")(descr ""))
 )

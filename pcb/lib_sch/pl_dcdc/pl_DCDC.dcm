@@ -1,0 +1,8 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP BL9342
+D DCD Step Down Converter
+F https://datasheet.lcsc.com/szlcsc/1809050135_BL-Shanghai-Belling-BL9342_C93176.pdf
+$ENDCMP
+#
+#End Doc Library
