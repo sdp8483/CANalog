@@ -541,7 +541,6 @@ NoConn ~ 9000 4350
 NoConn ~ 9000 4450
 NoConn ~ 9000 5350
 NoConn ~ 9000 5450
-NoConn ~ 9000 5550
 NoConn ~ 9000 6050
 NoConn ~ 8400 6950
 NoConn ~ 6800 6550
@@ -550,8 +549,6 @@ NoConn ~ 6800 6350
 NoConn ~ 6800 6250
 NoConn ~ 6800 6150
 NoConn ~ 6800 6050
-NoConn ~ 6800 5950
-NoConn ~ 6800 5850
 NoConn ~ 6800 5350
 NoConn ~ 6800 4850
 NoConn ~ 13650 1500
@@ -662,26 +659,6 @@ Text GLabel 6600 3550 0    50   Input ~ 0
 STM_RESET
 Wire Wire Line
 	6600 3550 6700 3550
-Wire Wire Line
-	9000 5650 9400 5650
-Wire Wire Line
-	9000 6250 9400 6250
-Text Label 9400 6250 0    50   ~ 0
-CS_NEW
-Text Label 9400 5650 0    50   ~ 0
-CS_OLD
-Text Label 6600 5800 2    50   ~ 0
-RDY_OLD
-Text Label 9400 6150 0    50   ~ 0
-RDY_NEW
-Wire Wire Line
-	9000 6150 9400 6150
-Wire Wire Line
-	6800 5750 6700 5750
-Wire Wire Line
-	6700 5750 6700 5800
-Wire Wire Line
-	6700 5800 6600 5800
 $Comp
 L Device:Jumper_NO_Small JP4
 U 1 1 60946F1B
@@ -1182,10 +1159,8 @@ F 3 "" H 16150 3150 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	16150 3150 16150 3050
-Text GLabel 9350 5750 2    50   Input ~ 0
+Text GLabel 9350 5550 2    50   Input ~ 0
 CAN_TERM
-Wire Wire Line
-	9350 5750 9000 5750
 Text GLabel 14300 2950 0    50   Input ~ 0
 CAN_TERM
 Text Notes 13850 2400 0    50   ~ 0
@@ -2193,75 +2168,9 @@ Wire Wire Line
 	5700 1100 5800 1100
 Wire Wire Line
 	5800 1100 5800 950 
-Text GLabel 9250 8800 2    50   Input ~ 0
+Text GLabel 6600 5950 0    50   Input ~ 0
 STM_CS
-Text GLabel 9250 8100 2    50   Input ~ 0
-STM_RDY
-$Comp
-L Jumper:SolderJumper_3_Bridged12 JP5
-U 1 1 6087F94F
-P 8900 8100
-F 0 "JP5" H 8800 8000 50  0000 C CNN
-F 1 "RDY_SELECT" H 8900 8210 50  0000 C CNN
-F 2 "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm" H 8900 8100 50  0001 C CNN
-F 3 "~" H 8900 8100 50  0001 C CNN
-	1    8900 8100
-	0    -1   1    0   
-$EndComp
-$Comp
-L Jumper:SolderJumper_3_Bridged12 JP6
-U 1 1 60881304
-P 8900 8800
-F 0 "JP6" H 8800 8700 50  0000 C CNN
-F 1 "CS_SELECT" H 8900 8910 50  0000 C CNN
-F 2 "Jumper:SolderJumper-3_P1.3mm_Bridged12_RoundedPad1.0x1.5mm" H 8900 8800 50  0001 C CNN
-F 3 "~" H 8900 8800 50  0001 C CNN
-	1    8900 8800
-	0    -1   1    0   
-$EndComp
-Wire Wire Line
-	9250 8800 9050 8800
-Wire Wire Line
-	9250 8100 9050 8100
-Text Label 8700 7800 2    50   ~ 0
-RDY_NEW
-Wire Wire Line
-	8700 7800 8900 7800
-Wire Wire Line
-	8900 7800 8900 7900
-Text Label 8700 8400 2    50   ~ 0
-RDY_OLD
-Wire Wire Line
-	8700 8400 8900 8400
-Wire Wire Line
-	8900 8400 8900 8300
-Text Label 8700 9100 2    50   ~ 0
-CS_OLD
-Wire Wire Line
-	8700 9100 8900 9100
-Wire Wire Line
-	8900 9100 8900 9000
-Text Label 8700 8500 2    50   ~ 0
-CS_NEW
-Wire Wire Line
-	8700 8500 8900 8500
-Wire Wire Line
-	8900 8500 8900 8600
-Text Notes 8250 7700 0    50   ~ 0
-SPI Controll Select
-Wire Notes Line
-	8250 7700 9800 7700
-Wire Notes Line
-	9800 9150 8250 9150
-Wire Notes Line
-	8250 9150 8250 7600
-Wire Notes Line
-	8250 7600 9800 7600
-Wire Notes Line
-	9800 7600 9800 9150
 NoConn ~ 9000 4950
-NoConn ~ 6800 5050
-NoConn ~ 6800 5150
 NoConn ~ 6800 5250
 NoConn ~ 9000 3450
 $Comp
@@ -2371,17 +2280,6 @@ F 3 "~" H 3850 1350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Device:LED D9
-U 1 1 635E736D
-P 10200 5350
-F 0 "D9" H 10200 5450 50  0000 C CNN
-F 1 "LED" H 10200 5250 50  0000 C CNN
-F 2 "LED_SMD:LED_0603_1608Metric" H 10200 5350 50  0001 C CNN
-F 3 "~" H 10200 5350 50  0001 C CNN
-	1    10200 5350
-	-1   0    0    1   
-$EndComp
-$Comp
 L Device:R R25
 U 1 1 635EBB6A
 P 10600 5050
@@ -2415,17 +2313,6 @@ F 3 "~" H 10200 5650 50  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L Device:R R26
-U 1 1 636274C8
-P 10600 5350
-F 0 "R26" V 10680 5350 50  0000 C CNN
-F 1 "1k" V 10600 5350 50  0000 C CNN
-F 2 "Resistor_SMD:R_0805_2012Metric" V 10530 5350 50  0001 C CNN
-F 3 "~" H 10600 5350 50  0001 C CNN
-	1    10600 5350
-	0    1    1    0   
-$EndComp
-$Comp
 L Device:R R27
 U 1 1 63627AF7
 P 10600 5650
@@ -2450,37 +2337,15 @@ $EndComp
 Wire Wire Line
 	10750 5050 10950 5050
 Wire Wire Line
-	10950 5050 10950 5350
-Wire Wire Line
 	10750 5650 10950 5650
-Connection ~ 10950 5650
 Wire Wire Line
 	10950 5650 10950 5850
 Wire Wire Line
-	10750 5350 10950 5350
-Connection ~ 10950 5350
-Wire Wire Line
-	10950 5350 10950 5650
-Wire Wire Line
 	10450 5050 10350 5050
-Wire Wire Line
-	10450 5350 10350 5350
 Wire Wire Line
 	10450 5650 10350 5650
 Wire Wire Line
 	10050 5050 9000 5050
-Wire Wire Line
-	9000 5150 10000 5150
-Wire Wire Line
-	10000 5150 10000 5350
-Wire Wire Line
-	10000 5350 10050 5350
-Wire Wire Line
-	10050 5650 9900 5650
-Wire Wire Line
-	9900 5650 9900 5250
-Wire Wire Line
-	9900 5250 9000 5250
 $Comp
 L Device:R R28
 U 1 1 63887C0E
@@ -2494,4 +2359,77 @@ F 3 "~" H 2650 3700 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2650 3550 2650 3500
+Text GLabel 6600 5850 0    50   Input ~ 0
+STM_RDY
+Wire Wire Line
+	6600 5850 6800 5850
+NoConn ~ 6800 5750
+Wire Wire Line
+	6600 5950 6800 5950
+NoConn ~ 9000 5650
+NoConn ~ 9000 6150
+NoConn ~ 9000 6250
+Wire Wire Line
+	9000 5550 9350 5550
+NoConn ~ 9000 5750
+Wire Wire Line
+	10450 5350 10350 5350
+Wire Wire Line
+	10750 5350 10950 5350
+$Comp
+L Device:R R26
+U 1 1 636274C8
+P 10600 5350
+F 0 "R26" V 10680 5350 50  0000 C CNN
+F 1 "1k" V 10600 5350 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric" V 10530 5350 50  0001 C CNN
+F 3 "~" H 10600 5350 50  0001 C CNN
+	1    10600 5350
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:LED D9
+U 1 1 635E736D
+P 10200 5350
+F 0 "D9" H 10200 5450 50  0000 C CNN
+F 1 "LED" H 10200 5250 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric" H 10200 5350 50  0001 C CNN
+F 3 "~" H 10200 5350 50  0001 C CNN
+	1    10200 5350
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	10950 5050 10950 5350
+Connection ~ 10950 5650
+Connection ~ 10950 5350
+Wire Wire Line
+	10950 5350 10950 5650
+Text Label 9400 5050 2    50   ~ 0
+PB0
+Text GLabel 6600 5050 0    50   Input ~ 0
+PC0
+Text GLabel 6600 5150 0    50   Input ~ 0
+PC1
+Wire Wire Line
+	6600 5050 6800 5050
+Wire Wire Line
+	6600 5150 6800 5150
+Text GLabel 9400 5150 0    50   Input ~ 0
+PC0
+Text GLabel 9400 5250 0    50   Input ~ 0
+PC1
+Wire Wire Line
+	9400 5150 10000 5150
+Wire Wire Line
+	10000 5150 10000 5350
+Wire Wire Line
+	10000 5350 10050 5350
+Wire Wire Line
+	10050 5650 9900 5650
+Wire Wire Line
+	9900 5650 9900 5250
+Wire Wire Line
+	9900 5250 9400 5250
+NoConn ~ 9000 5150
+NoConn ~ 9000 5250
 $EndSCHEMATC
