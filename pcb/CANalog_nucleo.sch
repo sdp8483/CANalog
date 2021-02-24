@@ -65,7 +65,7 @@ F 3 "" H 900 3350 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	900  3350 900  3250
+	900  3350 900  3300
 $Comp
 L power:GND #PWR05
 U 1 1 5FFDCDBD
@@ -552,7 +552,6 @@ NoConn ~ 6800 6050
 NoConn ~ 6800 5350
 NoConn ~ 6800 4850
 NoConn ~ 13650 1500
-NoConn ~ 800  3250
 $Comp
 L power:PWR_FLAG #FLG0102
 U 1 1 6052AECD
@@ -2432,4 +2431,11 @@ Wire Wire Line
 	9900 5250 9400 5250
 NoConn ~ 9000 5150
 NoConn ~ 9000 5250
+Wire Wire Line
+	800  3250 800  3300
+Wire Wire Line
+	800  3300 900  3300
+Connection ~ 900  3300
+Wire Wire Line
+	900  3300 900  3250
 $EndSCHEMATC
