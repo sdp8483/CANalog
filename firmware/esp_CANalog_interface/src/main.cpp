@@ -24,13 +24,14 @@
  */
 #define FW_VERSION				"V0.0.3.0"
 
-Signal_Handle_t can;      /* data used on webpages and passed between esp and STM32 */
-#define STM32_RESET_PIN 5 /* esp pin used to reset STM32 on startup */
-#define STM32_RDY_PIN   4 /* STM32 will pull this pin low when it is ready to receive SPI data */
-ESPMaster spiMaster(SS, STM32_RDY_PIN);        /* ESP master SPI mode */
+/* ESP to STM32 Comunication -------------------------------------------------*/
+Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */
+#define STM32_RESET_PIN 5                 /* esp pin used to reset STM32 on startup */
+#define STM32_RDY_PIN   4                 /* STM32 will pull this pin low when it is ready to receive SPI data */
+ESPMaster spiMaster(SS, STM32_RDY_PIN);   /* ESP master SPI mode */
 
 /* WiFi Settings -------------------------------------------------------------*/
-String ssid = "CANalog ";           /* first part of ssid, will append device sn to end */
+String ssid = "CANalog ";                 /* first part of ssid, will append device sn to end */
 IPAddress apIP(192, 168, 1, 1);
 IPAddress subnet(255,255,255,0);
 const byte DNS_PORT = 53;
@@ -54,16 +55,15 @@ void setup(void){
   /* start SPI master --------------------------------------------------------*/
   spiMaster.begin();
 
-  // reset STM32 to avoid error states
-  pinMode(STM32_RESET_PIN, OUTPUT);
+  pinMode(STM32_RESET_PIN, OUTPUT);   /* reset STM32 to avoid error states */
   digitalWrite(STM32_RESET_PIN, LOW);
-  delay(100);
+  delay(1000);
   digitalWrite(STM32_RESET_PIN, HIGH);
-  delay(10000);         /* wait for STM32 to startup */
+  delay(10000);                       /* wait for STM32 to startup */
 
   /* get data from STM32 so we can use sn to set the SSID --------------------*/
   spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
-  printData(&can);      /* print received data for debugging */
+  printData(&can);                    /* print received data for debugging */
 
   /* assemble SSID with SN from STM32 for unique SSID per device -------------*/
   ssid += String(can.sn, HEX);
@@ -72,7 +72,7 @@ void setup(void){
   EEPROM.begin(sizeof(Signal_Handle_t));
 
   /* Check if the EEPROM contains valid data from another run */
-  if(EEPROM.percentUsed()>=0) {/* valid data from previous run */
+  if(EEPROM.percentUsed()>=0) {         /* valid data from previous run */
     EEPROM.get(0, can);                 /* get data to update Signal_Handle_t */
     Serial.println("EEPROM has data from a previous run.");
     Serial.print(EEPROM.percentUsed());
@@ -106,20 +106,20 @@ void setup(void){
   dnsServer.start(DNS_PORT, SERVER_ADDRESS, apIP);
 
   /* server page request handles ---------------------------------------------*/
-  server.on("/", HTTP_GET, handleRoot);        /* Call the 'handleRoot' function when a client requests URI "/" */
-  server.on("/save", HTTP_POST, handleSave);   /* Call the 'handleSave' function when a POST request is made to URI "/save" */
-  server.on("/libs.js", handleJavascript);
-  server.on("/style.css", handleStyle);
+  server.on("/", HTTP_GET, handleRoot);         /* Call the 'handleRoot' function when a client requests URI "/" */
+  server.on("/save", HTTP_POST, handleSave);    /* Call the 'handleSave' function when a POST request is made to URI "/save" */
+  server.on("/libs.js", handleJavascript);      /* javascript */
+  server.on("/style.css", handleStyle);         /* styles */
   server.on("/data.txt", handleData);
-  server.onNotFound(handleNotFound);           /* When a client requests an unknown URI (i.e. something other than "/"), call function "handleNotFound" */
+  server.onNotFound(handleNotFound);            /* When a client requests an unknown URI call function "handleNotFound" */
 
-  server.begin();                              /* Actually start the server */
+  server.begin();                               /* Actually start the server */
   Serial.println("HTTP server started");
 }
 
 void loop(void){
   dnsServer.processNextRequest();
-  server.handleClient();                      /* Listen for HTTP requests from clients */
+  server.handleClient();                        /* Listen for HTTP requests from clients */
 }
 
 void handleRoot() {
