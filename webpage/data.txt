@@ -1,0 +1,10 @@
+{
+  "baud": 250,
+  "type": 29,
+  "id": "18efb300",
+  "start_bit": 0,
+  "bit_len": 16,
+  "endianness": 12,
+  "max": 40000,
+  "min": 0
+}
