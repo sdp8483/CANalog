@@ -29,9 +29,6 @@ Signal_Handle_t can;      /* data used on webpages and passed between esp and ST
 #define STM32_RDY_PIN   4 /* STM32 will pull this pin low when it is ready to receive SPI data */
 ESPMaster spiMaster(SS, STM32_RDY_PIN);        /* ESP master SPI mode */
 
-uint16_t possible_can_baud[]    = {10, 20, 50, 83, 100, 125, 250, 500, 800, 1000};
-#define NUMBER_CAN_BAUD_RATES   (sizeof(possible_can_baud)/sizeof(uint16_t))
-
 /* WiFi Settings -------------------------------------------------------------*/
 String ssid = "CANalog ";           /* first part of ssid, will append device sn to end */
 IPAddress apIP(192, 168, 1, 1);
