@@ -15,7 +15,8 @@
 			"tuple": "cpp",
 			"type_traits": "cpp",
 			"utility": "cpp",
-			"*.ipp": "cpp"
+			"*.ipp": "cpp",
+			"complex": "cpp"
 		}
 	}
 }

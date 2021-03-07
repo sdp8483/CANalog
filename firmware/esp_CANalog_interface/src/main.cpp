@@ -1,9 +1,10 @@
 #include <Arduino.h>
-#include <ESP8266WiFi.h>
 #include <DNSServer.h>
-#include <ESP8266WebServer.h>
 #include <ESP_EEPROM.h>
 #include <ArduinoJson.h>
+#include <ESP8266WiFi.h>
+#include <ESPAsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 /* Local Libraries */
 #include "spi_master.h"
@@ -37,16 +38,16 @@ IPAddress subnet(255,255,255,0);
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
-ESP8266WebServer server(80);
+AsyncWebServer server(80);
 
 /* funcition prototypes ------------------------------------------------------*/
-void handleRoot(void);
-void handleSave(void);
-void handleJavascript(void);
-void handleStyle(void);
-void handleData(void);
-void handleNotFound(void);
-void handleInvalidRequest(void);
+void handleRoot(AsyncWebServerRequest *request);
+void handleSave(AsyncWebServerRequest *request);
+void handleJavascript(AsyncWebServerRequest *request);
+void handleStyle(AsyncWebServerRequest *request);
+void handleData(AsyncWebServerRequest *request);
+void handleNotFound(AsyncWebServerRequest *request);
+void handleInvalidRequest(AsyncWebServerRequest *request);
 
 void setup(void){
   /* start serial for debugging ----------------------------------------------*/
@@ -119,22 +120,21 @@ void setup(void){
 
 void loop(void){
   dnsServer.processNextRequest();
-  server.handleClient();                        /* Listen for HTTP requests from clients */
 }
 
-void handleRoot() {
-  server.send(200, "text/html", PAGE_Root_HTML);
+void handleRoot(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_Root_HTML);
 }
 
-void handleSave() {
-  can.can_baud    = server.arg("can_baud").toInt();
-  can.can_type    = server.arg("can_id_bit_len").toInt();
-  can.can_id      = strtoul(server.arg("can_id").c_str(), NULL, 16);
-  can.start_bit   = server.arg("can_signal_start_bit").toInt();
-  can.bit_len     = server.arg("can_signal_bit_len").toInt();
-  can.endianness  = server.arg("can_endianness").toInt();
-  can.max         = server.arg("can_signal_max").toInt();
-  can.min         = server.arg("can_signal_min").toInt();
+void handleSave(AsyncWebServerRequest *request) {
+  can.can_baud    = request->arg("can_baud").toInt();
+  can.can_type    = request->arg("can_id_bit_len").toInt();
+  can.can_id      = strtoul(request->arg("can_id").c_str(), NULL, 16);
+  can.start_bit   = request->arg("can_signal_start_bit").toInt();
+  can.bit_len     = request->arg("can_signal_bit_len").toInt();
+  can.endianness  = request->arg("can_endianness").toInt();
+  can.max         = request->arg("can_signal_max").toInt();
+  can.min         = request->arg("can_signal_min").toInt();
 
   /* save data to EEPROM */
   EEPROM.put(0, can);
@@ -158,18 +158,18 @@ void handleSave() {
   saved += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
   saved += "</body></html>";
 
-  server.send(200, "text/html", saved);
+  request->send(200, "text/html", saved);
 }
 
-void handleJavascript(void) {
-  server.send(200, "application/javascript", PAGE_libs_js);
+void handleJavascript(AsyncWebServerRequest *request) {
+  request->send_P(200, "application/javascript", PAGE_libs_js);
 }
 
-void handleStyle(void) {
-  server.send(200, "text/css", PAGE_style_css);
+void handleStyle(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/css", PAGE_style_css);
 }
 
-void handleData(void) {
+void handleData(AsyncWebServerRequest *request) {
   StaticJsonDocument<192> data;
 
   data["baud"] = can.can_baud;
@@ -184,13 +184,13 @@ void handleData(void) {
   String json;
   serializeJson(data, json);
 
-  server.send(200, "application/json", json);
+  request->send(200, "application/json", json);
 }
 
-void handleNotFound(){
-  server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+void handleNotFound(AsyncWebServerRequest *request){
+  request->send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
 }
 
-void handleInvalidRequest(void) {
-  server.send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
+void handleInvalidRequest(AsyncWebServerRequest *request) {
+  request->send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
 }
