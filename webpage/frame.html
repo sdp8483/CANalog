@@ -1,130 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <title>CANalog Frame View</title>
     <meta charset="utf-8">
-    <title>CANalog Frame Bitmap</title>
-    <style>
-        table, th, tr, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-            padding: 5px;
-            text-align: center;
-        }
-    </style>
-    <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="CANalog Configuration (V0.0.1.0)">
+    <meta name="author" content="Sam Perry">
+    <link rel="stylesheet" href="/style.css">
+    <script src="/libs.js"></script>
 </head>
-<body onload="setBits()">
-    <label for="can_endianness">Signal Endianness: </label>
-        <select onchange="setBits()" id="can_endianness" name="can_endianness">
-            <option value="12">little</option>
-            <option value="21">big</option>
-        </select><br>
-    <label for="can_signal_start_bit">Signal Start Bit: </label>
-        <input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="63" size="3"><br>
-    <label for="can_signal_bit_len">Signal Bit Length: </label>
-            <input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64" size="3"><br><br>
-    <table id='frame'>
-        <tr>
-            <th></th>
-            <th>bit 7</th>
-            <th>bit 6</th>
-            <th>bit 5</th>
-            <th>bit 4</th>
-            <th>bit 3</th>
-            <th>bit 2</th>
-            <th>bit 1</th>
-            <th>bit 0</th>
-        </tr>
-        <tr>
-            <th>Byte 0</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+<body>
+    <section class="header">CANalog Frame View</section>
 
-        </tr>
-        <tr>
-            <th>Byte 1</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 2</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 3</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 4</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 5</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 6</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th>Byte 7</th>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-    </table>
-
+    <section class="navigation">
+        <button onclick="document.location='root.html'">Settings</button>
+        <button onclick="document.location='frame.html'">Frame</button>
+        <button onclick="document.location='signal.html'">Signal</button>
+        <button onclick="document.location='analog.html'">Analog</button>
+        <button onclick="document.location='pgnid.html'">PGN to ID</button>
+        <button onclick="document.location='about.html'">About</button>
+    </section>
+    
 </body>
 </html>
