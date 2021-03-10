@@ -2005,8 +2005,8 @@ F 3 "~" H 1500 5600 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	5450 5600 5250 5600
-Text GLabel 5450 5600 2    50   Input ~ 0
+	5650 5600 5550 5600
+Text GLabel 5650 5600 2    50   Input ~ 0
 STM_CS
 NoConn ~ 4600 6200
 NoConn ~ 4500 6200
@@ -2438,4 +2438,33 @@ Wire Wire Line
 Connection ~ 900  3300
 Wire Wire Line
 	900  3300 900  3250
+$Comp
+L Device:R R?
+U 1 1 604C58E8
+P 5550 5850
+F 0 "R?" V 5630 5850 50  0000 C CNN
+F 1 "10k" V 5550 5850 50  0000 C CNN
+F 2 "" V 5480 5850 50  0001 C CNN
+F 3 "~" H 5550 5850 50  0001 C CNN
+	1    5550 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5550 5700 5550 5600
+Connection ~ 5550 5600
+Wire Wire Line
+	5550 5600 5250 5600
+$Comp
+L power:GND #PWR?
+U 1 1 604DFCD5
+P 5550 6050
+F 0 "#PWR?" H 5550 5800 50  0001 C CNN
+F 1 "GND" H 5550 5900 50  0000 C CNN
+F 2 "" H 5550 6050 50  0001 C CNN
+F 3 "" H 5550 6050 50  0001 C CNN
+	1    5550 6050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5550 6050 5550 6000
 $EndSCHEMATC
