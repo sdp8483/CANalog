@@ -115,6 +115,9 @@ int main(void) {
 	HAL_DAC_SetValue(&hdac, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 	HAL_DAC_Start(&hdac, DAC1_CHANNEL_1);
 
+	/* for now turn on CAN terminating resistor */
+	HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_SET);
+
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
@@ -125,24 +128,22 @@ int main(void) {
 		/* USER CODE BEGIN 3 */
 		/* SPI Check ---------------------------------------------------------*/
 		if (HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0) { /* esp8266 wants to talk */
+			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_RESET); /* signal to esp8266 we are ready to talk */
 
 			uint8_t command_bit = 0;
-			if (HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1)
-					!= HAL_OK) {
+			if (HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1) != HAL_OK) {
 				Error_Handler();
 			}
 
 			switch (command_bit) {
 			case SPI_SIGNAL_READ: /* esp is requesting parameters */
-				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal,
-						sizeof(Signal_Handle_t), 5) != HAL_OK) {
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
 					Error_Handler();
 				}
 				break;
 			case SPI_SIGNAL_WRITE: /* esp is sending new parameters*/
-				if (HAL_SPI_Receive(&hspi2, (uint8_t*) &signal,
-						sizeof(Signal_Handle_t), 5) != HAL_OK) {
+				if (HAL_SPI_Receive(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
 					Error_Handler();
 				}
 
@@ -182,12 +183,12 @@ int main(void) {
 
 			while (HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0)
 				; /* loop until esp8266 pulls CS high */
+			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
 		}
 
 		/* CAN ---------------------------------------------------------------*/
 		if (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) != 0) {
-			if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canRxHeader,
-					signal.frame) != HAL_OK) {
+			if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canRxHeader, signal.frame) != HAL_OK) {
 				Error_Handler();
 			} // end HAL_CAN_GetRxMessage
 
@@ -195,15 +196,15 @@ int main(void) {
 			case ID_TYPE_11BIT:
 				if (canRxHeader.StdId == signal.can_id) {
 					signal_calc(&signal);
-					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R,
-							signal.dac_out);
+					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
+					HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 				}
 				break;
 			case ID_TYPE_29BIT:
 				if (canRxHeader.ExtId == signal.can_id) {
 					signal_calc(&signal);
-					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R,
-							signal.dac_out);
+					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
+					HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
 				}
 				break;
 			default:
@@ -236,8 +237,7 @@ void SystemClock_Config(void) {
 	}
 	/** Initializes the CPU, AHB and APB buses clocks
 	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
 	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
