@@ -36,8 +36,8 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define HW_VERSION				"V0.0.1.0"
-#define FW_VERSION				"V0.0.3.0"
+#define HW_VERSION				"V0.0.2.0"
+#define FW_VERSION				"V0.0.4.0"
 
 /* USER CODE END PD */
 
@@ -148,32 +148,36 @@ int main(void) {
 				}
 
 				signal_update(&signal); /* recalculate signal values */
-
 				/* restart CAN interface with new baud rate -----------------------*/
 				if (HAL_CAN_Stop(&hcan) != HAL_OK) {
 					Error_Handler();
 				}
-
 				/* stop CAN and deinit so we can configure it */
 				if (HAL_CAN_DeInit(&hcan) != HAL_OK) {
 					Error_Handler();
 				}
-
 				/* set new bit timing */
 				can_set_bit_timing(&signal, &hcan);
-
 				/* reinitialize CAN */
 				if (HAL_CAN_Init(&hcan) != HAL_OK) {
 					Error_Handler();
 				}
-
 				/* restart can */
 				if (HAL_CAN_Start(&hcan) != HAL_OK) {
 					Error_Handler();
 				}
-
 				/* set DAC to zero */
 				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+				break;
+			case SPI_GET_FW_VERSION:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) FW_VERSION, sizeof(FW_VERSION), 5) != HAL_OK) {
+					Error_Handler();
+				}
+				break;
+			case SPI_GET_HW_VERSION:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) HW_VERSION, sizeof(HW_VERSION), 5) != HAL_OK) {
+					Error_Handler();
+				}
 				break;
 			default:
 				break;

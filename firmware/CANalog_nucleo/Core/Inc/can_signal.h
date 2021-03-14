@@ -29,6 +29,8 @@
  */
 #define SPI_SIGNAL_READ			'?'
 #define SPI_SIGNAL_WRITE		'='
+#define SPI_GET_FW_VERSION		'F'
+#define SPI_GET_HW_VERSION		'H'
 
 /* signal status flag values */
 #define SIGNAL_NO_CHANGE		0

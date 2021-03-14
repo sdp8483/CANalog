@@ -30,6 +30,8 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define FW_VERSION				"V0.0.3.0"
+char stm32_fw_version[9];
+char stm32_hw_version[9];
 
 /* ESP to STM32 Comunication -------------------------------------------------*/
 Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */
@@ -63,6 +65,7 @@ void handleInvalidRequest(AsyncWebServerRequest *request);
 void setup(void){
   /* start serial for debugging ----------------------------------------------*/
   Serial.begin(115200);
+  Serial.println("\n\r");
 
   /* start SPI master --------------------------------------------------------*/
   spiMaster.begin();
@@ -76,6 +79,15 @@ void setup(void){
   /* get data from STM32 so we can use sn to set the SSID --------------------*/
   spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
   printData(&can);                    /* print received data for debugging */
+
+  spiMaster.read(SPI_GET_FW_VERSION, (uint8_t*) stm32_fw_version, sizeof(stm32_fw_version));
+  Serial.print("STM32 FW: ");
+  Serial.println(String(stm32_fw_version));
+
+  spiMaster.read(SPI_GET_HW_VERSION, (uint8_t*) stm32_hw_version, sizeof(stm32_hw_version));
+  Serial.print("STM32 HW: ");
+  Serial.println(String(stm32_hw_version));
+
 
   /* assemble SSID with SN from STM32 for unique SSID per device -------------*/
   ssid += String(can.sn, HEX);

@@ -6,6 +6,8 @@
 
 #define SPI_COMMAND_READ    '?'         /* send as first byte in SPI transmission to signal STM32 to return 'signal' data */
 #define SPI_COMMAND_WRITE   '='         /* send as first byte in SPI transmission to signal STM32 that incoming data is new 'signal' data */
+#define SPI_GET_FW_VERSION	'F'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
+#define SPI_GET_HW_VERSION	'H'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
 
 #define SPI_DELAY_us        10          /* delay for uS before each SPI.transmit to allow STM32 time to catch up, STM32 needs a few uS between bytes */
 #define SPI_BAUD            500000UL    /* SPI clock baud rate in Mbits/sec */
@@ -22,6 +24,7 @@ class ESPMaster {
     void begin();
     void write(uint8_t *pData, uint16_t len);
     void read(uint8_t *pData, uint16_t len);
+    void read(uint8_t cmd_char, uint8_t *pData, uint16_t len);
 };
 
 #endif
