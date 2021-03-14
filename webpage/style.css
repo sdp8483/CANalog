@@ -71,6 +71,12 @@
     height: 1px;
     width: 100%;
 }
+.savedOutput {
+    font-size: 18px;
+    width: 100%;
+    padding: 1%;
+    text-align: center;
+}
 select {
     font-size: inherit;
     width: 100%;
