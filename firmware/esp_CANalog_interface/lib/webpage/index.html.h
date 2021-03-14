@@ -1,9 +1,9 @@
-#ifndef INC_ROOT_HTML_H_
-#define INC_ROOT_HTML_H_
+#ifndef INC_INDEX_HTML_H_
+#define INC_INDEX_HTML_H_
 
 #include <Arduino.h>
 
-const char PAGE_Root_HTML[] PROGMEM = R"=====(
+const char PAGE_Index_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,14 +14,24 @@ const char PAGE_Root_HTML[] PROGMEM = R"=====(
     <meta name="author" content="Sam Perry">
     <link rel="stylesheet" href="/style.css">
     <script src="/libs.js"></script>
+    <!-- <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script> -->
 </head>
 <body onload="loadDoc()">
-    <header><h2>CANalog Configuration</h2></header>
+    <section class="header">CANalog Settings</section>
+
+    <section class="navigation">
+        <button onclick="document.location='index.html'">Settings</button>
+        <button onclick="document.location='frame.html'">Frame</button>
+        <button onclick="document.location='signal.html'">Signal</button>
+        <button onclick="document.location='analog.html'">Analog</button>
+        <button onclick="document.location='pgnid.html'">PGN to ID</button>
+        <button onclick="document.location='about.html'">About</button>
+    </section>
 
     <section class="main">
         <aside class="usrInput">
             <form action="/save" method="POST">
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Baud Rate</div>
                     <div class="value">
                         <select id="can_baud" name="can_baud">
@@ -39,32 +49,32 @@ const char PAGE_Root_HTML[] PROGMEM = R"=====(
                     </div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">ID Type</div>
                     <div class="value">
-                        <select id="can_id_bit_len" name="can_id_bit_len">
+                        <select onchange="validateID()" id="can_id_bit_len" name="can_id_bit_len">
                             <option value="11">11bit</option>
                             <option value="29">29bit</option>   
                         </select>
                     </div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">CAN ID</div>
-                    <div class="value"><input type="text" id="can_id" name="can_id"></div>
+                    <div class="value"><input onchange="validateID()" type="text" id="can_id" name="can_id" pattern="[A-Fa-f0-9]{0,8}" value="18EFB300"></div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Signal Start Bit</div>
-                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit"min="0" max="63"></div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="63"></div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Signal Bit Length</div>
-                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" min="1" max="64"></div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64"></div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Signal Endianness</div>
                     <div class="value">
                         <select onchange="setBits()" id="can_endianness" name="can_endianness">
@@ -74,16 +84,17 @@ const char PAGE_Root_HTML[] PROGMEM = R"=====(
                     </div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Signal Max</div>
-                    <div class="value"><input type="number" id="can_signal_max" name="can_signal_max" min=0 max=65535></div>
+                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_max" name="can_signal_max" value="65535" min=0 max=65535></div>
                 </div>
                 <div class="line"></div>
-                <div class="row">
+                <div class="formRow">
                     <div class="label">Signal Min</div>
-                    <div class="value"><input type="number" id="can_signal_min" name="can_signal_min" min=0 max=65535></div>
+                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_min" name="can_signal_min" value="0" min=0 max=65535></div>
                 </div>
-                <div class="row">
+                <div class="line"></div>
+                <div class="buttonRow">
                     <input type="submit" value="Save">
                 </div>
             </form>

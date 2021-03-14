@@ -5,13 +5,20 @@
 
 const char PAGE_style_css[] PROGMEM = R"=====(
     * {
-        box-sizing: border-box
+    box-sizing: border-box
     }
-    header {
+    .header {
         width: 100%;
         background-color: darkorange;
         text-align: center;
-        font-size: 20px;
+        font-size: 30px;
+        font-weight: 700;
+        padding: 0;
+    }
+    .navigation {
+        width: 100%;
+        padding: 1%;
+        text-align: center;
     }
     .main {
         width: 100%;
@@ -20,19 +27,28 @@ const char PAGE_style_css[] PROGMEM = R"=====(
         display: table;
     }
     .usrInput {
-        padding: 15px;
+        padding-right: 1%;
         float: left;
         width: 50%;
+        margin-left: auto;
+        margin-right: auto;
     }
     .frameDisplay {
-        font-size: 12px;
-        padding: 25px;
+        font-size: 11px;
+        padding-top: 50px;
         float: left;
         width: 50%;
     }
-    .row {
+    .formRow {
         margin-bottom: 0;
         padding: 1px 0 1px 0;
+        width: 100%;
+        clear: both;
+        content: "";
+        display: table
+    }
+    .buttonRow {
+        padding: 5% 0 0 0;
         width: 100%;
         clear: both;
         content: "";
@@ -41,22 +57,31 @@ const char PAGE_style_css[] PROGMEM = R"=====(
     .label {
         padding-right: 15px;
         font-size: 20px;
-        display: inline-block;
         float: left;
         text-align: right;
         width: 60%
     }
     .value {
         font-size: 18px;
-        display: inline-block;
         float: left;
         text-align: left;
         width: 40%
     }
+    .outputText {
+        font-size: 18px;
+        float: left;
+        text-align: left;
+        width: 40%;
+    }
     .line {
-        border-bottom: 1px solid orange;
-        padding-bottom: 1px;
-        width: 90%;
+        height: 1px;
+        width: 100%;
+    }
+    .savedOutput {
+        font-size: 18px;
+        width: 100%;
+        padding: 1%;
+        text-align: center;
     }
     select {
         font-size: inherit;
@@ -66,8 +91,11 @@ const char PAGE_style_css[] PROGMEM = R"=====(
         font-size: inherit;
         width: 100%;
     }
+    input:invalid {
+        border: red solid 3px;
+    }
     input[type=submit] {
-        width: 50%;
+        width: 100%;
         font-size: 20px;
     }
     table, th, tr, td {
@@ -76,12 +104,14 @@ const char PAGE_style_css[] PROGMEM = R"=====(
         border-collapse: collapse;
         padding: 5px;
         text-align: center;
+        margin-left: auto;
+        margin-right: auto;
     }
     th {
         font-weight: bold;
         background-color: darkorange;
     }
-    @media (max-width: 1250px) {
+    @media (max-width: 650px) {
         .usrInput, .frameDisplay {
             width: 100%;
             height: auto;

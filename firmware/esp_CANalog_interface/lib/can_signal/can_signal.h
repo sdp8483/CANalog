@@ -10,6 +10,8 @@
 #define ID_TYPE_11BIT			11
 #define ID_TYPE_29BIT			29
 
+#define SIGNAL_STRUCTS_ARE_EQUAL  0
+
 /* CAN signal data struct 
  *  !this is the same exact struct on the STM32!
  *  For SPI bulk transmission of this struct to work these have to be the same (order and everything)
@@ -32,5 +34,6 @@ typedef struct {
 
 /* function prototypes */
 void printData(Signal_Handle_t *pData);
+uint8_t signal_struct_cmp(Signal_Handle_t *pData1, Signal_Handle_t *pData2);
 
 #endif

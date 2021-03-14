@@ -53,3 +53,25 @@ void printData(Signal_Handle_t *pData) {
 
   Serial.println();
 }
+
+uint8_t signal_struct_cmp(Signal_Handle_t *pData1, Signal_Handle_t *pData2) {
+  uint8_t errors = 0;
+
+  if (pData1->can_baud != pData2->can_baud) errors++;
+
+  if (pData1->can_type != pData2->can_type) errors++;
+
+  if (pData1->can_id != pData2->can_id) errors++;
+
+  if (pData1->start_bit != pData2->start_bit) errors++;
+
+  if (pData1->bit_len != pData2->bit_len) errors++;
+
+  if (pData1->endianness != pData2->endianness) errors++;
+
+  if (pData1->max != pData2->max) errors++;
+
+  if (pData1->min != pData2->min) errors++;
+
+  return errors;
+}

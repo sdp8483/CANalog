@@ -11,7 +11,13 @@
 #include "can_signal.h"
 
 /* Raw String Literals for webpages */
-#include "root.html.h"
+#include "index.html.h"
+#include "saved.html.h"
+#include "frame.html.h"
+#include "signal.html.h"
+#include "analog.html.h"
+#include "pgnid.html.h"
+#include "about.html.h"
 #include "style.css.h"
 #include "libs.js.h"
 
@@ -43,6 +49,11 @@ AsyncWebServer server(80);
 /* funcition prototypes ------------------------------------------------------*/
 void handleRoot(AsyncWebServerRequest *request);
 void handleSave(AsyncWebServerRequest *request);
+void handleFrame(AsyncWebServerRequest *request);
+void handleSignal(AsyncWebServerRequest *request);
+void handleAnalog(AsyncWebServerRequest *request);
+void handlePGNtoID(AsyncWebServerRequest *request);
+void handleAbout(AsyncWebServerRequest *request);
 void handleJavascript(AsyncWebServerRequest *request);
 void handleStyle(AsyncWebServerRequest *request);
 void handleData(AsyncWebServerRequest *request);
@@ -107,14 +118,20 @@ void setup(void){
   dnsServer.start(DNS_PORT, SERVER_ADDRESS, apIP);
 
   /* server page request handles ---------------------------------------------*/
-  server.on("/", HTTP_GET, handleRoot);         /* Call the 'handleRoot' function when a client requests URI "/" */
-  server.on("/save", HTTP_POST, handleSave);    /* Call the 'handleSave' function when a POST request is made to URI "/save" */
-  server.on("/libs.js", handleJavascript);      /* javascript */
-  server.on("/style.css", handleStyle);         /* styles */
+  server.on("/", HTTP_GET, handleRoot);           /* Call the 'handleRoot' function when a client requests URI "/" */
+  server.on("/index.html", HTTP_GET, handleRoot); /* Call the 'handleRoot' function when a client requests URI "/index" */
+  server.on("/save", HTTP_POST, handleSave);      /* Call the 'handleSave' function when a POST request is made to URI "/save" */
+  server.on("/frame.html", HTTP_GET, handleFrame);
+  server.on("/signal.html", HTTP_GET, handleSignal);
+  server.on("/analog.html", HTTP_GET, handleAnalog);
+  server.on("/pgnid.html", HTTP_GET, handlePGNtoID);
+  server.on("/about.html", HTTP_GET, handleAbout);
+  server.on("/libs.js", handleJavascript);        /* javascript */
+  server.on("/style.css", handleStyle);           /* styles */
   server.on("/data.txt", handleData);
-  server.onNotFound(handleNotFound);            /* When a client requests an unknown URI call function "handleNotFound" */
+  server.onNotFound(handleNotFound);              /* When a client requests an unknown URI call function "handleNotFound" */
 
-  server.begin();                               /* Actually start the server */
+  server.begin();                                 /* Actually start the server */
   Serial.println("HTTP server started");
 }
 
@@ -123,7 +140,7 @@ void loop(void){
 }
 
 void handleRoot(AsyncWebServerRequest *request) {
-  request->send_P(200, "text/html", PAGE_Root_HTML);
+  request->send_P(200, "text/html", PAGE_Index_HTML);
 }
 
 void handleSave(AsyncWebServerRequest *request) {
@@ -145,20 +162,34 @@ void handleSave(AsyncWebServerRequest *request) {
   spiMaster.write((uint8_t *) &can, sizeof(Signal_Handle_t));
   printData(&can);
 
-  String saved = "<!DOCTYPE html>";
-  saved += "<html>";
-  saved += "<head><title>CANalog</title>";
-  saved += "<style>";
-  saved += "h1 {font-size: 500%;}";
-  saved += "h2 {font-size: 300%;}";
-  saved += "</style>";
-  saved += "</head>";
-  saved += "<body>";
-  saved += "<h1>CANalog Settings Updated!</h1>";
-  saved += "<h2><a href=\"/\"> Return To Previous Page</h2></a>";
-  saved += "</body></html>";
+  /* check to make sure data was received */
+  Signal_Handle_t can_on_stm32;
+  spiMaster.read((uint8_t *) &can_on_stm32, sizeof(Signal_Handle_t));
 
-  request->send(200, "text/html", saved);
+  if (signal_struct_cmp(&can, &can_on_stm32) == SIGNAL_STRUCTS_ARE_EQUAL) {
+    request->send_P(200, "text/html", PAGE_Saved_OK_HTML); // data transfer is good
+  } else {
+    request->send_P(200, "text/html", PAGE_Saved_NOK_HTML); // data transfer is good
+  }
+}
+
+void handleFrame(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_frame_HTML);
+}
+
+void handleSignal(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_signal_HTML);
+}
+
+void handleAnalog(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_analog_HTML);
+}
+
+void handlePGNtoID(AsyncWebServerRequest *request) { 
+  request->send_P(200, "text/html", PAGE_pgnid_HTML);
+}
+void handleAbout(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_about_HTML);
 }
 
 void handleJavascript(AsyncWebServerRequest *request) {
