@@ -21,6 +21,7 @@
 #include "style.css.h"
 #include "libs.js.h"
 
+/* Version Info --------------------------------------------------------------*/
 #define DEVICE_NAME				"CANalog WiFi"
 #define SERVER_ADDRESS    "www.canalog.io"
 /* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
@@ -30,8 +31,8 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define FW_VERSION				"V0.0.3.0"
-char stm32_fw_version[9];
-char stm32_hw_version[9];
+char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
+char stm32_hw_version[9];                 /* string that stores hw version from stm32 */
 
 /* ESP to STM32 Comunication -------------------------------------------------*/
 Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */
