@@ -77,6 +77,13 @@
     padding: 1%;
     text-align: center;
 }
+.infoText {
+    font-size: 18px;
+    font-family: monospace;
+    width: 100%;
+    padding: 1%;
+    text-align: center;
+}
 select {
     font-size: inherit;
     width: 100%;

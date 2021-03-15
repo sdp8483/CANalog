@@ -60,6 +60,7 @@ void handleAbout(AsyncWebServerRequest *request);
 void handleJavascript(AsyncWebServerRequest *request);
 void handleStyle(AsyncWebServerRequest *request);
 void handleData(AsyncWebServerRequest *request);
+void handleInfo(AsyncWebServerRequest *request);
 void handleNotFound(AsyncWebServerRequest *request);
 void handleInvalidRequest(AsyncWebServerRequest *request);
 
@@ -142,6 +143,7 @@ void setup(void){
   server.on("/libs.js", handleJavascript);        /* javascript */
   server.on("/style.css", handleStyle);           /* styles */
   server.on("/data.txt", handleData);
+  server.on("/info.txt", handleInfo);
   server.onNotFound(handleNotFound);              /* When a client requests an unknown URI call function "handleNotFound" */
 
   server.begin();                                 /* Actually start the server */
@@ -227,6 +229,19 @@ void handleData(AsyncWebServerRequest *request) {
 
   String json;
   serializeJson(data, json);
+
+  request->send(200, "application/json", json);
+}
+
+void handleInfo(AsyncWebServerRequest *request) {
+  StaticJsonDocument<192> info;
+
+  info["esp_fw"] = FW_VERSION;
+  info["stm_fw"] = stm32_fw_version;
+  info["stm_hw"] = stm32_hw_version;
+
+  String json;
+  serializeJson(info, json);
 
   request->send(200, "application/json", json);
 }

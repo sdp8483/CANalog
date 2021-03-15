@@ -15,7 +15,7 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
     <link rel="stylesheet" href="/style.css">
     <script src="/libs.js"></script>
 </head>
-<body>
+<body onload="loadAbout()">
     <section class="header">CANalog About</section>
 
     <section class="navigation">
@@ -27,6 +27,22 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
         <button onclick="document.location='about.html'">About</button>
     </section>
     
+    <section class="infoText">
+        <div>
+            ESP_FW_VERSION:
+            <output type="text", id="esp_fw", name="esp_fw">
+        </div>
+        <div class="line"></div>
+        <div>
+            STM_FW_VERSION:
+            <output type="text", id="stm_fw", name="stm_fw">
+        </div>
+        <div class="line"></div>
+        <div>
+            STM_HW_VERSION:
+            <output type="text", id="stm_hw", name="stm_hw">
+        </div>
+    </section>
 </body>
 </html>
 )=====";
