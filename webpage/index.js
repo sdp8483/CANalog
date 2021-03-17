@@ -10,43 +10,6 @@ function loadDoc() {
     xhttp.send();
 }
 
-function loadID() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 & this.status == 200) {
-            setIDInputs(this.responseText);
-            assembleID();
-        }
-    };
-    xhttp.open("GET", "data.txt", true);
-    xhttp.send();
-}
-
-function loadAbout() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 & this.status == 200) {
-            setInfo(this.responseText);
-        }
-    };
-    xhttp.open("GET", "info.txt", true);
-    xhttp.send();
-}
-
-function setInfo(data) {
-    var obj = JSON.parse(data);
-    document.getElementById("esp_fw").value = obj.esp_fw;
-    document.getElementById("stm_fw").value = obj.stm_fw;
-    document.getElementById("stm_hw").value = obj.stm_hw;
-}
-
-function setIDInputs(data) {
-    var obj = JSON.parse(data);
-    document.getElementById("priority").value = parseInt(obj.id, 16) >> 26;
-    document.getElementById("pgn").value = (parseInt(obj.id, 16) >> 8) & (0x3FFFF);
-    document.getElementById("sa").value = parseInt(obj.id, 16) & 0xFF;
-}
-
 function setInputs(data) {
     var obj = JSON.parse(data);
 
@@ -174,14 +137,4 @@ function validateMinMax() {
         document.getElementById("can_signal_max").setCustomValidity("");
         document.getElementById("can_signal_min").setCustomValidity("");
     }
-}
-
-function assembleID() {
-    var priority = document.getElementById("priority").value;
-    var pgn = document.getElementById("pgn").value;
-    var sourceAddress = document.getElementById("sa").value;
-    var can_id = 0;
-
-    can_id = (priority << 26) | (pgn << 8) | (sourceAddress);
-    document.getElementById("can_id").value = can_id.toString(16).toUpperCase();
 }
