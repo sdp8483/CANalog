@@ -13,10 +13,6 @@
 /* Raw String Literals for webpages */
 #include "about.html.h"
 #include "about.js.h"
-#include "analog.html.h"
-#include "analog.js.h"
-#include "frame.html.h"
-#include "frame.js.h"
 #include "index.html.h"
 #include "index.js.h"
 #include "pgnid.html.h"
@@ -56,13 +52,9 @@ AsyncWebServer server(80);
 /* funcition prototypes ------------------------------------------------------*/
 void handleRoot(AsyncWebServerRequest *request);
 void handleSave(AsyncWebServerRequest *request);
-void handleFrame(AsyncWebServerRequest *request);
-void handleAnalog(AsyncWebServerRequest *request);
 void handlePGNtoID(AsyncWebServerRequest *request);
 void handleAbout(AsyncWebServerRequest *request);
 void handleIndexJavascript(AsyncWebServerRequest *request);
-void handleFrameJavascript(AsyncWebServerRequest *request);
-void handleAnalogJavascript(AsyncWebServerRequest *request);
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request);
 void handleAboutJavascript(AsyncWebServerRequest *request);
 void handleStyle(AsyncWebServerRequest *request);
@@ -142,13 +134,9 @@ void setup(void){
   server.on("/", HTTP_GET, handleRoot);           /* Call the 'handleRoot' function when a client requests URI "/" */
   server.on("/index.html", HTTP_GET, handleRoot); /* Call the 'handleRoot' function when a client requests URI "/index" */
   server.on("/save", HTTP_POST, handleSave);      /* Call the 'handleSave' function when a POST request is made to URI "/save" */
-  server.on("/frame.html", HTTP_GET, handleFrame);
-  server.on("/analog.html", HTTP_GET, handleAnalog);
   server.on("/pgnid.html", HTTP_GET, handlePGNtoID);
   server.on("/about.html", HTTP_GET, handleAbout);
   server.on("/index.js", handleIndexJavascript);  /* javascript */
-  server.on("/frame.js", handleFrameJavascript);
-  server.on("/analog.js", handleAnalogJavascript);
   server.on("/pgnid.js", handlePGNtoIDJavascript);
   server.on("/about.js", handleAboutJavascript);
   server.on("/style.css", handleStyle);           /* styles */
@@ -198,17 +186,10 @@ void handleSave(AsyncWebServerRequest *request) {
   }
 }
 
-void handleFrame(AsyncWebServerRequest *request) {
-  request->send_P(200, "text/html", PAGE_frame_HTML);
-}
-
-void handleAnalog(AsyncWebServerRequest *request) {
-  request->send_P(200, "text/html", PAGE_analog_HTML);
-}
-
 void handlePGNtoID(AsyncWebServerRequest *request) { 
   request->send_P(200, "text/html", PAGE_pgnid_HTML);
 }
+
 void handleAbout(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", PAGE_about_HTML);
 }
@@ -217,15 +198,10 @@ void handleIndexJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_index_JS);
 }
 
-void handleFrameJavascript(AsyncWebServerRequest *request) {
-  request->send_P(200, "application/javascript", PAGE_frame_JS);
-}
-void handleAnalogJavascript(AsyncWebServerRequest *request) {
-  request->send_P(200, "application/javascript", PAGE_analog_JS);
-}
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_pgnid_JS);
 }
+
 void handleAboutJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_about_JS);
 }
@@ -238,12 +214,7 @@ void handleData(AsyncWebServerRequest *request) {
   /* read data */
   spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
 
-  String frame;
-  for (uint8_t i=0; i<sizeof(can.frame); i++) {
-    frame += String(can.frame[i], 16);
-  }
-
-  StaticJsonDocument<256> data;
+  StaticJsonDocument<192> data;
 
   data["baud"] = can.can_baud;
   data["type"] = can.can_type;
@@ -253,7 +224,7 @@ void handleData(AsyncWebServerRequest *request) {
   data["endianness"] = can.endianness;
   data["max"] = can.max;
   data["min"] = can.min;
-  data["frame"] = frame;
+  // data["frame"] = frame;
   data["value"] = can.value;
   data["dac_out"] = can.dac_out;
 

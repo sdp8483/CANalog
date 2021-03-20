@@ -20,8 +20,6 @@ const char PAGE_pgnid_HTML[] PROGMEM = R"=====(
 
     <section class="navigation">
         <button onclick="document.location='index.html'">Settings</button>
-        <button onclick="document.location='frame.html'">View</button>
-        <button onclick="document.location='analog.html'">Analog</button>
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
     </section>
