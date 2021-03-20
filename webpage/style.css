@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box
 }
-.header {
+section.header {
     width: 100%;
     background-color: darkorange;
     text-align: center;
@@ -9,25 +9,25 @@
     font-weight: 700;
     padding: 0;
 }
-.navigation {
+section.navigation {
     width: 100%;
     padding: 1%;
     text-align: center;
 }
-.main {
+section.main {
     width: 100%;
     clear: both;
     content: "";
     display: table;
 }
-.usrInput {
+aside.usrInput {
     padding-right: 1%;
     float: left;
     width: 50%;
     margin-left: auto;
     margin-right: auto;
 }
-.frameDisplay {
+aside.frameDisplay {
     font-size: 11px;
     padding-top: 50px;
     float: left;
