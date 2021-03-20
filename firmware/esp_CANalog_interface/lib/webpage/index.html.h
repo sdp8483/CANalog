@@ -14,7 +14,6 @@ const char PAGE_index_HTML[] PROGMEM = R"=====(
     <meta name="author" content="Sam Perry">
     <link rel="stylesheet" href="/style.css">
     <script src="/index.js"></script>
-    <!-- <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script> -->
 </head>
 <body onload="loadDoc()">
     <section class="header">CANalog Settings</section>

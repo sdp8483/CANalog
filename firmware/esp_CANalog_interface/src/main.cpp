@@ -235,7 +235,15 @@ void handleStyle(AsyncWebServerRequest *request) {
 }
 
 void handleData(AsyncWebServerRequest *request) {
-  StaticJsonDocument<192> data;
+  /* read data */
+  spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
+
+  String frame;
+  for (uint8_t i=0; i<sizeof(can.frame); i++) {
+    frame += String(can.frame[i], 16);
+  }
+
+  StaticJsonDocument<256> data;
 
   data["baud"] = can.can_baud;
   data["type"] = can.can_type;
@@ -245,6 +253,9 @@ void handleData(AsyncWebServerRequest *request) {
   data["endianness"] = can.endianness;
   data["max"] = can.max;
   data["min"] = can.min;
+  data["frame"] = frame;
+  data["value"] = can.value;
+  data["dac_out"] = can.dac_out;
 
   String json;
   serializeJson(data, json);

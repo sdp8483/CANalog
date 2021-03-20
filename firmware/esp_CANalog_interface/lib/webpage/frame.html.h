@@ -15,7 +15,7 @@ const char PAGE_frame_HTML[] PROGMEM = R"=====(
     <link rel="stylesheet" href="/style.css">
     <script src="/frame.js"></script>
 </head>
-<body>
+<body onload="loadDoc()">
     <section class="header">CANalog Frame View</section>
 
     <section class="navigation">
@@ -30,15 +30,15 @@ const char PAGE_frame_HTML[] PROGMEM = R"=====(
         <aside class="usrInput">
             <div class="formRow">
                 <div class="label">Frame Data: </div>
-                <div class="value"><output type="text" name="frame_data"></output></div>
+                <div class="value"><output type="text" id="frame_data"></output></div>
             </div>
             <div class="formRow">
                 <div class="label">Signal Data: </div>
-                <div class="value"><output type="text" name="signal_data"></output></div>
+                <div class="value"><output type="text" id="signal_data"></output></div>
             </div>
             <div class="formRow">
                 <div class="label">Analog Output: </div>
-                <div class="value"><output type="text" name="aout"></output></div>
+                <div class="value"><output type="text" id="aout"></output></div>
             </div>
         </aside>
         <aside class="frameDisplay">
