@@ -3,11 +3,11 @@
 
 #include <Arduino.h>
 
-const char PAGE_style_css[] PROGMEM = R"=====(
+const char PAGE_style_CSS[] PROGMEM = R"=====(
 * {
     box-sizing: border-box
 }
-.header {
+section.header {
     width: 100%;
     background-color: darkorange;
     text-align: center;
@@ -15,25 +15,25 @@ const char PAGE_style_css[] PROGMEM = R"=====(
     font-weight: 700;
     padding: 0;
 }
-.navigation {
+section.navigation {
     width: 100%;
     padding: 1%;
     text-align: center;
 }
-.main {
+section.main {
     width: 100%;
     clear: both;
     content: "";
     display: table;
 }
-.usrInput {
+aside.usrInput {
     padding-right: 1%;
     float: left;
     width: 50%;
     margin-left: auto;
     margin-right: auto;
 }
-.frameDisplay {
+aside.frameDisplay {
     font-size: 11px;
     padding-top: 50px;
     float: left;
@@ -123,6 +123,5 @@ th {
         width: 100%;
         height: auto;
     }
-}
-)=====";
+})=====";
 #endif

@@ -13,21 +13,19 @@ const char PAGE_analog_HTML[] PROGMEM = R"=====(
     <meta name="description" content="CANalog Configuration (V0.0.1.0)">
     <meta name="author" content="Sam Perry">
     <link rel="stylesheet" href="/style.css">
-    <script src="/libs.js"></script>
+    <script src="/analog.js"></script>
 </head>
 <body>
     <section class="header">CANalog Analog Control</section>
 
     <section class="navigation">
         <button onclick="document.location='index.html'">Settings</button>
-        <button onclick="document.location='frame.html'">Frame</button>
-        <button onclick="document.location='signal.html'">Signal</button>
+        <button onclick="document.location='frame.html'">View</button>
         <button onclick="document.location='analog.html'">Analog</button>
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
     </section>
     
 </body>
-</html>
-)=====";
+</html>)=====";
 #endif

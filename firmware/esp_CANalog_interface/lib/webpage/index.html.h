@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-const char PAGE_Index_HTML[] PROGMEM = R"=====(
+const char PAGE_index_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,7 @@ const char PAGE_Index_HTML[] PROGMEM = R"=====(
     <meta name="description" content="CANalog Configuration (V0.0.1.0)">
     <meta name="author" content="Sam Perry">
     <link rel="stylesheet" href="/style.css">
-    <script src="/libs.js"></script>
+    <script src="/index.js"></script>
     <!-- <script type="text/javascript" src="canalog_lib.js" charset="utf-8"></script> -->
 </head>
 <body onload="loadDoc()">
@@ -21,8 +21,7 @@ const char PAGE_Index_HTML[] PROGMEM = R"=====(
 
     <section class="navigation">
         <button onclick="document.location='index.html'">Settings</button>
-        <button onclick="document.location='frame.html'">Frame</button>
-        <button onclick="document.location='signal.html'">Signal</button>
+        <button onclick="document.location='frame.html'">View</button>
         <button onclick="document.location='analog.html'">Analog</button>
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
@@ -61,17 +60,17 @@ const char PAGE_Index_HTML[] PROGMEM = R"=====(
                 <div class="line"></div>
                 <div class="formRow">
                     <div class="label">CAN ID</div>
-                    <div class="value"><input onchange="validateID()" type="text" id="can_id" name="can_id" pattern="[A-Fa-f0-9]{0,8}" value="18EFB300"></div>
+                    <div class="value"><input onchange="validateID()" type="text" id="can_id" name="can_id" pattern="[A-Fa-f0-9]{0,8}"></div>
                 </div>
                 <div class="line"></div>
                 <div class="formRow">
                     <div class="label">Signal Start Bit</div>
-                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" value="2" min="0" max="63"></div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_start_bit" name="can_signal_start_bit" min="0" max="63"></div>
                 </div>
                 <div class="line"></div>
                 <div class="formRow">
                     <div class="label">Signal Bit Length</div>
-                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" value="8" min="1" max="64"></div>
+                    <div class="value"><input onchange="setBits()" type="number" id="can_signal_bit_len" name="can_signal_bit_len" min="1" max="64"></div>
                 </div>
                 <div class="line"></div>
                 <div class="formRow">
@@ -86,12 +85,12 @@ const char PAGE_Index_HTML[] PROGMEM = R"=====(
                 <div class="line"></div>
                 <div class="formRow">
                     <div class="label">Signal Max</div>
-                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_max" name="can_signal_max" value="65535" min=0 max=65535></div>
+                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_max" name="can_signal_max" min=0 max=65535></div>
                 </div>
                 <div class="line"></div>
                 <div class="formRow">
                     <div class="label">Signal Min</div>
-                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_min" name="can_signal_min" value="0" min=0 max=65535></div>
+                    <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_min" name="can_signal_min" min=0 max=65535></div>
                 </div>
                 <div class="line"></div>
                 <div class="buttonRow">
@@ -205,7 +204,5 @@ const char PAGE_Index_HTML[] PROGMEM = R"=====(
         </aside>
     </section>
 </body>
-</html>
-)=====";
-
+</html>)=====";
 #endif
