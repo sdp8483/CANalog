@@ -26,18 +26,22 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
     
     <section class="infoText">
         <div>
-            ESP_FW_VERSION:
-            <output type="text", id="esp_fw", name="esp_fw"></output>
+            WiFi Adapter Firmware Version
+            <pre><output type="text", id="esp_fw", name="esp_fw"></output></pre>
         </div>
         <div class="line"></div>
         <div>
-            STM_FW_VERSION:
-            <output type="text", id="stm_fw", name="stm_fw"></output>
+            CAN Adapter Firmware Version
+            <pre><output type="text", id="stm_fw", name="stm_fw"></output></pre>
         </div>
         <div class="line"></div>
         <div>
-            STM_HW_VERSION:
-            <output type="text", id="stm_hw", name="stm_hw"></output>
+            Hardware Version
+            <pre><output type="text", id="stm_hw", name="stm_hw"></output></pre>
+        </div>
+        <div class="line"></div>
+        <div>
+            <a href="https://github.com/sdp8483/CANalog">github.com/sdp8483/CANalog</a>
         </div>
     </section>
 </body>

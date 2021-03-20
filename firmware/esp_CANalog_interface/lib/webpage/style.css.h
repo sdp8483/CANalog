@@ -85,7 +85,6 @@ aside.frameDisplay {
 }
 .infoText {
     font-size: 18px;
-    font-family: monospace;
     width: 100%;
     padding: 1%;
     text-align: center;
