@@ -28,7 +28,7 @@ void ESPMaster::write(uint8_t *pData, uint16_t len) {
   }
   
   delayMicroseconds(SPI_DELAY_us);
-  SPI.transfer(SPI_COMMAND_WRITE); /* signal esp8266 wants to read data */
+  SPI.transfer(SPI_SIGNAL_WRITE); /* signal esp8266 wants to read data */
 
   for(uint16_t i=0; i<len; i++) {
     delayMicroseconds(SPI_DELAY_us);
@@ -54,7 +54,7 @@ void ESPMaster::read(uint8_t *pData, uint16_t len) {
   }
   
   delayMicroseconds(SPI_DELAY_us);
-  SPI.transfer(SPI_COMMAND_READ); /* signal esp8266 wants to read data */
+  SPI.transfer(SPI_SIGNAL_READ); /* signal esp8266 wants to read data */
 
   for(uint16_t i=0; i<len; i++) {
     delayMicroseconds(SPI_DELAY_us);

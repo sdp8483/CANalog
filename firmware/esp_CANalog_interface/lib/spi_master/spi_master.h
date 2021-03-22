@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define SPI_COMMAND_READ    '?'         /* send as first byte in SPI transmission to signal STM32 to return 'signal' data */
-#define SPI_COMMAND_WRITE   '='         /* send as first byte in SPI transmission to signal STM32 that incoming data is new 'signal' data */
+#define SPI_SIGNAL_READ     '?'         /* send as first byte in SPI transmission to signal STM32 to return 'signal' data */
+#define SPI_SIGNAL_WRITE    '='         /* send as first byte in SPI transmission to signal STM32 that incoming data is new 'signal' data */
 #define SPI_GET_FW_VERSION	'F'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
 #define SPI_GET_HW_VERSION	'H'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
 
