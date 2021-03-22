@@ -20,6 +20,9 @@ void signal_init(Signal_Handle_t *hsignal) {
 	hsignal->max = CAN_SIGNAL_MAX;
 	hsignal->min = CAN_SIGNAL_MIN;
 	hsignal->dac_out = 0;
+	hsignal->term = TERMINATION_OFF;
+
+	HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_RESET);
 
 	hsignal->mask = 0;
 	for (uint8_t i=0; i<hsignal->bit_len; i++) {
@@ -31,6 +34,12 @@ void signal_init(Signal_Handle_t *hsignal) {
 void signal_update(Signal_Handle_t *hsignal) {
 
 	hsignal->sn = calc_sn();	/* esp could send wrong sn so get it again */
+
+	if (hsignal->term == TERMINATION_ON) {
+		HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_SET);
+	} else {
+		HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_RESET);
+	}
 
 	hsignal->mask = 0;
 	for (uint8_t i=0; i<hsignal->bit_len; i++) {

@@ -6,5 +6,6 @@
   "bit_len": 16,
   "endianness": 12,
   "max": 40000,
-  "min": 0
+  "min": 0,
+  "term": 0
 }

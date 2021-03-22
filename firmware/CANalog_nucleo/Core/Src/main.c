@@ -37,7 +37,7 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define HW_VERSION				"V0.0.2.0"
-#define FW_VERSION				"V0.0.4.0"
+#define FW_VERSION				"V0.0.5.0"
 
 /* USER CODE END PD */
 
@@ -114,9 +114,6 @@ int main(void) {
 	/* set DAC */
 	HAL_DAC_SetValue(&hdac, DAC1_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 	HAL_DAC_Start(&hdac, DAC1_CHANNEL_1);
-
-	/* for now turn on CAN terminating resistor */
-	HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_SET);
 
 	/* USER CODE END 2 */
 

@@ -54,7 +54,7 @@ aside.frameDisplay {
     content: "";
     display: table
 }
-.label {
+div.label {
     padding-right: 15px;
     font-size: 20px;
     float: left;
@@ -104,6 +104,11 @@ input[type=submit] {
     width: 100%;
     font-size: 20px;
 }
+.radio {
+    margin-left: 3px;
+    width: auto;
+}
+
 table, th, tr, td {
     font-size: inherit;
     border: 2px solid black;

@@ -30,7 +30,7 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V0.0.3.0"
+#define FW_VERSION				"V0.0.4.0"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
 char stm32_hw_version[9];                 /* string that stores hw version from stm32 */
 
@@ -165,6 +165,7 @@ void handleSave(AsyncWebServerRequest *request) {
   can.endianness  = request->arg("can_endianness").toInt();
   can.max         = request->arg("can_signal_max").toInt();
   can.min         = request->arg("can_signal_min").toInt();
+  can.term        = request->arg("term").toInt();
 
   /* save data to EEPROM */
   EEPROM.put(0, can);
@@ -224,6 +225,7 @@ void handleData(AsyncWebServerRequest *request) {
   data["endianness"] = can.endianness;
   data["max"] = can.max;
   data["min"] = can.min;
+  data["term"] = can.term;
   // data["frame"] = frame;
   data["value"] = can.value;
   data["dac_out"] = can.dac_out;

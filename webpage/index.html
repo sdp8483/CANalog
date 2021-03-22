@@ -84,11 +84,19 @@
                     <div class="value"><input onchange="validateMinMax()" type="number" id="can_signal_min" name="can_signal_min" min=0 max=65535></div>
                 </div>
                 <div class="line"></div>
+                <div class="formRow">
+                    <div class="label">CAN Termination</div>
+                    <div class="value">
+                        <div><input class="radio" type="radio" id="on" name="term" value="1"><label for="on">on</label></div>
+                        <div><input class="radio" type="radio" id="off" name="term" value="0"><label for="off">off</label></div>
+                    </div>
+                </div>
                 <div class="buttonRow">
                     <input type="submit" value="Save">
                 </div>
             </form>
         </aside>
+
         <aside class="frameDisplay">
             <table id='frame'>
                 <tr>

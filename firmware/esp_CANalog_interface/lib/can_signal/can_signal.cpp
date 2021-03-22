@@ -73,5 +73,7 @@ uint8_t signal_struct_cmp(Signal_Handle_t *pData1, Signal_Handle_t *pData2) {
 
   if (pData1->min != pData2->min) errors++;
 
+  if (pData1->term != pData2->term) errors++;
+
   return errors;
 }

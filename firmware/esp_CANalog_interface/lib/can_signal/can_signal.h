@@ -10,6 +10,9 @@
 #define ID_TYPE_11BIT			11
 #define ID_TYPE_29BIT			29
 
+#define TERMINATION_ON   1
+#define TERMINATION_OFF  0
+
 #define SIGNAL_STRUCTS_ARE_EQUAL  0
 
 /* CAN signal data struct 
@@ -27,6 +30,7 @@ typedef struct {
   uint8_t  endianness;          /* signal endianness */
   uint16_t max;                 /* signal max value */
   uint16_t min;                 /* signal min value */
+  uint8_t term;				          /* state of 120ohm terminator */
   uint16_t value;               /* signal value extracted from frame */
   uint64_t mask;                /* bit mask to use when getting signal from frame */
   uint16_t dac_out;             /* dac output value */

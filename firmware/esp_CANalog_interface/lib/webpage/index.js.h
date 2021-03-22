@@ -27,6 +27,12 @@ function setInputs(data) {
     document.getElementById("can_endianness").value = obj.endianness;
     document.getElementById("can_signal_max").value = obj.max;
     document.getElementById("can_signal_min").value = obj.min;
+
+    if (obj.term == 1) {
+        document.getElementById("on").checked = true;
+    } else {
+        document.getElementById("off").checked = true;
+    }
 }
 
 function resetBits() {
