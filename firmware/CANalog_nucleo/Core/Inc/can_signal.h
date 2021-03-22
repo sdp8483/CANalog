@@ -30,10 +30,10 @@
  * 		- STM32 responds to ss pin low using EXTI, responding code is in HAL_GPIO_EXTI_Callback
  * 		- the below commands determine if STM32 is sending signal or updating signal
  */
-#define SPI_SIGNAL_READ			'?'
-#define SPI_SIGNAL_WRITE		'='
-#define SPI_GET_FW_VERSION		'F'
-#define SPI_GET_HW_VERSION		'H'
+#define SPI_SIGNAL_SEND			'?'
+#define SPI_SIGNAL_RECEIVE		'='
+#define SPI_SEND_FW_VERSION		'F'
+#define SPI_SEND_HW_VERSION		'H'
 
 /* signal status flag values */
 #define SIGNAL_NO_CHANGE		0

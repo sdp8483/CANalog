@@ -134,12 +134,12 @@ int main(void) {
 			}
 
 			switch (command_bit) {
-			case SPI_SIGNAL_READ: /* esp is requesting parameters */
+			case SPI_SIGNAL_SEND: /* esp is requesting parameters */
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
 					Error_Handler();
 				}
 				break;
-			case SPI_SIGNAL_WRITE: /* esp is sending new parameters*/
+			case SPI_SIGNAL_RECEIVE: /* esp is sending new parameters*/
 				if (HAL_SPI_Receive(&hspi2, (uint8_t*) &signal, sizeof(Signal_Handle_t), 5) != HAL_OK) {
 					Error_Handler();
 				}
@@ -166,12 +166,12 @@ int main(void) {
 				/* set DAC to zero */
 				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
 				break;
-			case SPI_GET_FW_VERSION:
+			case SPI_SEND_FW_VERSION:
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) FW_VERSION, sizeof(FW_VERSION), 5) != HAL_OK) {
 					Error_Handler();
 				}
 				break;
-			case SPI_GET_HW_VERSION:
+			case SPI_SEND_HW_VERSION:
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) HW_VERSION, sizeof(HW_VERSION), 5) != HAL_OK) {
 					Error_Handler();
 				}
