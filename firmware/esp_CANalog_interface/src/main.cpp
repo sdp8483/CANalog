@@ -20,6 +20,8 @@
 #include "saved_nok.html.h"
 #include "saved_ok.html.h"
 #include "style.css.h"
+#include "view.html.h"
+#include "view.js.h"
 
 /* Version Info --------------------------------------------------------------*/
 #define DEVICE_NAME				"CANalog WiFi"
@@ -48,13 +50,18 @@ const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
 AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+bool ws_stream_data = false;              /* when true stream data using websocket */
+unsigned long last_ws_sent;
 
 /* funcition prototypes ------------------------------------------------------*/
 void handleRoot(AsyncWebServerRequest *request);
 void handleSave(AsyncWebServerRequest *request);
+void handleView(AsyncWebServerRequest *request);
 void handlePGNtoID(AsyncWebServerRequest *request);
 void handleAbout(AsyncWebServerRequest *request);
 void handleIndexJavascript(AsyncWebServerRequest *request);
+void handleViewJavascript(AsyncWebServerRequest *request);
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request);
 void handleAboutJavascript(AsyncWebServerRequest *request);
 void handleStyle(AsyncWebServerRequest *request);
@@ -62,6 +69,12 @@ void handleData(AsyncWebServerRequest *request);
 void handleInfo(AsyncWebServerRequest *request);
 void handleNotFound(AsyncWebServerRequest *request);
 void handleInvalidRequest(AsyncWebServerRequest *request);
+void onWsEvent(AsyncWebSocket * server, 
+               AsyncWebSocketClient * client, 
+               AwsEventType type, 
+               void * arg, 
+               uint8_t *data, 
+               size_t len);
 
 void setup(void){
   /* start serial for debugging ----------------------------------------------*/
@@ -130,13 +143,19 @@ void setup(void){
   // start DNS server for a specific domain name
   dnsServer.start(DNS_PORT, SERVER_ADDRESS, apIP);
 
+  /* Websocket ---------------------------------------------------------------*/
+  ws.onEvent(onWsEvent);
+  server.addHandler(&ws);
+
   /* server page request handles ---------------------------------------------*/
   server.on("/", HTTP_GET, handleRoot);           /* Call the 'handleRoot' function when a client requests URI "/" */
   server.on("/index.html", HTTP_GET, handleRoot); /* Call the 'handleRoot' function when a client requests URI "/index" */
   server.on("/save", HTTP_POST, handleSave);      /* Call the 'handleSave' function when a POST request is made to URI "/save" */
   server.on("/pgnid.html", HTTP_GET, handlePGNtoID);
+  server.on("/view.html", HTTP_GET, handleView);
   server.on("/about.html", HTTP_GET, handleAbout);
   server.on("/index.js", handleIndexJavascript);  /* javascript */
+  server.on("/view.js", handleViewJavascript);
   server.on("/pgnid.js", handlePGNtoIDJavascript);
   server.on("/about.js", handleAboutJavascript);
   server.on("/style.css", handleStyle);           /* styles */
@@ -150,6 +169,21 @@ void setup(void){
 
 void loop(void){
   dnsServer.processNextRequest();
+  ws.cleanupClients();
+
+  if (ws_stream_data == true) {
+    if ((millis() - last_ws_sent) >= 1000) {
+      last_ws_sent = millis();
+      StaticJsonDocument<192> data;
+
+      data["millis"] = millis();
+
+      String json;
+      serializeJson(data, json);
+
+      ws.textAll(json.c_str(), json.length());
+    }
+  }
 }
 
 void handleRoot(AsyncWebServerRequest *request) {
@@ -187,6 +221,10 @@ void handleSave(AsyncWebServerRequest *request) {
   }
 }
 
+void handleView(AsyncWebServerRequest *request) { 
+  request->send_P(200, "text/html", PAGE_view_HTML);
+}
+
 void handlePGNtoID(AsyncWebServerRequest *request) { 
   request->send_P(200, "text/html", PAGE_pgnid_HTML);
 }
@@ -197,6 +235,10 @@ void handleAbout(AsyncWebServerRequest *request) {
 
 void handleIndexJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_index_JS);
+}
+
+void handleViewJavascript(AsyncWebServerRequest *request) {
+  request->send_P(200, "application/javascript", PAGE_view_JS);
 }
 
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request) {
@@ -255,4 +297,32 @@ void handleNotFound(AsyncWebServerRequest *request){
 
 void handleInvalidRequest(AsyncWebServerRequest *request) {
   request->send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
+}
+
+void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
+               AwsEventType type, void * arg, uint8_t *data, size_t len) {
+  switch (type) {
+  case WS_EVT_CONNECT:
+    Serial.println("Websocket data stream started");
+    client->text("Websocket data stream started");
+    ws_stream_data = true;
+    break;
+  case WS_EVT_DISCONNECT:
+    Serial.println("Websocket data stream ended");
+    ws_stream_data = false;
+    break;
+  case WS_EVT_ERROR:
+
+    break;
+  case WS_EVT_PONG:
+
+    break;
+  case WS_EVT_DATA:
+
+    break;
+  
+
+  default:
+    break;
+  }
 }

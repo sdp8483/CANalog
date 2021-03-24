@@ -7,12 +7,13 @@ const char PAGE_index_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>CANalog Configuration</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="CANalog Configuration (V0.0.1.0)">
     <meta name="author" content="Sam Perry">
+    <title>CANalog Configuration</title>
     <link rel="stylesheet" href="/style.css">
+    <link rel="icon" href="data:,"> <!-- disable favicon request -->
     <script src="/index.js"></script>
 </head>
 <body onload="loadDoc()">
@@ -20,6 +21,7 @@ const char PAGE_index_HTML[] PROGMEM = R"=====(
 
     <section class="navigation">
         <button onclick="document.location='index.html'">Settings</button>
+        <button onclick="document.location='view.html'">View</button>
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
     </section>
