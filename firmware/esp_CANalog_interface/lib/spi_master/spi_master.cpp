@@ -23,6 +23,7 @@ void ESPMaster::write(uint8_t *pData, uint16_t len) {
   while (digitalRead(_rdy_pin) == HIGH) {
     if ((millis() - polling_start) >= TIMEOUT_ms) {
       Serial.println(F("SPI timeout while waiting for ready signal from STM32"));
+      digitalWrite(_ss_pin, HIGH);
       return;
     }
   }
@@ -49,6 +50,7 @@ void ESPMaster::read(uint8_t *pData, uint16_t len) {
   while (digitalRead(_rdy_pin) == HIGH) {
     if ((millis() - polling_start) >= TIMEOUT_ms) {
       Serial.println(F("SPI timeout while waiting for ready signal from STM32"));
+      digitalWrite(_ss_pin, HIGH);
       return;
     }
   }
@@ -75,6 +77,7 @@ void ESPMaster::read(uint8_t cmd_char, uint8_t *pData, uint16_t len) {
   while (digitalRead(_rdy_pin) == HIGH) {
     if ((millis() - polling_start) >= TIMEOUT_ms) {
       Serial.println(F("SPI timeout while waiting for ready signal from STM32"));
+      digitalWrite(_ss_pin, HIGH);
       return;
     }
   }

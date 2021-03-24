@@ -1,9 +1,3 @@
-#ifndef INC_SAVED_OK_HTML_H_
-#define INC_SAVED_OK_HTML_H_
-
-#include <Arduino.h>
-
-const char PAGE_saved_ok_HTML[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,12 +5,13 @@ const char PAGE_saved_ok_HTML[] PROGMEM = R"=====(
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="CANalog Configuration (V0.0.1.0)">
     <meta name="author" content="Sam Perry">
-    <title>CANalog Settings Saved</title>
+    <title>CANalog View</title>
     <link rel="stylesheet" href="/style.css">
+    <script src="/view.js"></script>
     <link rel="icon" href="data:,"> <!-- disable favicon request -->
 </head>
-<body>
-    <section class="header">CANalog Settings Saved</section>
+<body onload="initView()">
+    <section class="header">CANalog View</section>
 
     <section class="navigation">
         <button onclick="document.location='index.html'">Settings</button>
@@ -24,14 +19,8 @@ const char PAGE_saved_ok_HTML[] PROGMEM = R"=====(
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
     </section>
-
-    <section class="savedOutput">
-        <div>Settings Updated</div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div><button onclick="document.location='index.html'">back</button></div>
-    </section>
-    
 </body>
-</html>)=====";
-#endif
+
+<output type='text' id='time'></output>
+
+</html>
