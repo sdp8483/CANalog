@@ -36,6 +36,7 @@
 #define SPI_SEND_HW_VERSION		'H'
 #define SPI_SEND_CAN_SIGNAL		'S'
 #define SPI_SEND_DAC_VALUE		'D'
+#define SPI_SEND_CAN_FRAME		'C'
 
 /* signal status flag values */
 #define SIGNAL_NO_CHANGE		0

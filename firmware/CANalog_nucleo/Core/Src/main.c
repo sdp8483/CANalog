@@ -17,6 +17,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "string.h"
 #include "can_signal.h"
 #include "can_bit_timing.h"
 
@@ -55,10 +56,10 @@ CAN_HandleTypeDef hcan;
 
 CAN_FilterTypeDef canFilter;
 CAN_RxHeaderTypeDef canRxHeader;
+uint8_t canRxBuffer[8];
 
 Signal_Handle_t signal;
 
-HAL_StatusTypeDef spi_error;
 
 /* USER CODE END PV */
 
@@ -188,6 +189,11 @@ int main(void) {
 					Error_Handler();
 				}
 				break;
+			case SPI_SEND_CAN_FRAME:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.frame, sizeof(signal.frame), 5) != HAL_OK) {
+					Error_Handler();
+				}
+				break;
 			default:
 				break;
 			}
@@ -202,13 +208,16 @@ int main(void) {
 
 		/* CAN ---------------------------------------------------------------*/
 		if (HAL_CAN_GetRxFifoFillLevel(&hcan, CAN_RX_FIFO0) != 0) {
-			if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canRxHeader, signal.frame) != HAL_OK) {
+			if (HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canRxHeader, canRxBuffer) != HAL_OK) {
 				Error_Handler();
 			} // end HAL_CAN_GetRxMessage
 
 			switch (signal.can_type) {
 			case ID_TYPE_11BIT:
 				if (canRxHeader.StdId == signal.can_id) {
+					/* copy canRxBuffer into signal */
+					memcpy(signal.frame, canRxBuffer, sizeof(signal.frame));
+
 					signal_calc(&signal);
 					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
 					HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);
@@ -216,6 +225,9 @@ int main(void) {
 				break;
 			case ID_TYPE_29BIT:
 				if (canRxHeader.ExtId == signal.can_id) {
+					/* copy canRxBuffer into signal */
+					memcpy(signal.frame, canRxBuffer, sizeof(signal.frame));
+
 					signal_calc(&signal);
 					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
 					HAL_GPIO_TogglePin(LED0_GPIO_Port, LED0_Pin);

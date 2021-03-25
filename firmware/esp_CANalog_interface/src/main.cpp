@@ -181,11 +181,20 @@ void loop(void){
       spiMaster.read(SPI_GET_CAN_SIGNAL, (uint8_t *) &can.value, sizeof(can.value));
       delayMicroseconds(50);
       spiMaster.read(SPI_GET_DAC_VALUE, (uint8_t *) &can.dac_out, sizeof(can.dac_out));
+      delayMicroseconds(50);
+      spiMaster.read(SPI_GET_CAN_FRAME, (uint8_t *) &can.frame, sizeof(can.frame));
 
-      StaticJsonDocument<32> data;
+      StaticJsonDocument<65> data;
 
       data["value"] = can.value;
       data["dac"] = can.dac_out;
+      
+      String frame;
+      for (uint8_t i=0; i<sizeof(can.frame); i++) {
+        frame += String(can.frame[i], 16);
+      }
+
+      data["frame"] = frame;
 
       String json;
       serializeJson(data, json);
@@ -281,7 +290,6 @@ void handleData(AsyncWebServerRequest *request) {
   data["max"] = can.max;
   data["min"] = can.min;
   data["term"] = can.term;
-  // data["frame"] = frame;
   data["value"] = can.value;
   data["dac_out"] = can.dac_out;
 

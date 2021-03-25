@@ -10,12 +10,12 @@ var config = {
             data: [],
             label: "CAN Signal",
             borderColor: "rgb(54, 162, 235)",
-            fill: false
+            fill: false,
         }, {
             data: [],
             label: "DAC Output",
             borderColor: "rgb(255, 99, 132)",
-            fill: false
+            fill: false,
         }]
     },
     options: {
@@ -33,6 +33,8 @@ function initView() {
         var t = today.getHours() + ":" + minutesWithLeadingZeros(today) + ":" + secondsWithLeadingZeros(today);
 
         addData(t, data.value, data.dac);
+
+        console.log(data);
     }
 
     dataPlot.canvas.parentNode.style.width = "80%";
