@@ -183,14 +183,20 @@ int main(void) {
 					Error_Handler();
 				}
 				break;
+			case SPI_SEND_DAC_VALUE:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.dac_out, sizeof(signal.dac_out), 5) != HAL_OK) {
+					Error_Handler();
+				}
+				break;
 			default:
 				break;
 			}
 
 			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_SET); /* return ready pin to high */
 
-			while (HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0)
+			while (HAL_GPIO_ReadPin(CS_GPIO_Port, CS_Pin) == 0) {
 				; /* loop until esp8266 pulls CS high */
+			}
 			HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_RESET);
 		}
 
@@ -284,6 +290,7 @@ void Error_Handler(void) {
 	/* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	__disable_irq();
+	HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, GPIO_PIN_SET);
 	while (1) {
 	}
 	/* USER CODE END Error_Handler_Debug */

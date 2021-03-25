@@ -9,6 +9,7 @@
 #define SPI_GET_FW_VERSION	'F'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
 #define SPI_GET_HW_VERSION	'H'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
 #define SPI_GET_CAN_SIGNAL  'S'         /* send as first byte in SPI transmission to signal STM32 to return CAN signal value */
+#define SPI_GET_DAC_VALUE   'D'
 
 #define SPI_DELAY_us        10          /* delay for uS before each SPI.transmit to allow STM32 time to catch up, STM32 needs a few uS between bytes */
 #define SPI_BAUD            500000UL    /* SPI clock baud rate in Mbits/sec */

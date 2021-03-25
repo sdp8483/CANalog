@@ -179,10 +179,13 @@ void loop(void){
       last_ws_sent = millis();
 
       spiMaster.read(SPI_GET_CAN_SIGNAL, (uint8_t *) &can.value, sizeof(can.value));
+      delayMicroseconds(50);
+      spiMaster.read(SPI_GET_DAC_VALUE, (uint8_t *) &can.dac_out, sizeof(can.dac_out));
 
-      StaticJsonDocument<16> data;
+      StaticJsonDocument<32> data;
 
       data["value"] = can.value;
+      data["dac"] = can.dac_out;
 
       String json;
       serializeJson(data, json);

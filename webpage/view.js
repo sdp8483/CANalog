@@ -9,12 +9,12 @@ var config = {
         datasets: [{
             data: [],
             label: "CAN Signal",
-            borderColor: "#3e95cd",
+            borderColor: "rgb(54, 162, 235)",
             fill: false
         }, {
             data: [],
             label: "DAC Output",
-            borderColor: "#4bc0c0",
+            borderColor: "rgb(255, 99, 132)",
             fill: false
         }]
     },
@@ -41,12 +41,14 @@ function initView() {
 function removeData() {
     dataPlot.data.labels.shift();
     dataPlot.data.datasets[0].data.shift();
+    dataPlot.data.datasets[1].data.shift();
 }
 
-function addData(label, data) {
+function addData(label, data, dac) {
     if(dataPlot.data.labels.length > maxDataPoints) removeData();
     dataPlot.data.labels.push(label);
     dataPlot.data.datasets[0].data.push(data);
+    dataPlot.data.datasets[1].data.push(dac);
     dataPlot.update();
 }
 
