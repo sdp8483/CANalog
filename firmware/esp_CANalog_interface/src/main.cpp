@@ -13,6 +13,7 @@
 /* Raw String Literals for webpages */
 #include "about.html.h"
 #include "about.js.h"
+#include "Chart.min.js.h"
 #include "index.html.h"
 #include "index.js.h"
 #include "pgnid.html.h"
@@ -64,6 +65,7 @@ void handleIndexJavascript(AsyncWebServerRequest *request);
 void handleViewJavascript(AsyncWebServerRequest *request);
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request);
 void handleAboutJavascript(AsyncWebServerRequest *request);
+void handleChartJavascript(AsyncWebServerRequest *request);
 void handleStyle(AsyncWebServerRequest *request);
 void handleData(AsyncWebServerRequest *request);
 void handleInfo(AsyncWebServerRequest *request);
@@ -158,6 +160,7 @@ void setup(void){
   server.on("/view.js", handleViewJavascript);
   server.on("/pgnid.js", handlePGNtoIDJavascript);
   server.on("/about.js", handleAboutJavascript);
+  server.on("/Chart.min.js", handleChartJavascript);
   server.on("/style.css", handleStyle);           /* styles */
   server.on("/data.txt", handleData);
   server.on("/info.txt", handleInfo);
@@ -174,9 +177,12 @@ void loop(void){
   if (ws_stream_data == true) {
     if ((millis() - last_ws_sent) >= 1000) {
       last_ws_sent = millis();
-      StaticJsonDocument<192> data;
 
-      data["millis"] = millis();
+      spiMaster.read(SPI_GET_CAN_SIGNAL, (uint8_t *) &can.value, sizeof(can.value));
+
+      StaticJsonDocument<16> data;
+
+      data["value"] = can.value;
 
       String json;
       serializeJson(data, json);
@@ -247,6 +253,10 @@ void handlePGNtoIDJavascript(AsyncWebServerRequest *request) {
 
 void handleAboutJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_about_JS);
+}
+
+void handleChartJavascript(AsyncWebServerRequest *request) {
+  request->send_P(200, "application/javascript", PAGE_chart_JS);
 }
 
 void handleStyle(AsyncWebServerRequest *request) {

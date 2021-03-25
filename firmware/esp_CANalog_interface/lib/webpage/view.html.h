@@ -14,6 +14,7 @@ const char PAGE_view_HTML[] PROGMEM = R"=====(
     <title>CANalog View</title>
     <link rel="stylesheet" href="/style.css">
     <script src="/view.js"></script>
+    <script src="/Chart.min.js"></script>
     <link rel="icon" href="data:,"> <!-- disable favicon request -->
 </head>
 <body onload="initView()">
@@ -25,9 +26,10 @@ const char PAGE_view_HTML[] PROGMEM = R"=====(
         <button onclick="document.location='pgnid.html'">PGN to ID</button>
         <button onclick="document.location='about.html'">About</button>
     </section>
+
+    <section class="plot">
+        <canvas id="lineChart"></canvas>
+    </section>
 </body>
-
-<output type='text' id='time'></output>
-
 </html>)=====";
 #endif

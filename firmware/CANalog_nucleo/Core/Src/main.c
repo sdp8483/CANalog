@@ -37,7 +37,7 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define HW_VERSION				"V0.0.2.0"
-#define FW_VERSION				"V0.0.5.0"
+#define FW_VERSION				"V0.0.6.0"
 
 /* USER CODE END PD */
 
@@ -57,6 +57,8 @@ CAN_FilterTypeDef canFilter;
 CAN_RxHeaderTypeDef canRxHeader;
 
 Signal_Handle_t signal;
+
+HAL_StatusTypeDef spi_error;
 
 /* USER CODE END PV */
 
@@ -129,7 +131,7 @@ int main(void) {
 			HAL_GPIO_WritePin(RDY_GPIO_Port, RDY_Pin, GPIO_PIN_RESET); /* signal to esp8266 we are ready to talk */
 
 			uint8_t command_bit = 0;
-			if (HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 1) != HAL_OK) {
+			if (HAL_SPI_Receive(&hspi2, &command_bit, sizeof(command_bit), 2) != HAL_OK) {
 				Error_Handler();
 			}
 
@@ -173,6 +175,11 @@ int main(void) {
 				break;
 			case SPI_SEND_HW_VERSION:
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) HW_VERSION, sizeof(HW_VERSION), 5) != HAL_OK) {
+					Error_Handler();
+				}
+				break;
+			case SPI_SEND_CAN_SIGNAL:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.value, sizeof(signal.value), 5) != HAL_OK) {
 					Error_Handler();
 				}
 				break;
