@@ -9,11 +9,11 @@ const char PAGE_style_CSS[] PROGMEM = R"=====(
 }
 section.header {
     width: 100%;
-    background-color: darkorange;
+    background-color: orangered;
     text-align: center;
     font-size: 30px;
     font-weight: 700;
-    padding: 0;
+    padding: 10px;
 }
 section.navigation {
     width: 100%;
@@ -120,7 +120,7 @@ table, th, tr, td {
 }
 th {
     font-weight: bold;
-    background-color: darkorange;
+    background-color: orangered;
 }
 @media (max-width: 650px) {
     .usrInput, .frameDisplay {

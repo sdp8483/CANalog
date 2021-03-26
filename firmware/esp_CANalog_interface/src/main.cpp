@@ -182,7 +182,7 @@ void loop(void){
       delayMicroseconds(50);
       spiMaster.read(SPI_GET_DAC_VALUE, (uint8_t *) &can.dac_out, sizeof(can.dac_out));
       delayMicroseconds(50);
-      spiMaster.read(SPI_GET_CAN_FRAME, (uint8_t *) &can.frame, sizeof(can.frame));
+      spiMaster.read(SPI_GET_CAN_FRAME, can.frame, sizeof(can.frame));
 
       StaticJsonDocument<65> data;
 
@@ -190,8 +190,13 @@ void loop(void){
       data["dac"] = can.dac_out;
       
       String frame;
-      for (uint8_t i=0; i<sizeof(can.frame); i++) {
-        frame += String(can.frame[i], 16);
+      for (uint8_t i=0; i<8; i++) {
+        if (can.frame[i] < 10) {
+          frame += "0";
+          frame += String(can.frame[i], HEX);
+        } else {
+          frame += String(can.frame[i], HEX);
+        }
       }
 
       data["frame"] = frame;
