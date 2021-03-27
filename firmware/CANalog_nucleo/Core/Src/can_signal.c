@@ -61,6 +61,13 @@ uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uin
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;;
 }
 
+void nibble_swap(uint64_t *val) {
+	uint64_t high_nibbles = (*val >> 4) & 0x0F0F0F0F0F0F0F0F;
+	uint64_t low_nibbles  = (*val)      & 0x0F0F0F0F0F0F0F0F;
+
+	*val = (low_nibbles << 4) | high_nibbles;
+}
+
 /* get signal from frame and set DAC output */
 void signal_calc(Signal_Handle_t *hsignal) {
 	uint64_t temp = 0;
@@ -73,20 +80,17 @@ void signal_calc(Signal_Handle_t *hsignal) {
 		temp = temp >> hsignal->start_bit;
 	} else {
         for(uint8_t i=0; i<sizeof(hsignal->frame); i++) {
-        	/* swap nibbles */
-        	uint8_t b = hsignal->frame[i];
-        	uint8_t nibble_h = (b >> 4) & 0x0F;
-        	uint8_t nibble_l = b & 0x0F;
-        	b = (nibble_l << 4) | (nibble_h);
-        	temp += ((uint64_t)b << (56 - (i * 8)));
-
-//        	temp += ((uint64_t)hsignal->frame[i] << (56 - (i * 8)));
+        	temp += ((uint64_t)hsignal->frame[i] << (56 - (i * 8)));
         }
 
+        /* swap nibbles for signals that are not 8 bit aligned */
+        nibble_swap(&temp);
+
+        /* shift to signal data */
         temp = temp >> be_shift[hsignal->start_bit];
 
-        /* swap nibbles back */
-        temp = ((temp << 4) & 0xF000) | ((temp >> 4) & 0x0F00) | ((temp << 4) & 0xF0) | ((temp >> 4) & 0x0F);
+        /* return nibbles to original position */
+        nibble_swap(&temp);
 	}
 
 	temp &= hsignal->mask;

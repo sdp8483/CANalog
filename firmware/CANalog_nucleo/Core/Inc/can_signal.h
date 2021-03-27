@@ -84,5 +84,6 @@ void signal_update(Signal_Handle_t *hsignal);	/* new parameters, update calculat
 void signal_calc(Signal_Handle_t *hsignal);		/* get signal from frame */
 
 uint32_t map(uint32_t x, uint32_t in_min, uint32_t in_max, uint32_t out_min, uint32_t out_max);
+void nibble_swap(uint64_t *val);
 
 #endif /* INC_CAN_SIGNAL_H_ */
