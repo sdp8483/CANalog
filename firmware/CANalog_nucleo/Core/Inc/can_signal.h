@@ -53,6 +53,10 @@
 #define CAN_SIGNAL_MAX			40000					/* max signal value, not necessarily max signal bit len */
 #define CAN_SIGNAL_MIN			0						/* min signal value */
 
+/* Big Endian shift lookup table by bit position
+ * for example if bit position is 56, find index 56 in array and shift that amount*/
+extern const uint8_t be_shift[64];
+
 /* CAN signal data struct
  *  !this is the same exact struct on the ESP8266!
  *  For SPI bulk transmission of this struct to work these have to be the same (order and everything)
