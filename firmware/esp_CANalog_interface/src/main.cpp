@@ -93,8 +93,8 @@ void setup(void){
   delay(10000);                       /* wait for STM32 to startup */
 
   /* get data from STM32 so we can use sn to set the SSID --------------------*/
-  spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
-  printData(&can);                    /* print received data for debugging */
+  // spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
+  // printData(&can);                    /* print received data for debugging */
 
   spiMaster.read(SPI_GET_FW_VERSION, (uint8_t*) stm32_fw_version, sizeof(stm32_fw_version));
   Serial.print("STM32 FW: ");
@@ -106,7 +106,9 @@ void setup(void){
 
 
   /* assemble SSID with SN from STM32 for unique SSID per device -------------*/
-  ssid += String(can.sn, HEX);
+  uint32_t sn;
+  spiMaster.read(SPI_GET_SN, (uint8_t*) &sn, sizeof(sn));
+  ssid += String(sn, HEX);
 
   /* setup EEPROM ------------------------------------------------------------*/
   EEPROM.begin(sizeof(Signal_Handle_t));
@@ -184,19 +186,14 @@ void loop(void){
       delayMicroseconds(50);
       spiMaster.read(SPI_GET_CAN_FRAME, can.frame, sizeof(can.frame));
 
-      StaticJsonDocument<65> data;
-
+      StaticJsonDocument<96> data;
+      
       data["value"] = can.value;
       data["dac"] = can.dac_out;
       
       String frame;
-      for (uint8_t i=0; i<8; i++) {
-        if (can.frame[i] < 10) {
-          frame += "0";
-          frame += String(can.frame[i], HEX);
-        } else {
-          frame += String(can.frame[i], HEX);
-        }
+      for (uint8_t i=0; i<sizeof(can.frame); i++) {
+        frame += (can.frame[i] < 16 ? "0": "") + String(can.frame[i], HEX); // add leading zero
       }
 
       data["frame"] = frame;
@@ -236,6 +233,7 @@ void handleSave(AsyncWebServerRequest *request) {
   /* check to make sure data was received */
   Signal_Handle_t can_on_stm32;
   spiMaster.read((uint8_t *) &can_on_stm32, sizeof(Signal_Handle_t));
+  printData(&can_on_stm32);
 
   if (signal_struct_cmp(&can, &can_on_stm32) == SIGNAL_STRUCTS_ARE_EQUAL) {
     request->send_P(200, "text/html", PAGE_saved_ok_HTML); // data transfer is good
