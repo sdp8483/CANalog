@@ -60,6 +60,8 @@ uint8_t canRxBuffer[8];
 
 Signal_Handle_t signal;
 
+uint32_t sn;
+
 
 /* USER CODE END PV */
 
@@ -106,6 +108,8 @@ int main(void) {
 	MX_DAC_Init();
 	MX_SPI2_Init();
 	/* USER CODE BEGIN 2 */
+	sn = calc_sn();
+
 	signal_init(&signal); /* initialize signal to default values */
 
 	can_filter_init(&hcan, &canFilter);
@@ -168,6 +172,11 @@ int main(void) {
 				}
 				/* set DAC to zero */
 				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, 0);
+				break;
+			case SPI_SEND_SN:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &sn, sizeof(sn), 5) != HAL_OK) {
+					Error_Handler();
+				}
 				break;
 			case SPI_SEND_FW_VERSION:
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) FW_VERSION, sizeof(FW_VERSION), 5) != HAL_OK) {

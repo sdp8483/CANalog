@@ -4,8 +4,8 @@ void printData(Signal_Handle_t *pData) {
  Serial.print("Struct Size: ");
   Serial.println(sizeof(Signal_Handle_t));
 
-  Serial.print("SN: 0x");
-  Serial.println(pData->sn, HEX);
+  // Serial.print("SN: 0x");
+  // Serial.println(pData->sn, HEX);
 
   Serial.print("Frame: [");
   for (uint8_t i=0; i<sizeof(pData->frame); i++) {

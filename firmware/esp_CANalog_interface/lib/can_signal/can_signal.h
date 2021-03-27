@@ -20,7 +20,7 @@
  *  For SPI bulk transmission of this struct to work these have to be the same (order and everything)
  *  If you update this be sure to update the STM32 struct as well */
 typedef struct {
-  uint32_t sn;                  /* stm32 SN used to set unique SSID per device */
+  // uint32_t sn;                  /* stm32 SN used to set unique SSID per device */
   uint8_t  frame[8];            /* CAN frame data */
   uint16_t can_baud;            /* CAN baud rate in kbps */
   uint8_t  can_type;            /* ID type */

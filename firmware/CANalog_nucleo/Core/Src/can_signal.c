@@ -10,7 +10,7 @@
 /* initialize signal handle with default values at startup */
 void signal_init(Signal_Handle_t *hsignal) {
 
-	hsignal->sn = calc_sn();
+//	hsignal->sn = calc_sn();
 	hsignal->can_baud = CAN_BAUD;
 	hsignal->can_id = CAN_ID;
 	hsignal->can_type = CAN_ID_TYPE;
@@ -33,7 +33,7 @@ void signal_init(Signal_Handle_t *hsignal) {
 /* new parameters were received, update calculated values */
 void signal_update(Signal_Handle_t *hsignal) {
 
-	hsignal->sn = calc_sn();	/* esp could send wrong sn so get it again */
+//	hsignal->sn = calc_sn();	/* esp could send wrong sn so get it again */
 
 	if (hsignal->term == TERMINATION_ON) {
 		HAL_GPIO_WritePin(CAN_TERM_GPIO_Port, CAN_TERM_Pin, GPIO_PIN_SET);

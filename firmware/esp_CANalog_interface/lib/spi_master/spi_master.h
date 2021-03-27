@@ -4,13 +4,15 @@
 #include <Arduino.h>
 #include <SPI.h>
 
-#define SPI_SIGNAL_READ     '?'         /* send as first byte in SPI transmission to signal STM32 to return 'signal' data */
-#define SPI_SIGNAL_WRITE    '='         /* send as first byte in SPI transmission to signal STM32 that incoming data is new 'signal' data */
-#define SPI_GET_FW_VERSION	'F'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
-#define SPI_GET_HW_VERSION	'H'         /* send as first byte in SPI transmission to signal STM32 to return firmware version string */
-#define SPI_GET_CAN_SIGNAL  'S'         /* send as first byte in SPI transmission to signal STM32 to return CAN signal value */
-#define SPI_GET_DAC_VALUE   'D'
-#define SPI_GET_CAN_FRAME   'C'
+/* characters sent as first byte in SPI transmission to signal STM32 what to do */
+#define SPI_SIGNAL_READ     '?'         /* read 'signal' data from stm32 */
+#define SPI_SIGNAL_WRITE    '='         /* write 'signal' data to stm32 */
+#define SPI_GET_SN          'N'         /* read SN from STM32 */
+#define SPI_GET_FW_VERSION	'F'         /* read firmware version string */
+#define SPI_GET_HW_VERSION	'H'         /* read firmware version string */
+#define SPI_GET_CAN_SIGNAL  'S'         /* read CAN signal value */
+#define SPI_GET_DAC_VALUE   'D'         /* read dac value */
+#define SPI_GET_CAN_FRAME   'C'         /* read CAN frame data */
 
 #define SPI_DELAY_us        10          /* delay for uS before each SPI.transmit to allow STM32 time to catch up, STM32 needs a few uS between bytes */
 #define SPI_BAUD            500000UL    /* SPI clock baud rate in Mbits/sec */
