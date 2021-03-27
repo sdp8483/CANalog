@@ -49,6 +49,7 @@ function initView() {
         setBits(data.frame);
         document.getElementById("signal").value = data.value;
         document.getElementById("dac").value = data.dac;
+        document.getElementById("fstr").value = data.frame;
 
         console.log(data);
     }
