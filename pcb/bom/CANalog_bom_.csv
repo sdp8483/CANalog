@@ -1,0 +1,66 @@
+Component,Description,Part,References,Value,Footprint,Quantity Per PCB,Datasheet,Population
+1,Unpolarized capacitor,C,C9,33pF,C_0603_1608Metric,1,~,
+2,Unpolarized capacitor,C,C3 C5 C6 C8 C10 C11,100nF,,6,~,
+3,Unpolarized capacitor,C,C4 C12 C16 C18 C19,0.1uF,C_0805_2012Metric,5,~,
+4,Unpolarized capacitor,C,C2 C13 C15,1uF,,3,~,
+5,Unpolarized capacitor,C,C17,1uF,C_0805_2012Metric,1,~,
+6,Unpolarized capacitor,C,C1,4.7uF,C_0805_2012Metric,1,~,
+7,Unpolarized capacitor,C,C7 C14,10uF,C_0805_2012Metric,2,~,
+8,Diode,D,D9,1N4148,D_DO-35_SOD27_P7.62mm_Horizontal,1,~,
+9,Zener diode,D_Zener,D1,BZV55-C15,Nexperia_BZV55_SOD80C,1,~,
+10,Diode,D,D5,D,,1,~,
+11,Light emitting diode,LED,D3 D6 D7 D8,LED,LED_0603_1608Metric,4,~,
+12,,PESD1CAN-UX,D10,PESD1CAN-UX,SOT-323_SC-70,1,,
+13,Schottky diode,D_Schottky,D2 D4,SS14F,SMAF,2,~,
+14,"Ferrite bead, small symbol",Ferrite_Bead_Small,FB1 FB2,FBS,,2,~,
+15,"Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x03,J8,CAN,,1,~,
+16,"Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x06,J6,ESP_PROG,PinHeader_1x06_P2.54mm_Vertical,1,~,
+17,"Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x04,J4 J5,I2C2,,2,~,DNP
+18,"Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x02,J1 J7,PWR,WJ127-5.0-2P,2,~,
+19,"Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x06,J3,SPI3,,1,~,DNP
+20,USB Micro Type B connector,USB_B_Micro,J2,USB_B_Micro,USB_Micro-B_Amphenol_10103594-0001LF_Horizontal,1,~,
+21,"Jumper, normally open, small symbol",Jumper_NO_Small,JP3,BOOT0,PinHeader_1x02_P2.54mm_Vertical,1,~,
+22,"Jumper, normally closed, small symbol",Jumper_NC_Small,JP1 JP2,NC,,2,~,
+23,Inductor,L,L1,2.2uH,L_3.5mmx3.0mm_SMD,1,~,
+24,"P-MOSFET transistor, gate/source/drain",Q_PMOS_GSD,Q1 Q3,DMP3099L-7,SOT-23,2,~,
+25,"NPN transistor, base/emitter/collector",Q_NPN_BEC,Q2,MMBT2222A,SOT-23,1,~,
+26,Resistor,R,R1 R2,0,R_0805_2012Metric,2,~,
+27,Resistor,R,R26,120,R_0805_2012Metric,1,~,
+28,Resistor,R,R8 R11 R22 R23 R24,1k,R_0805_2012Metric,5,~,
+29,Resistor,R,R7,1.5k,R_0805_2012Metric,1,~,
+30,Resistor,R,R3 R4 R12 R15 R16 R17,10k,R_0805_2012Metric,6,~,
+31,Resistor,R,R18,10k,,1,~,
+32,Resistor,R,R20,12k,R_0805_2012Metric,1,~,
+33,Resistor,R,R5 R6,20k,R_0805_2012Metric,2,~,
+34,Resistor,R,R10,21k,R_0805_2012Metric,1,~,
+35,Resistor,R,R21,68k,R_0805_2012Metric,1,~,
+36,Resistor,R,R19,120k,R_0805_2012Metric,1,~,
+37,Resistor,R,R9,124k,R_0805_2012Metric,1,~,
+38,Resistor,R,R13 R14,R,,2,~,DNP
+39,Resistor,R,R25,R,R_0805_2012Metric,1,~,
+40,"Push button switch, generic, two pins",SW_Push,SW1 SW2,SW_Push,SW_PUSH_6mm,2,~,
+41,,74AHC1G66,U7,74AHC1G66,SOT-353_SC-70-5,1,,
+42,DCD Step Down Converter,BL9342,U1,BL9342,SOT-23-6,1,https://datasheet.lcsc.com/szlcsc/1809050135_BL-Shanghai-Belling-BL9342_C93176.pdf,
+43,"ESP8266 ESP-12E module, 22 pins, 2mm, PCB antenna",ESP-12E,U5,ESP-12E,ESP-12E_SMD,1,http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/,
+44,"Low-Voltage Rail-to-Rail Output Operational Amplifiers, SOT-23-5/SC-70-5",LMV321,U2,LMV321,,1,http://www.ti.com/lit/ds/symlink/lmv324.pdf,
+45,"300mA Low-dropout Voltage Regulator, Vout 3.3V, Vin up to 5.5V, SOT-23",MIC5504-3.3YM5,U4,MIC5504-3.3YM5,SOT-23-5,1,http://ww1.microchip.com/downloads/en/DeviceDoc/MIC550X.pdf,
+46,"50μV V OS, 0.25μV/°C, 35μA CMOS OPERATIONAL AMPLIFIERS, Zerø-Drift Series, SOT",OPA330xxDBV,U6,OPA330xxDBV,SOT-23-5,1,http://www.ti.com/lit/ds/symlink/opa330.pdf,
+47,"CAN Bus Transceivers, 3.3V, 1Mbps, Low-Power capabilities, SOIC-8",SN65HVD230,U8,SN65HVD230,SOIC-8_3.9x4.9mm_P1.27mm,1,http://www.ti.com/lit/ds/symlink/sn65hvd230.pdf,
+48,"ARM Cortex-M4 MCU, 64KB flash, 16KB RAM, 72MHz, 2-3.6V, 37 GPIO, LQFP-48",STM32F302C8Tx,U3,STM32F302C8Tx,LQFP-48_7x7mm_P0.5mm,1,http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00093333.pdf,
+49,Three pin ceramic resonator,Resonator,Y1,16MHz,,1,~,DNP
+
+
+
+
+
+Component Groups:,49
+Component Count:,83
+Fitted Components:,83
+Number of PCBs:,1
+Total components:,83
+Schematic Version:,
+Schematic Date:,
+PCB Variant:,default
+BoM Date:,Sun 28 Mar 2021 03:13:55 PM EDT
+Schematic Source:,CANalog.sch
+KiCad Version:,Eeschema 5.1.9
