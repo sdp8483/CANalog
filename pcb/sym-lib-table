@@ -3,5 +3,5 @@
   (lib (name ESP8266)(type Legacy)(uri ${KIPRJMOD}/lib_sch/ESP8266/ESP8266.lib)(options "")(descr ""))
   (lib (name pl_analog-switch)(type Legacy)(uri ${KIPRJMOD}/lib_sch/pl_analog-switch/pl_analog-switch.lib)(options "")(descr ""))
   (lib (name pl_DCDC)(type Legacy)(uri ${KIPRJMOD}/lib_sch/pl_dcdc/pl_DCDC.lib)(options "")(descr ""))
-  (lib (name pl_diode)(type Legacy)(uri ${KIPRJMOD}/lib_sch/pl_diode.lib)(options "")(descr ""))
+  (lib (name pl_diode)(type Legacy)(uri ${KIPRJMOD}/lib_sch/pl_diode/pl_diode.lib)(options "")(descr ""))
 )
