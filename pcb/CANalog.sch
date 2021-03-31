@@ -1985,45 +1985,45 @@ Connection ~ 5300 5650
 $Comp
 L Mechanical:MountingHole H1
 U 1 1 61BCE530
-P 5050 6650
-F 0 "H1" H 5050 6850 50  0000 C CNN
-F 1 "MountingHole" H 5050 6775 50  0000 C CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 5050 6650 50  0001 C CNN
-F 3 "~" H 5050 6650 50  0001 C CNN
-	1    5050 6650
+P 1000 8300
+F 0 "H1" H 1000 8500 50  0000 C CNN
+F 1 "MountingHole" H 1000 8425 50  0000 C CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 1000 8300 50  0001 C CNN
+F 3 "~" H 1000 8300 50  0001 C CNN
+	1    1000 8300
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H3
 U 1 1 61BCEAAF
-P 5650 6650
-F 0 "H3" H 5650 6850 50  0000 C CNN
-F 1 "MountingHole" H 5650 6775 50  0000 C CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 5650 6650 50  0001 C CNN
-F 3 "~" H 5650 6650 50  0001 C CNN
-	1    5650 6650
+P 1600 8300
+F 0 "H3" H 1600 8500 50  0000 C CNN
+F 1 "MountingHole" H 1600 8425 50  0000 C CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 1600 8300 50  0001 C CNN
+F 3 "~" H 1600 8300 50  0001 C CNN
+	1    1600 8300
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H4
 U 1 1 61BCF017
-P 5650 7150
-F 0 "H4" H 5650 7350 50  0000 C CNN
-F 1 "MountingHole" H 5650 7275 50  0000 C CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 5650 7150 50  0001 C CNN
-F 3 "~" H 5650 7150 50  0001 C CNN
-	1    5650 7150
+P 1600 8800
+F 0 "H4" H 1600 9000 50  0000 C CNN
+F 1 "MountingHole" H 1600 8925 50  0000 C CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 1600 8800 50  0001 C CNN
+F 3 "~" H 1600 8800 50  0001 C CNN
+	1    1600 8800
 	1    0    0    -1  
 $EndComp
 $Comp
 L Mechanical:MountingHole H2
 U 1 1 61BCF67B
-P 5050 7150
-F 0 "H2" H 5050 7350 50  0000 C CNN
-F 1 "MountingHole" H 5050 7275 50  0000 C CNN
-F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 5050 7150 50  0001 C CNN
-F 3 "~" H 5050 7150 50  0001 C CNN
-	1    5050 7150
+P 1000 8800
+F 0 "H2" H 1000 9000 50  0000 C CNN
+F 1 "MountingHole" H 1000 8925 50  0000 C CNN
+F 2 "MountingHole:MountingHole_2.7mm_M2.5" H 1000 8800 50  0001 C CNN
+F 3 "~" H 1000 8800 50  0001 C CNN
+	1    1000 8800
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -2033,12 +2033,12 @@ P 1450 3050
 F 0 "F1" V 1225 3050 50  0000 C CNN
 F 1 "500mA" V 1316 3050 50  0000 C CNN
 F 2 "Fuse:Fuse_0603_1608Metric_Castellated" H 1500 2850 50  0001 L CNN
-F 3 "~https://datasheet.lcsc.com/szlcsc/1806111858_BOURNS-MF-FSMF050X-2_C210357.pdf" H 1450 3050 50  0001 C CNN
-F 4 "MF-FSMF050X-2" H 1450 3050 50  0001 C CNN "MPN"
-F 5 "Bourns" H 1450 3050 50  0001 C CNN "Manufacture"
-F 6 "C210357" H 1450 3050 50  0001 C CNN "SPN"
+F 3 "https://datasheet.lcsc.com/szlcsc/2103231635_BHFUSE-BSMD0603-050-6V_C883095.pdf" H 1450 3050 50  0001 C CNN
+F 4 "BSMD0603-050-6V" H 1450 3050 50  0001 C CNN "MPN"
+F 5 " BHFUSE" H 1450 3050 50  0001 C CNN "Manufacture"
+F 6 "C883095" H 1450 3050 50  0001 C CNN "SPN"
 F 7 "LCSC" H 1450 3050 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Surface-Mount-Fuses_BOURNS_MF-FSMF050X-2_BOURNS-MF-FSMF050X-2_C210357.html" H 1450 3050 50  0001 C CNN "Supplier Link"
+F 8 "https://lcsc.com/product-detail/PTC-Resettable-Fuses_BHFUSE-BSMD0603-050-6V_C883095.html" H 1450 3050 50  0001 C CNN "Supplier Link"
 	1    1450 3050
 	0    1    1    0   
 $EndComp
@@ -3081,18 +3081,18 @@ Wire Notes Line
 	3900 3150 6100 3150
 Text Notes 3900 3150 0    50   ~ 0
 Reset Circuitry
-Text Notes 4600 6150 0    50   ~ 0
+Text Notes 550  7800 0    50   ~ 0
 Mechanical
 Wire Notes Line
-	4600 6150 6100 6150
+	550  7800 2050 7800
 Wire Notes Line
-	6100 7650 4600 7650
+	2050 9300 550  9300
 Wire Notes Line
-	4600 7650 4600 6050
+	550  9300 550  7700
 Wire Notes Line
-	4600 6050 6100 6050
+	550  7700 2050 7700
 Wire Notes Line
-	6100 6050 6100 7650
+	2050 7700 2050 9300
 Text Notes 550  9450 0    50   ~ 0
 ERC Happy Area
 Wire Notes Line
