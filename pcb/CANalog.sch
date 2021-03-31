@@ -1001,24 +1001,6 @@ F 3 "" H 12250 7500 50  0001 C CNN
 	1    12250 7500
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	12300 7350 12150 7350
-$Comp
-L Device:Ferrite_Bead_Small FB2
-U 1 1 6071125C
-P 12050 7350
-F 0 "FB2" V 12000 7250 50  0000 C CNN
-F 1 "FBS" V 12150 7350 50  0000 C CNN
-F 2 "Inductor_SMD:L_0603_1608Metric" V 11980 7350 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2009171304_TAI-TECH-FCM1608KF-600T07_C133931.pdf" H 12050 7350 50  0001 C CNN
-F 4 "FCM1608KF-600T07" H 12050 7350 50  0001 C CNN "MPN"
-F 5 "TAI-TECH" H 12050 7350 50  0001 C CNN "Manufacture"
-F 6 "C133931" H 12050 7350 50  0001 C CNN "SPN"
-F 7 "LCSC" H 12050 7350 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Ferrite-Beads_TAI-TECH-FCM1608KF-600T07_C133931.html" H 12050 7350 50  0001 C CNN "Supplier Link"
-	1    12050 7350
-	0    -1   -1   0   
-$EndComp
 Text GLabel 11050 7250 0    50   Input ~ 0
 DAC
 $Comp
@@ -1619,8 +1601,6 @@ F 8 "https://www.digikey.com/en/products/detail/kemet/C0603C104Z3VACTU/411099?s=
 	1    13050 7350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	11950 7350 11850 7350
 Wire Wire Line
 	11150 7450 11100 7450
 Wire Wire Line
@@ -3644,10 +3624,10 @@ Test TPS560430 as drop in replacment for BL9342
 Text Notes 3200 2250 1    50   ~ 0
 EN Pin Vmax = 5V
 $Comp
-L Device:Net-Tie_2 NT?
+L Device:Net-Tie_2 NT1
 U 1 1 606F5FFD
 P 5550 5650
-F 0 "NT?" H 5550 5700 50  0000 C CNN
+F 0 "NT1" H 5550 5700 50  0000 C CNN
 F 1 "Net-Tie_2" H 5550 5600 50  0000 C CNN
 F 2 "NetTie:NetTie-2_SMD_Pad0.5mm" H 5550 5650 50  0001 C CNN
 F 3 "~" H 5550 5650 50  0001 C CNN
@@ -3664,4 +3644,6 @@ Wire Wire Line
 Connection ~ 5800 5650
 Wire Wire Line
 	5800 5650 5800 5700
+Wire Wire Line
+	11850 7350 12300 7350
 $EndSCHEMATC
