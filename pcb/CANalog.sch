@@ -1010,12 +1010,12 @@ P 12050 7350
 F 0 "FB2" V 12000 7250 50  0000 C CNN
 F 1 "FBS" V 12150 7350 50  0000 C CNN
 F 2 "Inductor_SMD:L_0603_1608Metric" V 11980 7350 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2006221432_FH-Guangdong-Fenghua-Advanced-Tech-CBG160808U070T_C98494.pdf" H 12050 7350 50  0001 C CNN
-F 4 "CBG160808U070T" H 12050 7350 50  0001 C CNN "MPN"
-F 5 " FH(Guangdong Fenghua Advanced Tech)" H 12050 7350 50  0001 C CNN "Manufacture"
-F 6 "C98494" H 12050 7350 50  0001 C CNN "SPN"
+F 3 "https://datasheet.lcsc.com/szlcsc/2009171304_TAI-TECH-FCM1608KF-600T07_C133931.pdf" H 12050 7350 50  0001 C CNN
+F 4 "FCM1608KF-600T07" H 12050 7350 50  0001 C CNN "MPN"
+F 5 "TAI-TECH" H 12050 7350 50  0001 C CNN "Manufacture"
+F 6 "C133931" H 12050 7350 50  0001 C CNN "SPN"
 F 7 "LCSC" H 12050 7350 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Ferrite-Beads_FH-Guangdong-Fenghua-Advanced-Tech-CBG160808U070T_C98494.html" H 12050 7350 50  0001 C CNN "Supplier Link"
+F 8 "https://lcsc.com/product-detail/Ferrite-Beads_TAI-TECH-FCM1608KF-600T07_C133931.html" H 12050 7350 50  0001 C CNN "Supplier Link"
 	1    12050 7350
 	0    -1   -1   0   
 $EndComp
@@ -1889,12 +1889,12 @@ P 5550 5100
 F 0 "FB1" V 5500 5000 50  0000 C CNN
 F 1 "FBS" V 5650 5100 50  0000 C CNN
 F 2 "Inductor_SMD:L_0603_1608Metric" V 5480 5100 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2006221432_FH-Guangdong-Fenghua-Advanced-Tech-CBG160808U070T_C98494.pdf" H 5550 5100 50  0001 C CNN
-F 4 "CBG160808U070T" H 5550 5100 50  0001 C CNN "MPN"
-F 5 " FH(Guangdong Fenghua Advanced Tech)" H 5550 5100 50  0001 C CNN "Manufacture"
-F 6 "C98494" H 5550 5100 50  0001 C CNN "SPN"
+F 3 "https://datasheet.lcsc.com/szlcsc/2009171304_TAI-TECH-FCM1608KF-600T07_C133931.pdf" H 5550 5100 50  0001 C CNN
+F 4 "FCM1608KF-600T07" H 5550 5100 50  0001 C CNN "MPN"
+F 5 "TAI-TECH" H 5550 5100 50  0001 C CNN "Manufacture"
+F 6 "C133931" H 5550 5100 50  0001 C CNN "SPN"
 F 7 "LCSC" H 5550 5100 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Ferrite-Beads_FH-Guangdong-Fenghua-Advanced-Tech-CBG160808U070T_C98494.html" H 5550 5100 50  0001 C CNN "Supplier Link"
+F 8 "https://lcsc.com/product-detail/Ferrite-Beads_TAI-TECH-FCM1608KF-600T07_C133931.html" H 5550 5100 50  0001 C CNN "Supplier Link"
 	1    5550 5100
 	0    -1   -1   0   
 $EndComp
