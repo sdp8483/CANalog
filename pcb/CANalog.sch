@@ -1755,8 +1755,6 @@ Wire Wire Line
 	5650 5100 5800 5100
 Wire Wire Line
 	5800 5050 5800 5100
-Wire Wire Line
-	5800 5700 5800 5650
 $Comp
 L Device:C C10
 U 1 1 61099527
@@ -1962,26 +1960,6 @@ F 3 "" H 5800 5700 50  0001 C CNN
 	1    5800 5700
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:Jumper_NC_Small JP2
-U 1 1 619EAE49
-P 5550 5650
-F 0 "JP2" H 5550 5730 50  0000 C CNN
-F 1 "NC" H 5560 5590 50  0000 C CNN
-F 2 "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm" H 5550 5650 50  0001 C CNN
-F 3 "~" H 5550 5650 50  0001 C CNN
-F 4 "DNP" H 5550 5650 50  0001 C CNN "Population"
-	1    5550 5650
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5650 5650 5800 5650
-Connection ~ 5800 5650
-Wire Wire Line
-	5800 5650 5800 5500
-Wire Wire Line
-	5450 5650 5300 5650
-Connection ~ 5300 5650
 $Comp
 L Mechanical:MountingHole H1
 U 1 1 61BCE530
@@ -3665,4 +3643,25 @@ Text Notes 4300 2550 0    50   ~ 0
 Test TPS560430 as drop in replacment for BL9342
 Text Notes 3200 2250 1    50   ~ 0
 EN Pin Vmax = 5V
+$Comp
+L Device:Net-Tie_2 NT?
+U 1 1 606F5FFD
+P 5550 5650
+F 0 "NT?" H 5550 5700 50  0000 C CNN
+F 1 "Net-Tie_2" H 5550 5600 50  0000 C CNN
+F 2 "NetTie:NetTie-2_SMD_Pad0.5mm" H 5550 5650 50  0001 C CNN
+F 3 "~" H 5550 5650 50  0001 C CNN
+	1    5550 5650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5800 5500 5800 5650
+Wire Wire Line
+	5450 5650 5300 5650
+Connection ~ 5300 5650
+Wire Wire Line
+	5650 5650 5800 5650
+Connection ~ 5800 5650
+Wire Wire Line
+	5800 5650 5800 5700
 $EndSCHEMATC
