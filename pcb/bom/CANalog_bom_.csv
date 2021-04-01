@@ -1,67 +1,68 @@
-Component,Description,Part,References,Value,Footprint,Quantity Per PCB,Datasheet,Population
-1,Unpolarized capacitor,C,C9,33pF,C_0603_1608Metric,1,~,
-2,Unpolarized capacitor,C,C3 C5 C6 C8 C10 C11,100nF,,6,~,
-3,Unpolarized capacitor,C,C4 C12 C16 C18 C19,0.1uF,C_0805_2012Metric,5,~,
-4,Unpolarized capacitor,C,C2 C13 C15,1uF,,3,~,
-5,Unpolarized capacitor,C,C17,1uF,C_0805_2012Metric,1,~,
-6,Unpolarized capacitor,C,C1,4.7uF,C_0805_2012Metric,1,~,
-7,Unpolarized capacitor,C,C7 C14,10uF,C_0805_2012Metric,2,~,
-8,Diode,D,D9,1N4148,D_DO-35_SOD27_P7.62mm_Horizontal,1,~,
-9,Zener diode,D_Zener,D1,BZV55-C15,Nexperia_BZV55_SOD80C,1,~,
-10,Diode,D,D5,D,,1,~,
-11,Light emitting diode,LED,D3 D6 D7 D8,LED,LED_0603_1608Metric,4,~,
-12,,PESD1CAN-UX,D10,PESD1CAN-UX,SOT-323_SC-70,1,,
-13,Schottky diode,D_Schottky,D2 D4,SS14F,SMAF,2,~,
-14,"Resettable fuse, polymeric positive temperature coefficient",Polyfuse,F1,500mA,,1,~,
-15,"Ferrite bead, small symbol",Ferrite_Bead_Small,FB1 FB2,FBS,,2,~,
-16,"Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x03,J8,CAN,,1,~,
-17,"Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x06,J6,ESP_PROG,PinHeader_1x06_P2.54mm_Vertical,1,~,
-18,"Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x04,J4 J5,I2C2,,2,~,DNP
-19,"Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x02,J1 J7,PWR,WJ127-5.0-2P,2,~,
-20,"Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x06,J3,SPI3,,1,~,DNP
-21,USB Micro Type B connector,USB_B_Micro,J2,USB_B_Micro,USB_Micro-B_Amphenol_10103594-0001LF_Horizontal,1,~,
-22,"Jumper, normally open, small symbol",Jumper_NO_Small,JP3,BOOT0,PinHeader_1x02_P2.54mm_Vertical,1,~,
-23,"Jumper, normally closed, small symbol",Jumper_NC_Small,JP1 JP2,NC,,2,~,
-24,Inductor,L,L1,2.2uH,L_3.5mmx3.0mm_SMD,1,~,
-25,"P-MOSFET transistor, gate/source/drain",Q_PMOS_GSD,Q1 Q3,DMP3099L-7,SOT-23,2,~,
-26,"NPN transistor, base/emitter/collector",Q_NPN_BEC,Q2,MMBT2222A,SOT-23,1,~,
-27,Resistor,R,R1 R2,0,R_0805_2012Metric,2,~,
-28,Resistor,R,R26,120,R_0805_2012Metric,1,~,
-29,Resistor,R,R8 R11 R22 R23 R24,1k,R_0805_2012Metric,5,~,
-30,Resistor,R,R7,1.5k,R_0805_2012Metric,1,~,
-31,Resistor,R,R3 R4 R12 R15 R16 R17,10k,R_0805_2012Metric,6,~,
-32,Resistor,R,R18,10k,,1,~,
-33,Resistor,R,R20,12k,R_0805_2012Metric,1,~,
-34,Resistor,R,R5 R6,20k,R_0805_2012Metric,2,~,
-35,Resistor,R,R10,21k,R_0805_2012Metric,1,~,
-36,Resistor,R,R21,68k,R_0805_2012Metric,1,~,
-37,Resistor,R,R19,120k,R_0805_2012Metric,1,~,
-38,Resistor,R,R9,124k,R_0805_2012Metric,1,~,
-39,Resistor,R,R13 R14,R,,2,~,DNP
-40,Resistor,R,R25,R,R_0805_2012Metric,1,~,
-41,"Push button switch, generic, two pins",SW_Push,SW1 SW2,SW_Push,SW_PUSH_6mm,2,~,
-42,,74AHC1G66,U7,74AHC1G66,SOT-353_SC-70-5,1,,
-43,DCD Step Down Converter,BL9342,U1,BL9342,SOT-23-6,1,https://datasheet.lcsc.com/szlcsc/1809050135_BL-Shanghai-Belling-BL9342_C93176.pdf,
-44,"ESP8266 ESP-12E module, 22 pins, 2mm, PCB antenna",ESP-12E,U5,ESP-12E,ESP-12E_SMD,1,http://l0l.org.uk/2014/12/esp8266-modules-hardware-guide-gotta-catch-em-all/,
-45,"Low-Voltage Rail-to-Rail Output Operational Amplifiers, SOT-23-5/SC-70-5",LMV321,U2,LMV321,,1,http://www.ti.com/lit/ds/symlink/lmv324.pdf,
-46,"300mA Low-dropout Voltage Regulator, Vout 3.3V, Vin up to 5.5V, SOT-23",MIC5504-3.3YM5,U4,MIC5504-3.3YM5,SOT-23-5,1,http://ww1.microchip.com/downloads/en/DeviceDoc/MIC550X.pdf,
-47,"50μV V OS, 0.25μV/°C, 35μA CMOS OPERATIONAL AMPLIFIERS, Zerø-Drift Series, SOT",OPA330xxDBV,U6,OPA330xxDBV,SOT-23-5,1,http://www.ti.com/lit/ds/symlink/opa330.pdf,
-48,"CAN Bus Transceivers, 3.3V, 1Mbps, Low-Power capabilities, SOIC-8",SN65HVD230,U8,SN65HVD230,SOIC-8_3.9x4.9mm_P1.27mm,1,http://www.ti.com/lit/ds/symlink/sn65hvd230.pdf,
-49,"ARM Cortex-M4 MCU, 64KB flash, 16KB RAM, 72MHz, 2-3.6V, 37 GPIO, LQFP-48",STM32F302C8Tx,U3,STM32F302C8Tx,LQFP-48_7x7mm_P0.5mm,1,http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00093333.pdf,
-50,Three pin ceramic resonator,Resonator,Y1,16MHz,,1,~,DNP
+Component,Description,Part,References,Value,Footprint,Quantity Per PCB,Datasheet,MPN,Manufacture,SPN,Supplier,Supplier Link,Population
+1,Unpolarized capacitor,C,C9,33pF,C_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1912111437_Chinocera-HGC0603G0330J500NTHJ_C465159.pdf,HGC0603G0330J500NTHJ,Chinocera,C465159,LCSC,https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_Chinocera-HGC0603G0330J500NTHJ_C465159.html,
+2,Unpolarized capacitor,C,C3 C4 C5 C6 C8 C10 C11 C12 C16 C17 C19,100nF,C_0603_1608Metric,11,https://api.kemet.com/component-edge/download/datasheet/C0603C104Z3VACTU.pdf,C0603C104Z3VACTU,KEMET,399-1100-1-ND,DigiKey,https://www.digikey.com/en/products/detail/kemet/C0603C104Z3VACTU/411099?s=N4IgTCBcDaIMwE4EFoCMqAMG3IHYBMQBdAXyA,
+3,Unpolarized capacitor,C,C2 C14 C15 C18,1uF,C_0603_1608Metric,4,https://www.samsungsem.com/resources/file/global/support/product_catalog/MLCC.pdf,CL10A105KQ8NNNC,Samsung Electro-Mechanics,1276-1036-1-ND,DigiKey,https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g,
+4,Unpolarized capacitor,C,C1,4.7uF,C_0805_2012Metric,1,https://datasheet.lcsc.com/szlcsc/1810191224_Samsung-Electro-Mechanics-CL21A475KBQNNNE_C98192.pdf,CL21A475KBQNNNE,Samsung Electro-Mechanics,C98192,LCSC,https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_Samsung-Electro-Mechanics-CL21A475KBQNNNE_C98192.html,
+5,Unpolarized capacitor,C,C7 C13,10uF,C_0805_2012Metric,2,https://datasheet.lcsc.com/szlcsc/1811011704_Samsung-Electro-Mechanics-CL21A106KPFNNNE_C17024.pdf,CL21A106KPFNNNE,Samsung Electro-Mechanics,C17024,LCSC,https://lcsc.com/product-detail/Multilayer-Ceramic-Capacitors-MLCC-SMD-SMT_Samsung-Electro-Mechanics-CL21A106KPFNNNE_C17024.html,
+6,Schottky diode,D_Schottky,D4 D6,1N4148W,D_SOD-123,2,https://datasheet.lcsc.com/szlcsc/1809052017_MDD-Microdiode-Electronics-1N4148W_C84367.pdf,1N4148W,Microdiode Electronics,C84367,LCSC,https://lcsc.com/product-detail/Switching-Diode_MDD-Microdiode-Electronics-1N4148W_C84367.html,
+7,Zener diode,D_Zener,D2,4.7V,D_SOD-123,1,https://datasheet.lcsc.com/szlcsc/1811051603_MDD-Microdiode-Electronics-BZT52C4V7_C173408.pdf,BZT52C4V7,MDD(Microdiode Electronics),C173408,LCSC,https://lcsc.com/product-detail/Zener-Diodes_MDD-Microdiode-Electronics-BZT52C4V7_C173408.html,
+8,Light emitting diode,LED,D10,BLU,LED_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1811100911_Orient-ORH-B36G_C193191.pdf,ORH-B36G,Orient,C193191,LCSC,https://lcsc.com/product-detail/Light-Emitting-Diodes-LED_Orient-ORH-B36G_C193191.html,
+9,Zener diode,D_Zener,D1,BZV55-C15,Nexperia_BZV55_SOD80C,1,https://rocelec.widen.net/view/pdf/mmjrjopmpw/PHGLS22257-1.pdf?t.download=true&u=5oefqw,"BZV55-C15,115",Nexperia USA Inc.,1727-4962-1-ND,DigiKey,https://www.digikey.com/en/products/detail/nexperia-usa-inc/BZV55-C15-115/1155548?s=N4IgTCBcDaIIwHYwILQBYCcA2MK4oDsATEAXQF8g,
+10,Light emitting diode,LED,D7,GRN,LED_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1811092313_Orient-ORH-G36G_C205443.pdf,ORH-G36G,Orient,C205443,LCSC,https://lcsc.com/product-detail/Light-Emitting-Diodes-LED_Orient-ORH-G36G_C205443.html,
+11,Light emitting diode,LED,D8,ORG,LED_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/2008201033_Foshan-NationStar-Optoelectronics-NCD0603O1_C84269.pdf,NCD0603O1,Foshan NationStar Optoelectronics,C84269,LCSC,https://lcsc.com/product-detail/Light-Emitting-Diodes-LED_Foshan-NationStar-Optoelectronics-NCD0603O1_C84269.html,
+12,,PESD1CAN-UX,D11,PESD1CAN,SOT-23,1,https://datasheet.lcsc.com/szlcsc/2010221035_TECH-PUBLIC-PESD1CAN_C907838.pdf,PESD1CAN,TECH PUBLIC,C907838,LCSC,https://lcsc.com/product-detail/Diodes-ESD_TECH-PUBLIC-PESD1CAN_C907838.html,
+13,Light emitting diode,LED,D9,RED,LED_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/2008201032_Foshan-NationStar-Optoelectronics-NCD0603R1_C84263.pdf,NCD0603R1,Foshan NationStar Optoelectronics,C84263,LCSC,https://lcsc.com/product-detail/Light-Emitting-Diodes-LED_Foshan-NationStar-Optoelectronics-NCD0603R1_C84263.html,
+14,Schottky diode,D_Schottky,D3 D5,SS14F,SMAF,2,https://datasheet.lcsc.com/szlcsc/1811031612_Shandong-Jingdao-Microelectronics-SS14F_C108832.pdf,SS14F,Shandong Jingdao Microelectronics,C108832,LCSC,https://lcsc.com/product-detail/Schottky-Barrier-Diodes-SBD_Shandong-Jingdao-Microelectronics-SS14F_C108832.html,
+15,"Resettable fuse, polymeric positive temperature coefficient",Polyfuse,F1,500mA,Fuse_0603_1608Metric_Castellated,1,https://datasheet.lcsc.com/szlcsc/2103231635_BHFUSE-BSMD0603-050-6V_C883095.pdf,BSMD0603-050-6V,BHFUSE,C883095,LCSC,https://lcsc.com/product-detail/PTC-Resettable-Fuses_BHFUSE-BSMD0603-050-6V_C883095.html,
+16,"Ferrite bead, small symbol",Ferrite_Bead_Small,FB1,FBS,L_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/2009171304_TAI-TECH-FCM1608KF-600T07_C133931.pdf,FCM1608KF-600T07,TAI-TECH,C133931,LCSC,https://lcsc.com/product-detail/Ferrite-Beads_TAI-TECH-FCM1608KF-600T07_C133931.html,
+17,"Generic connector, single row, 01x03, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x03,J8,CAN,WJ127-5.0-3P,1,https://datasheet.lcsc.com/szlcsc/1912251633_Ningbo-Kangnex-Elec-WJ127-5-0-3P_C8393.pdf,WJ127-5.0-3P,Ningbo Kangnex Elec,C8393,LCSC,https://lcsc.com/product-detail/Screw-terminal_Ningbo-Kangnex-Elec-WJ127-5-0-3P_C8393.html,
+18,"Generic connector, single row, 01x04, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x04,J4 J5,I2C2,PinHeader_1x04_P2.54mm_Vertical,2,~,,,,,,DNP
+19,"Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x02,J1 J7,PWR,WJ127-5.0-2P,2,https://datasheet.lcsc.com/szlcsc/1912251631_Ningbo-Kangnex-Elec-WJ127-5-0-2P_C3703.pdf,WJ127-5.0-2P,Ningbo Kangnex Elec,C3703,LCSC,https://lcsc.com/product-detail/Screw-terminal_Ningbo-Kangnex-Elec-WJ127-5-0-2P_C3703.html,
+20,"Generic connector, single row, 01x06, script generated (kicad-library-utils/schlib/autogen/connector/)",Conn_01x06,J3 J6,SPI3,PinHeader_1x06_P2.54mm_Vertical,2,~,,,,,,DNP
+21,USB Micro Type B connector,USB_B_Micro,J2,USB_B_Micro,USB_Micro-B_Molex-105017-0001,1,https://datasheet.lcsc.com/szlcsc/2002271812_XKB-Connectivity-U254-051T-4BHJ25-S2S_C319163.pdf,U254-051T-4BHJ25-S2S,XKB Connectivity,C319163,LCSC,https://lcsc.com/product-detail/USB-Connectors_XKB-Connectivity-U254-051T-4BHJ25-S2S_C319163.html,
+22,"Jumper, normally open, small symbol",Jumper_NO_Small,JP3,BOOT0,PinHeader_1x02_P2.54mm_Vertical,1,~,,,,,,DNP
+23,"Jumper, normally closed, small symbol",Jumper_NC_Small,JP1,NC,SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm,1,~,,,,,,DNP
+24,"Jumper, 3-pole, pins 1+2 closed/bridged",Jumper_3_Bridged12,JP4,PSELECT,SolderJumper-3_P1.3mm_Bridged2Bar12_Pad1.0x1.5mm,1,~,,,,,,
+25,Inductor,L,L1,2.2uH,L_3.5mmx3.0mm_SMD,1,https://datasheet.lcsc.com/szlcsc/2011091134_PROD-Tech-PSPCAQ32-2R2M_C436276.pdf,PSPCAQ32-2R2M,PROD Tech,C436276,LCSC,https://lcsc.com/product-detail/Power-Inductors_PROD-Tech-PSPCAQ32-2R2M_C436276.html,
+26,"Net tie, 2 pins",Net-Tie_2,NT1,Net-Tie_2,NetTie-2_SMD_Pad0.5mm,1,~,,,,,,
+27,"P-MOSFET transistor, gate/source/drain",Q_PMOS_GSD,Q1 Q3,DMP3099L-7,SOT-23,2,https://www.diodes.com/assets/Datasheets/DMP3099L.pdf,DMP3099L-7,Diodes Incorporated,DMP3099L-7DICT-ND,DigiKey,https://www.digikey.com/en/products/detail/diodes-incorporated/DMP3099L-7/4471075?s=N4IgTCBcDaICYFsAOBmADATgwGwLQHYQBdAXyA,
+28,"NPN transistor, base/emitter/collector",Q_NPN_BEC,Q2,MMBT2222A,SOT-23,1,https://datasheet.lcsc.com/szlcsc/2012041134_JSMSEMI-MMBT2222A_C916372.pdf,MMBT2222A,JSMSEMI,C916372,LCSC,https://lcsc.com/product-detail/Transistors-NPN-PNP_JSMSEMI-MMBT2222A_C916372.html,
+29,Resistor,R,R1 R2,0,R_0603_1608Metric,2,https://datasheet.lcsc.com/szlcsc/1809281528_YAGEO-RC0603JR-070RL_C95177.pdf,RC0603JR-070RL,YAGEO,C95177,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_0R-0R-5_C95177.html,
+30,Resistor,R,R32,120,R_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1811061723_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K1200FT_C310266.pdf,RS-03K1200FT,FH(Guangdong Fenghua Advanced Tech),C310266,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K1200FT_C310266.html,
+31,Resistor,R,R14 R16 R17 R18 R28 R29 R30 R31,1k,R_0603_1608Metric,8,https://www.yageo.com/upload/media/product/productsearch/datasheet/rchip/PYu-RC_Group_51_RoHS_L_11.pdf,RC0603JR-071KL,YAGEO,311-1.0KGRCT-ND,DigiKey,https://www.digikey.com/en/products/detail/yageo/RC0603JR-071KL/726677?s=N4IgTCBcDaIMwEYEFoEDoAMBrA5gJwGMAXZAOwBMQBdAXyA,DNP
+32,Resistor,R,R10,1.5k,R_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1811061750_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K152JT_C118361.pdf,RS-03K152JT,FH(Guangdong Fenghua Advanced Tech),C118361,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K152JT_C118361.html,
+33,Resistor,R,R3 R4 R11 R15 R21 R22 R23,10k,R_0603_1608Metric,7,https://datasheet.lcsc.com/szlcsc/1811081617_YAGEO-RC0603JR-0710KL_C99198.pdf,RC0603JR-0710KL,YAGEO,C99198,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RC0603JR-0710KL_C99198.html,
+34,Resistor,R,R9 R25,12k,R_0603_1608Metric,2,https://datasheet.lcsc.com/szlcsc/1811141450_YAGEO-RT0603BRD0712KL_C326735.pdf,RT0603BRD0712KL,YAGEO,C326735,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RT0603BRD0712KL_C326735.html,
+35,Resistor,R,R5 R6 R8,20k,R_0603_1608Metric,3,https://datasheet.lcsc.com/szlcsc/1811081710_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.pdf,0603WAJ0203T5E,UNI-ROYAL(Uniroyal Elec),C25586,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.html,
+36,Resistor,R,R13,20.5k,R_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1912111437_UNI-ROYAL-Uniroyal-Elec-0603WAD2052T5E_C423063.pdf,0603WAD2052T5E,UNI-ROYAL(Uniroyal Elec),C423063,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAD2052T5E_C423063.html,
+37,Resistor,R,R26,68k,R_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/2010201905_YAGEO-RT0603BRD0768KL_C705793.pdf,RT0603BRD0768KL,YAGEO,C705793,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RT0603BRD0768KL_C705793.html,
+38,Resistor,R,R7 R24,120k,R_0603_1608Metric,2,https://datasheet.lcsc.com/szlcsc/2008171235_YAGEO-RT0603BRD07120KL_C705720.pdf,RT0603BRD07120KL,YAGEO,C705720,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RT0603BRD07120KL_C705720.html,
+39,Resistor,R,R12,124k,R_0603_1608Metric,1,https://datasheet.lcsc.com/szlcsc/1810170511_UNI-ROYAL-Uniroyal-Elec-0603WAF1243T5E_C22788.pdf,0603WAF1243T5E,UNI-ROYAL(Uniroyal Elec),C22788,LCSC,https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAF1243T5E_C22788.html,
+40,Resistor,R,R19 R20 R27,R,R_0603_1608Metric,3,~,,,,,,DNP
+41,"Push button switch, generic, two pins",SW_Push,SW2,ESP_PROG,SW_SPST_CK_RS282G05A3,1,https://datasheet.lcsc.com/szlcsc/1912111437_SHOU-HAN-TS3625A_C398053.pdf,TS3625A,SHOU HAN,C398053,LCSC,https://lcsc.com/product-detail/Tactile-Switches_SHOU-HAN-TS3625A_C398053.html,
+42,"Push button switch, generic, two pins",SW_Push,SW1,RESET,SW_SPST_CK_RS282G05A3,1,https://datasheet.lcsc.com/szlcsc/1912111437_SHOU-HAN-TS3625A_C398053.pdf,TS3625A,SHOU HAN,C398053,LCSC,https://lcsc.com/product-detail/Tactile-Switches_SHOU-HAN-TS3625A_C398053.html,
+43,,74AHC1G66,U8,74AHC1G66,SOT-353_SC-70-5,1,https://datasheet.lcsc.com/szlcsc/1809191939_Nexperia-74AHC1G66GW-125_C96224.pdf,"74AHC1G66GW,125",Nexperia,C96224,LCSC,https://lcsc.com/product-detail/Analog-Switches_Nexperia-74AHC1G66GW-125_C96224.html,
+44,DCD Step Down Converter,BL9342,U1,BL9342,SOT-23-6,1,https://datasheet.lcsc.com/szlcsc/1809050135_BL-Shanghai-Belling-BL9342_C93176.pdf,BL9342,BL(Shanghai Belling),C93176,LCSC,https://lcsc.com/product-detail/DC-DC-Converters_BL-Shanghai-Belling-BL9342_C93176.html,
+45,"ESP8266 ESP-12E module, 22 pins, 2mm, PCB antenna",ESP-12E,U4,ESP-12F,ESP-12E_SMD,1,https://datasheet.lcsc.com/szlcsc/2102191804_Ai-Thinker-ESP-12F-ESP8266MOD_C82891.pdf,ESP-12F(ESP8266MOD),Ai-Thinker,C82891,LCSC,https://lcsc.com/product-detail/WIFI-Modules_Ai-Thinker-ESP-12F-ESP8266MOD_C82891.html,
+46,"300mA Low-dropout Voltage Regulator, Vout 3.3V, Vin up to 5.5V, SOT-23",MIC5504-3.3YM5,U5,MIC5504-3.3YM5,SOT-23-5,1,http://ww1.microchip.com/downloads/en/DeviceDoc/MIC550X.pdf,MIC5504-3.3YM5-TR,Microchip Technology,576-4764-1-ND,DigiKey,https://www.digikey.com/en/products/detail/MIC5504-3.3YM5-TR/576-4764-1-ND/4864028?itemSeq=359217799,
+47,"50μV V OS, 0.25μV/°C, 35μA CMOS OPERATIONAL AMPLIFIERS, Zerø-Drift Series, SOT",OPA330xxDBV,U6,OPA330xxDBV,SOT-23-5,1,http://www.ti.com/lit/ds/symlink/opa330.pdf,OPA330AIDBVR,Texas Instruments,C38649,LCSC,https://lcsc.com/product-detail/Precision-OpAmps_Texas-Instruments-OPA330AIDBVR_C38649.html,
+48,"Low-Voltage Rail-to-Rail Output Operational Amplifiers, SOT-23-5/SC-70-5",LMV321,U2,RS321BXF,SOT-23-5,1,https://datasheet.lcsc.com/szlcsc/2010160334_Jiangsu-RUNIC-Tech-RS321BXF_C237022.pdf,RS321BXF,Jiangsu RUNIC Tech,C237022,LCSC,https://lcsc.com/product-detail/General-Purpose-Amplifiers_Jiangsu-RUNIC-Tech-RS321BXF_C237022.html,
+49,"CAN Bus Transceivers, 3.3V, 1Mbps, Low-Power capabilities, SOIC-8",SN65HVD230,U7,SN65HVD230,SOIC-8_3.9x4.9mm_P1.27mm,1,http://www.ti.com/lit/ds/symlink/sn65hvd230.pdf,SN65HVD230DR,Texas Instruments,C12084,LCSC,https://lcsc.com/product-detail/CAN-ICs_Texas-Instruments-SN65HVD230DR_C12084.html,
+50,"ARM Cortex-M4 MCU, 64KB flash, 16KB RAM, 72MHz, 2-3.6V, 37 GPIO, LQFP-48",STM32F302C8Tx,U3,STM32F302C8T6,LQFP-48_7x7mm_P0.5mm,1,http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00093333.pdf,STM32F302C8T6,STMicroelectronics,511-STM32F302C8T6,Mouser,https://www.mouser.com/ProductDetail/511-STM32F302C8T6,
+51,Three pin ceramic resonator,Resonator,Y1,16MHz,Resonator_SMD_muRata_CSTxExxV-3Pin_3.0x1.1mm,1,https://www.mouser.com/datasheet/2/281/murata_04192018_CSTN_CeramResonCERAL-1323383.pdf,CSTNE16M0VH3C000R0,Murata Electronics,81-CSTNE16M0VH3C000R,Mouser,https://www.mouser.com/ProductDetail/81-CSTNE16M0VH3C000R,DNP
 
 
 
 
 
-Component Groups:,50
-Component Count:,84
-Fitted Components:,84
+Component Groups:,51
+Component Count:,91
+Fitted Components:,91
 Number of PCBs:,1
-Total components:,84
+Total components:,91
 Schematic Version:,
 Schematic Date:,
 PCB Variant:,default
-BoM Date:,Sun 28 Mar 2021 03:51:26 PM EDT
+BoM Date:,Wed 31 Mar 2021 07:13:59 PM EDT
 Schematic Source:,CANalog.sch
 KiCad Version:,Eeschema 5.1.9
