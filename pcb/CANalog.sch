@@ -13,105 +13,6 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text GLabel 1700 3350 2    50   Input ~ 0
-USB_DM
-Text GLabel 1700 3250 2    50   Input ~ 0
-USB_DP
-NoConn ~ 1200 3450
-$Comp
-L power:GND #PWR02
-U 1 1 5FFDC73C
-P 900 3750
-F 0 "#PWR02" H 900 3500 50  0001 C CNN
-F 1 "GND" H 900 3600 50  0000 C CNN
-F 2 "" H 900 3750 50  0001 C CNN
-F 3 "" H 900 3750 50  0001 C CNN
-	1    900  3750
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	900  3750 900  3700
-$Comp
-L Connector:USB_B_Micro J2
-U 1 1 5FFCA885
-P 900 3250
-F 0 "J2" H 700 3700 50  0000 L CNN
-F 1 "USB_B_Micro" H 700 3600 50  0000 L CNN
-F 2 "Connector_USB:USB_Micro-B_Molex-105017-0001" H 1050 3200 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2002271812_XKB-Connectivity-U254-051T-4BHJ25-S2S_C319163.pdf" H 1050 3200 50  0001 C CNN
-F 4 " U254-051T-4BHJ25-S2S" H 900 3250 50  0001 C CNN "MPN"
-F 5 " XKB Connectivity" H 900 3250 50  0001 C CNN "Manufacture"
-F 6 "C319163" H 900 3250 50  0001 C CNN "SPN"
-F 7 "LCSC" H 900 3250 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/USB-Connectors_XKB-Connectivity-U254-051T-4BHJ25-S2S_C319163.html" H 900 3250 50  0001 C CNN "Supplier Link"
-	1    900  3250
-	1    0    0    -1  
-$EndComp
-Text Notes 600  2750 0    50   ~ 0
-USB Data and Power
-Wire Notes Line
-	600  2750 2150 2750
-Wire Notes Line
-	2150 3950 600  3950
-Wire Notes Line
-	600  3950 600  2650
-Wire Notes Line
-	600  2650 2150 2650
-Wire Notes Line
-	2150 2650 2150 3950
-$Comp
-L power:VBUS #PWR06
-U 1 1 60A975AF
-P 1700 2950
-F 0 "#PWR06" H 1700 2800 50  0001 C CNN
-F 1 "VBUS" H 1700 3100 50  0000 C CNN
-F 2 "" H 1700 2950 50  0001 C CNN
-F 3 "" H 1700 2950 50  0001 C CNN
-	1    1700 2950
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1300 3050 1200 3050
-$Comp
-L Device:R R2
-U 1 1 60C278F0
-P 1450 3350
-F 0 "R2" V 1530 3350 50  0000 C CNN
-F 1 "0" V 1450 3350 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1380 3350 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1809281528_YAGEO-RC0603JR-070RL_C95177.pdf" H 1450 3350 50  0001 C CNN
-F 4 "RC0603JR-070RL" H 1450 3350 50  0001 C CNN "MPN"
-F 5 "YAGEO" H 1450 3350 50  0001 C CNN "Manufacture"
-F 6 "C95177" H 1450 3350 50  0001 C CNN "SPN"
-F 7 "LCSC" H 1450 3350 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_0R-0R-5_C95177.html" H 1450 3350 50  0001 C CNN "Supplier Link"
-	1    1450 3350
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R R1
-U 1 1 60C2A8A7
-P 1450 3250
-F 0 "R1" V 1530 3250 50  0000 C CNN
-F 1 "0" V 1450 3250 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 1380 3250 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1809281528_YAGEO-RC0603JR-070RL_C95177.pdf" H 1450 3250 50  0001 C CNN
-F 4 "RC0603JR-070RL" H 1450 3250 50  0001 C CNN "MPN"
-F 5 "YAGEO" H 1450 3250 50  0001 C CNN "Manufacture"
-F 6 "C95177" H 1450 3250 50  0001 C CNN "SPN"
-F 7 "LCSC" H 1450 3250 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_0R-0R-5_C95177.html" H 1450 3250 50  0001 C CNN "Supplier Link"
-	1    1450 3250
-	0    1    -1   0   
-$EndComp
-Wire Wire Line
-	1200 3250 1300 3250
-Wire Wire Line
-	1200 3350 1300 3350
-Wire Wire Line
-	1600 3250 1700 3250
-Wire Wire Line
-	1600 3350 1700 3350
 $Comp
 L Connector_Generic:Conn_01x02 J1
 U 1 1 612F8AEC
@@ -511,28 +412,21 @@ F 8 "https://www.digikey.com/en/products/detail/kemet/C0603C104Z3VACTU/411099?s=
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	800  3650 800  3700
-Wire Wire Line
-	800  3700 900  3700
-Connection ~ 900  3700
-Wire Wire Line
-	900  3700 900  3650
-Wire Wire Line
 	1100 1200 1000 1200
 $Comp
 L Regulator_Linear:MIC5504-3.3YM5 U5
 U 1 1 60DBDCAC
-P 9200 1200
-F 0 "U5" H 9400 950 50  0000 L CNN
-F 1 "MIC5504-3.3YM5" H 8900 1450 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-5" H 9200 800 50  0001 C CNN
-F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/MIC550X.pdf" H 8950 1450 50  0001 C CNN
-F 4 "MIC5504-3.3YM5-TR" H 9200 1200 50  0001 C CNN "MPN"
-F 5 "Microchip Technology" H 9200 1200 50  0001 C CNN "Manufacture"
-F 6 "576-4764-1-ND" H 9200 1200 50  0001 C CNN "SPN"
-F 7 "DigiKey" H 9200 1200 50  0001 C CNN "Supplier"
-F 8 "https://www.digikey.com/en/products/detail/MIC5504-3.3YM5-TR/576-4764-1-ND/4864028?itemSeq=359217799" H 9200 1200 50  0001 C CNN "Supplier Link"
-	1    9200 1200
+P 7350 1200
+F 0 "U5" H 7550 950 50  0000 L CNN
+F 1 "MIC5504-3.3YM5" H 7050 1450 50  0000 L CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-5" H 7350 800 50  0001 C CNN
+F 3 "http://ww1.microchip.com/downloads/en/DeviceDoc/MIC550X.pdf" H 7100 1450 50  0001 C CNN
+F 4 "MIC5504-3.3YM5-TR" H 7350 1200 50  0001 C CNN "MPN"
+F 5 "Microchip Technology" H 7350 1200 50  0001 C CNN "Manufacture"
+F 6 "576-4764-1-ND" H 7350 1200 50  0001 C CNN "SPN"
+F 7 "DigiKey" H 7350 1200 50  0001 C CNN "Supplier"
+F 8 "https://www.digikey.com/en/products/detail/MIC5504-3.3YM5-TR/576-4764-1-ND/4864028?itemSeq=359217799" H 7350 1200 50  0001 C CNN "Supplier Link"
+	1    7350 1200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -553,33 +447,33 @@ Wire Wire Line
 $Comp
 L Device:C C14
 U 1 1 60FAAE32
-P 8400 1450
-F 0 "C14" H 8425 1550 50  0000 L CNN
-F 1 "1uF" H 8425 1350 50  0000 L CNN
-F 2 "C_0603_1608Metric" H 8438 1300 50  0001 C CNN
-F 3 "https://www.samsungsem.com/resources/file/global/support/product_catalog/MLCC.pdf" H 8400 1450 50  0001 C CNN
-F 4 "CL10A105KQ8NNNC" H 8400 1450 50  0001 C CNN "MPN"
-F 5 "Samsung Electro-Mechanics" H 8400 1450 50  0001 C CNN "Manufacture"
-F 6 "1276-1036-1-ND" H 8400 1450 50  0001 C CNN "SPN"
-F 7 "DigiKey" H 8400 1450 50  0001 C CNN "Supplier"
-F 8 "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g" H 8400 1450 50  0001 C CNN "Supplier Link"
-	1    8400 1450
+P 6550 1450
+F 0 "C14" H 6575 1550 50  0000 L CNN
+F 1 "1uF" H 6575 1350 50  0000 L CNN
+F 2 "C_0603_1608Metric" H 6588 1300 50  0001 C CNN
+F 3 "https://www.samsungsem.com/resources/file/global/support/product_catalog/MLCC.pdf" H 6550 1450 50  0001 C CNN
+F 4 "CL10A105KQ8NNNC" H 6550 1450 50  0001 C CNN "MPN"
+F 5 "Samsung Electro-Mechanics" H 6550 1450 50  0001 C CNN "Manufacture"
+F 6 "1276-1036-1-ND" H 6550 1450 50  0001 C CNN "SPN"
+F 7 "DigiKey" H 6550 1450 50  0001 C CNN "Supplier"
+F 8 "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g" H 6550 1450 50  0001 C CNN "Supplier Link"
+	1    6550 1450
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:C C15
 U 1 1 60FAB65B
-P 10000 1450
-F 0 "C15" H 10025 1550 50  0000 L CNN
-F 1 "1uF" H 10025 1350 50  0000 L CNN
-F 2 "C_0603_1608Metric" H 10038 1300 50  0001 C CNN
-F 3 "https://www.samsungsem.com/resources/file/global/support/product_catalog/MLCC.pdf" H 10000 1450 50  0001 C CNN
-F 4 "CL10A105KQ8NNNC" H 10000 1450 50  0001 C CNN "MPN"
-F 5 "Samsung Electro-Mechanics" H 10000 1450 50  0001 C CNN "Manufacture"
-F 6 "1276-1036-1-ND" H 10000 1450 50  0001 C CNN "SPN"
-F 7 "DigiKey" H 10000 1450 50  0001 C CNN "Supplier"
-F 8 "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g" H 10000 1450 50  0001 C CNN "Supplier Link"
-	1    10000 1450
+P 8150 1450
+F 0 "C15" H 8175 1550 50  0000 L CNN
+F 1 "1uF" H 8175 1350 50  0000 L CNN
+F 2 "C_0603_1608Metric" H 8188 1300 50  0001 C CNN
+F 3 "https://www.samsungsem.com/resources/file/global/support/product_catalog/MLCC.pdf" H 8150 1450 50  0001 C CNN
+F 4 "CL10A105KQ8NNNC" H 8150 1450 50  0001 C CNN "MPN"
+F 5 "Samsung Electro-Mechanics" H 8150 1450 50  0001 C CNN "Manufacture"
+F 6 "1276-1036-1-ND" H 8150 1450 50  0001 C CNN "SPN"
+F 7 "DigiKey" H 8150 1450 50  0001 C CNN "Supplier"
+F 8 "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g" H 8150 1450 50  0001 C CNN "Supplier Link"
+	1    8150 1450
 	1    0    0    -1  
 $EndComp
 Text Notes 3800 2250 0    50   ~ 0
@@ -588,179 +482,73 @@ Text Notes 5800 1750 0    50   ~ 0
 Rg
 Text Notes 5250 1400 1    50   ~ 0
 Rf
-$Comp
-L Amplifier_Operational:LMV321 U2
-U 1 1 61003A99
-P 7100 1750
-F 0 "U2" H 7100 1950 50  0000 L CNN
-F 1 "RS321BXF" H 7100 1550 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-5" H 7100 1750 50  0001 L CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2010160334_Jiangsu-RUNIC-Tech-RS321BXF_C237022.pdf" H 7100 1750 50  0001 C CNN
-F 4 "RS321BXF" H 7100 1750 50  0001 C CNN "MPN"
-F 5 "Jiangsu RUNIC Tech" H 7100 1750 50  0001 C CNN "Manufacture"
-F 6 "C237022" H 7100 1750 50  0001 C CNN "SPN"
-F 7 "LCSC" H 7100 1750 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/General-Purpose-Amplifiers_Jiangsu-RUNIC-Tech-RS321BXF_C237022.html" H 7100 1750 50  0001 C CNN "Supplier Link"
-	1    7100 1750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:Q_PMOS_GSD Q3
-U 1 1 6100AD13
-P 7800 1750
-F 0 "Q3" V 7700 1600 50  0000 C CNN
-F 1 "DMP3099L-7" V 8050 1750 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 8000 1850 50  0001 C CNN
-F 3 "https://www.diodes.com/assets/Datasheets/DMP3099L.pdf" H 7800 1750 50  0001 C CNN
-F 4 "DMP3099L-7" H 7800 1750 50  0001 C CNN "MPN"
-F 5 "Diodes Incorporated" H 7800 1750 50  0001 C CNN "Manufacture"
-F 6 "DMP3099L-7DICT-ND" H 7800 1750 50  0001 C CNN "SPN"
-F 7 "DigiKey" H 7800 1750 50  0001 C CNN "Supplier"
-F 8 "https://www.digikey.com/en/products/detail/diodes-incorporated/DMP3099L-7/4471075?s=N4IgTCBcDaICYFsAOBmADATgwGwLQHYQBdAXyA" H 7800 1750 50  0001 C CNN "Supplier Link"
-	1    7800 1750
-	1    0    0    1   
-$EndComp
 Wire Wire Line
-	8800 1300 8700 1300
+	6950 1300 6850 1300
 Wire Wire Line
-	8700 1300 8700 1100
+	6850 1300 6850 1100
 Wire Wire Line
-	8700 1100 8800 1100
+	6850 1100 6950 1100
 Wire Wire Line
-	8400 1300 8400 1100
+	6550 1300 6550 1100
 Wire Wire Line
-	8400 1100 8700 1100
-Connection ~ 8700 1100
+	6550 1100 6850 1100
+Connection ~ 6850 1100
 Wire Wire Line
-	9600 1100 10000 1100
+	7750 1100 8150 1100
 Wire Wire Line
-	10000 1100 10000 1300
+	8150 1100 8150 1300
 $Comp
 L power:GND #PWR050
 U 1 1 6108889C
-P 9200 1850
-F 0 "#PWR050" H 9200 1600 50  0001 C CNN
-F 1 "GND" H 9200 1700 50  0000 C CNN
-F 2 "" H 9200 1850 50  0001 C CNN
-F 3 "" H 9200 1850 50  0001 C CNN
-	1    9200 1850
+P 7350 1850
+F 0 "#PWR050" H 7350 1600 50  0001 C CNN
+F 1 "GND" H 7350 1700 50  0000 C CNN
+F 2 "" H 7350 1850 50  0001 C CNN
+F 3 "" H 7350 1850 50  0001 C CNN
+	1    7350 1850
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	9200 1850 9200 1750
+	7350 1850 7350 1750
 Wire Wire Line
-	8400 1600 8400 1750
+	6550 1600 6550 1750
 Wire Wire Line
-	8400 1750 9200 1750
-Connection ~ 9200 1750
+	6550 1750 7350 1750
+Connection ~ 7350 1750
 Wire Wire Line
-	9200 1750 9200 1500
+	7350 1750 7350 1500
 Wire Wire Line
-	9200 1750 10000 1750
+	7350 1750 8150 1750
 Wire Wire Line
-	10000 1750 10000 1600
+	8150 1750 8150 1600
 $Comp
 L power:+3V3 #PWR052
 U 1 1 610C51AB
-P 10000 1000
-F 0 "#PWR052" H 10000 850 50  0001 C CNN
-F 1 "+3V3" H 10000 1140 50  0000 C CNN
-F 2 "" H 10000 1000 50  0001 C CNN
-F 3 "" H 10000 1000 50  0001 C CNN
-	1    10000 1000
+P 8150 1000
+F 0 "#PWR052" H 8150 850 50  0001 C CNN
+F 1 "+3V3" H 8150 1140 50  0000 C CNN
+F 2 "" H 8150 1000 50  0001 C CNN
+F 3 "" H 8150 1000 50  0001 C CNN
+	1    8150 1000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	10000 1000 10000 1100
-Connection ~ 10000 1100
-$Comp
-L power:VBUS #PWR043
-U 1 1 610E464E
-P 7900 2200
-F 0 "#PWR043" H 7900 2050 50  0001 C CNN
-F 1 "VBUS" H 7900 2350 50  0000 C CNN
-F 2 "" H 7900 2200 50  0001 C CNN
-F 3 "" H 7900 2200 50  0001 C CNN
-	1    7900 2200
-	-1   0    0    1   
-$EndComp
-$Comp
-L power:GND #PWR035
-U 1 1 6116409F
-P 7000 2150
-F 0 "#PWR035" H 7000 1900 50  0001 C CNN
-F 1 "GND" H 7000 2000 50  0000 C CNN
-F 2 "" H 7000 2150 50  0001 C CNN
-F 3 "" H 7000 2150 50  0001 C CNN
-	1    7000 2150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7000 2150 7000 2050
-$Comp
-L power:+3V3 #PWR031
-U 1 1 6119211E
-P 6700 1850
-F 0 "#PWR031" H 6700 1700 50  0001 C CNN
-F 1 "+3V3" H 6700 1990 50  0000 C CNN
-F 2 "" H 6700 1850 50  0001 C CNN
-F 3 "" H 6700 1850 50  0001 C CNN
-	1    6700 1850
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	6700 1850 6800 1850
+	8150 1000 8150 1100
+Connection ~ 8150 1100
 $Comp
 L power:+5V #PWR046
 U 1 1 611E72B6
-P 8400 1000
-F 0 "#PWR046" H 8400 850 50  0001 C CNN
-F 1 "+5V" H 8400 1140 50  0000 C CNN
-F 2 "" H 8400 1000 50  0001 C CNN
-F 3 "" H 8400 1000 50  0001 C CNN
-	1    8400 1000
+P 6550 1000
+F 0 "#PWR046" H 6550 850 50  0001 C CNN
+F 1 "+5V" H 6550 1140 50  0000 C CNN
+F 2 "" H 6550 1000 50  0001 C CNN
+F 3 "" H 6550 1000 50  0001 C CNN
+	1    6550 1000
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8400 1000 8400 1100
-Connection ~ 8400 1100
-$Comp
-L Device:C C11
-U 1 1 6123289C
-P 7250 1400
-F 0 "C11" H 7275 1500 50  0000 L CNN
-F 1 "100nF" H 7275 1300 50  0000 L CNN
-F 2 "C_0603_1608Metric" H 7288 1250 50  0001 C CNN
-F 3 "https://api.kemet.com/component-edge/download/datasheet/C0603C104Z3VACTU.pdf" H 7250 1400 50  0001 C CNN
-F 4 "C0603C104Z3VACTU" H 7250 1400 50  0001 C CNN "MPN"
-F 5 "KEMET" H 7250 1400 50  0001 C CNN "Manufacture"
-F 6 "399-1100-1-ND" H 7250 1400 50  0001 C CNN "SPN"
-F 7 "DigiKey" H 7250 1400 50  0001 C CNN "Supplier"
-F 8 "https://www.digikey.com/en/products/detail/kemet/C0603C104Z3VACTU/411099?s=N4IgTCBcDaIMwE4EFoCMqAMG3IHYBMQBdAXyA" H 7250 1400 50  0001 C CNN "Supplier Link"
-	1    7250 1400
-	0    -1   -1   0   
-$EndComp
-$Comp
-L power:GND #PWR039
-U 1 1 61233939
-P 7450 1450
-F 0 "#PWR039" H 7450 1200 50  0001 C CNN
-F 1 "GND" H 7450 1300 50  0000 C CNN
-F 2 "" H 7450 1450 50  0001 C CNN
-F 3 "" H 7450 1450 50  0001 C CNN
-	1    7450 1450
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	7450 1450 7450 1400
-Wire Wire Line
-	7450 1400 7400 1400
-Wire Wire Line
-	7100 1400 7000 1400
-Wire Wire Line
-	7000 1400 7000 1450
-Wire Wire Line
-	7400 1750 7600 1750
+	6550 1000 6550 1100
+Connection ~ 6550 1100
 $Comp
 L Device:D_Schottky D5
 U 1 1 6127D939
@@ -782,44 +570,18 @@ Wire Wire Line
 Connection ~ 5550 1100
 Text Label 5500 1100 2    50   ~ 0
 5V5
-Text Label 6600 1650 2    50   ~ 0
-5V5
-Wire Wire Line
-	6600 1650 6800 1650
-Wire Wire Line
-	7900 2200 7900 1950
 Text Notes 6400 650  0    50   ~ 0
-USB Input Voltage Selection
-Wire Wire Line
-	7000 1100 7000 1400
-Wire Wire Line
-	6000 1100 7000 1100
-Connection ~ 7000 1400
+3V3 LDO
 Wire Notes Line
-	6400 650  8150 650 
+	6400 650  8350 650 
 Wire Notes Line
-	8150 2550 6400 2550
+	8350 2550 6400 2550
 Wire Notes Line
 	6400 2550 6400 550 
 Wire Notes Line
-	6400 550  8150 550 
+	6400 550  8350 550 
 Wire Notes Line
-	8150 550  8150 2550
-Text Notes 8250 650  0    50   ~ 0
-3V3 LDO
-Wire Notes Line
-	8250 650  10200 650 
-Wire Notes Line
-	10200 2550 8250 2550
-Wire Notes Line
-	8250 2550 8250 550 
-Wire Notes Line
-	8250 550  10200 550 
-Wire Notes Line
-	10200 550  10200 2550
-Wire Wire Line
-	7000 1100 7900 1100
-Connection ~ 7000 1100
+	8350 550  8350 2550
 $Comp
 L Device:R R29
 U 1 1 635EBB6A
@@ -1603,11 +1365,6 @@ F 8 "https://lcsc.com/product-detail/Precision-OpAmps_Texas-Instruments-OPA330AI
 	1    11450 7350
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	7900 1550 7900 1100
-Connection ~ 7900 1100
-Wire Wire Line
-	7900 1100 8400 1100
 Wire Notes Line
 	6100 4750 6100 5950
 Wire Notes Line
@@ -1940,26 +1697,6 @@ F 3 "~" H 1000 8800 50  0001 C CNN
 	1    1000 8800
 	1    0    0    -1  
 $EndComp
-$Comp
-L Device:Polyfuse F1
-U 1 1 60630AA9
-P 1450 3050
-F 0 "F1" V 1225 3050 50  0000 C CNN
-F 1 "500mA" V 1316 3050 50  0000 C CNN
-F 2 "Fuse:Fuse_0603_1608Metric_Castellated" H 1500 2850 50  0001 L CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2103231635_BHFUSE-BSMD0603-050-6V_C883095.pdf" H 1450 3050 50  0001 C CNN
-F 4 "BSMD0603-050-6V" H 1450 3050 50  0001 C CNN "MPN"
-F 5 " BHFUSE" H 1450 3050 50  0001 C CNN "Manufacture"
-F 6 "C883095" H 1450 3050 50  0001 C CNN "SPN"
-F 7 "LCSC" H 1450 3050 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/PTC-Resettable-Fuses_BHFUSE-BSMD0603-050-6V_C883095.html" H 1450 3050 50  0001 C CNN "Supplier Link"
-	1    1450 3050
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	1600 3050 1700 3050
-Wire Wire Line
-	1700 3050 1700 2950
 $Comp
 L Device:D_Schottky D4
 U 1 1 606CD0B2
@@ -2571,154 +2308,6 @@ Wire Wire Line
 	9100 6900 9300 6900
 Wire Wire Line
 	9100 7000 9300 7000
-$Comp
-L power:+3V3 #PWR014
-U 1 1 600D2B0A
-P 3050 3000
-F 0 "#PWR014" H 3050 2850 50  0001 C CNN
-F 1 "+3V3" H 3050 3140 50  0000 C CNN
-F 2 "" H 3050 3000 50  0001 C CNN
-F 3 "" H 3050 3000 50  0001 C CNN
-	1    3050 3000
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R10
-U 1 1 600CFC58
-P 3050 3900
-F 0 "R10" V 3130 3900 50  0000 C CNN
-F 1 "1.5k" V 3050 3900 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 2980 3900 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1811061750_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K152JT_C118361.pdf" H 3050 3900 50  0001 C CNN
-F 4 "RS-03K152JT" H 3050 3900 50  0001 C CNN "MPN"
-F 5 " FH(Guangdong Fenghua Advanced Tech)" H 3050 3900 50  0001 C CNN "Manufacture"
-F 6 "C118361" H 3050 3900 50  0001 C CNN "SPN"
-F 7 "LCSC" H 3050 3900 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_FH-Guangdong-Fenghua-Advanced-Tech-RS-03K152JT_C118361.html" H 3050 3900 50  0001 C CNN "Supplier Link"
-	1    3050 3900
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:Q_NPN_BEC Q2
-U 1 1 609ACDB2
-P 2950 3500
-F 0 "Q2" H 3150 3550 50  0000 L CNN
-F 1 "MMBT2222A" H 3150 3450 50  0000 L CNN
-F 2 "Package_TO_SOT_SMD:SOT-23" H 3150 3600 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/2012041134_JSMSEMI-MMBT2222A_C916372.pdf" H 2950 3500 50  0001 C CNN
-F 4 "MMBT2222A" H 2950 3500 50  0001 C CNN "MPN"
-F 5 "JSMSEMI" H 2950 3500 50  0001 C CNN "Manufacture"
-F 6 "C916372" H 2950 3500 50  0001 C CNN "SPN"
-F 7 "LCSC" H 2950 3500 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Transistors-NPN-PNP_JSMSEMI-MMBT2222A_C916372.html" H 2950 3500 50  0001 C CNN "Supplier Link"
-	1    2950 3500
-	1    0    0    -1  
-$EndComp
-Text Notes 2250 2750 0    50   ~ 0
-STM32 USB Pullup
-Wire Wire Line
-	3050 4050 3050 4150
-Wire Wire Line
-	3050 4150 3150 4150
-Wire Wire Line
-	3050 3750 3050 3700
-Wire Wire Line
-	3050 3300 3050 3000
-$Comp
-L Device:R R4
-U 1 1 60A4C83F
-P 2650 3250
-F 0 "R4" V 2730 3250 50  0000 C CNN
-F 1 "10k" V 2650 3250 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 2580 3250 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1811081617_YAGEO-RC0603JR-0710KL_C99198.pdf" H 2650 3250 50  0001 C CNN
-F 4 "RC0603JR-0710KL" H 2650 3250 50  0001 C CNN "MPN"
-F 5 "YAGEO" H 2650 3250 50  0001 C CNN "Manufacture"
-F 6 "C99198" H 2650 3250 50  0001 C CNN "SPN"
-F 7 "LCSC" H 2650 3250 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RC0603JR-0710KL_C99198.html" H 2650 3250 50  0001 C CNN "Supplier Link"
-	1    2650 3250
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R R5
-U 1 1 60A4D4B7
-P 2650 3750
-F 0 "R5" V 2730 3750 50  0000 C CNN
-F 1 "20k" V 2650 3750 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 2580 3750 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1811081710_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.pdf" H 2650 3750 50  0001 C CNN
-F 4 "0603WAJ0203T5E" H 2650 3750 50  0001 C CNN "MPN"
-F 5 " UNI-ROYAL(Uniroyal Elec)" H 2650 3750 50  0001 C CNN "Manufacture"
-F 6 "C25586" H 2650 3750 50  0001 C CNN "SPN"
-F 7 "LCSC" H 2650 3750 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.html" H 2650 3750 50  0001 C CNN "Supplier Link"
-	1    2650 3750
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR012
-U 1 1 60A4E047
-P 2650 4400
-F 0 "#PWR012" H 2650 4150 50  0001 C CNN
-F 1 "GND" H 2650 4250 50  0000 C CNN
-F 2 "" H 2650 4400 50  0001 C CNN
-F 3 "" H 2650 4400 50  0001 C CNN
-	1    2650 4400
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2650 4400 2650 4250
-Wire Wire Line
-	2650 3400 2650 3500
-Wire Wire Line
-	2750 3500 2650 3500
-Connection ~ 2650 3500
-Wire Wire Line
-	2650 3500 2650 3600
-Wire Wire Line
-	2650 3000 2650 3100
-$Comp
-L power:VBUS #PWR011
-U 1 1 60ABFC32
-P 2650 3000
-F 0 "#PWR011" H 2650 2850 50  0001 C CNN
-F 1 "VBUS" H 2650 3150 50  0000 C CNN
-F 2 "" H 2650 3000 50  0001 C CNN
-F 3 "" H 2650 3000 50  0001 C CNN
-	1    2650 3000
-	1    0    0    -1  
-$EndComp
-Wire Notes Line
-	2250 2750 3800 2750
-Wire Notes Line
-	3800 4650 2250 4650
-Wire Notes Line
-	2250 4650 2250 2650
-Wire Notes Line
-	2250 2650 3800 2650
-Wire Notes Line
-	3800 2650 3800 4650
-Text GLabel 3150 4150 2    50   Input ~ 0
-USB_DP
-$Comp
-L Device:R R6
-U 1 1 63887C0E
-P 2650 4100
-F 0 "R6" V 2730 4100 50  0000 C CNN
-F 1 "20k" V 2650 4100 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 2580 4100 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1811081710_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.pdf" H 2650 4100 50  0001 C CNN
-F 4 "0603WAJ0203T5E" H 2650 4100 50  0001 C CNN "MPN"
-F 5 " UNI-ROYAL(Uniroyal Elec)" H 2650 4100 50  0001 C CNN "Manufacture"
-F 6 "C25586" H 2650 4100 50  0001 C CNN "SPN"
-F 7 "LCSC" H 2650 4100 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_UNI-ROYAL-Uniroyal-Elec-0603WAJ0203T5E_C25586.html" H 2650 4100 50  0001 C CNN "Supplier Link"
-	1    2650 4100
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2650 3950 2650 3900
 $Comp
 L Connector_Generic:Conn_01x03 J8
 U 1 1 60A9A0A7
@@ -3646,4 +3235,6 @@ F 3 "" H 13050 7700 50  0001 C CNN
 	1    13050 7700
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	6000 1100 6550 1100
 $EndSCHEMATC
