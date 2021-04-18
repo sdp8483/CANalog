@@ -1810,8 +1810,6 @@ Wire Wire Line
 	6350 5900 7800 5900
 Text Label 9800 7100 0    50   ~ 0
 PA3
-Wire Wire Line
-	10000 7100 10000 6950
 NoConn ~ 7800 6400
 NoConn ~ 7800 6600
 NoConn ~ 7800 6500
@@ -1826,8 +1824,6 @@ F 3 "~" H 10200 6950 50  0001 C CNN
 	1    10000 6950
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	10000 7100 9100 7100
 NoConn ~ 9100 7600
 NoConn ~ 10200 8000
 Wire Wire Line
@@ -3113,4 +3109,8 @@ NoConn ~ 7800 7300
 NoConn ~ 9100 7700
 NoConn ~ 9100 7800
 NoConn ~ 9100 8300
+Wire Wire Line
+	10000 7100 10000 6950
+Wire Wire Line
+	10000 7100 9100 7100
 $EndSCHEMATC
