@@ -7,7 +7,7 @@ Sheet 1 1
 Title "CANalog"
 Date ""
 Rev ""
-Comp "Perry Leumas"
+Comp "erry Leumas"
 Comment1 ""
 Comment2 ""
 Comment3 ""
