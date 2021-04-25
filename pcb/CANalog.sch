@@ -1382,15 +1382,8 @@ F 3 "" H 3800 5700 50  0001 C CNN
 	1    3800 5700
 	1    0    0    -1  
 $EndComp
-Connection ~ 3800 5100
 Wire Wire Line
-	3800 5100 3800 5200
-Wire Wire Line
-	3800 5100 3800 5050
-Wire Wire Line
-	3950 5100 3800 5100
-Wire Wire Line
-	4150 5100 4300 5100
+	3800 5100 4300 5100
 $Comp
 L Device:C C2
 U 1 1 61372843
@@ -1405,18 +1398,6 @@ F 6 "1276-1036-1-ND" H 3800 5350 50  0001 C CNN "SPN"
 F 7 "DigiKey" H 3800 5350 50  0001 C CNN "Supplier"
 F 8 "https://www.digikey.com/en/products/detail/samsung-electro-mechanics/CL10A105KQ8NNNC/3886694?s=N4IgTCBcDaIIxgOwDYC0cAMBmNdUDsATEAXQF8g" H 3800 5350 50  0001 C CNN "Supplier Link"
 	1    3800 5350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:Jumper_NC_Small JP1
-U 1 1 613708F8
-P 4050 5100
-F 0 "JP1" H 4050 5180 50  0000 C CNN
-F 1 "NC" H 4060 5040 50  0000 C CNN
-F 2 "Jumper:SolderJumper-2_P1.3mm_Bridged_RoundedPad1.0x1.5mm" H 4050 5100 50  0001 C CNN
-F 3 "~" H 4050 5100 50  0001 C CNN
-F 4 "DNP" H 4050 5100 50  0001 C CNN "Population"
-	1    4050 5100
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -1821,9 +1802,9 @@ Wire Wire Line
 	10100 8300 10200 8300
 Wire Wire Line
 	10100 8400 10100 8300
-Text Label 9500 8200 0    50   ~ 0
+Text Label 9650 8200 0    50   ~ 0
 SWCLK
-Text Label 9500 8100 0    50   ~ 0
+Text Label 9650 8100 0    50   ~ 0
 SWDIO
 $Comp
 L power:GND #PWR047
@@ -1927,9 +1908,9 @@ Wire Wire Line
 	9100 8200 10200 8200
 Text GLabel 9300 7200 2    50   Input ~ 0
 DAC
-Text GLabel 7600 7600 0    50   Input ~ 0
+Text GLabel 9300 7900 2    50   Input ~ 0
 CAN_RX
-Text GLabel 7600 7700 0    50   Input ~ 0
+Text GLabel 9300 8000 2    50   Input ~ 0
 CAN_TX
 Wire Wire Line
 	7800 7600 7600 7600
@@ -1947,10 +1928,6 @@ Wire Wire Line
 	7800 8200 7600 8200
 Wire Wire Line
 	7800 8300 7600 8300
-Wire Wire Line
-	9100 7900 9150 7900
-Wire Wire Line
-	9100 8000 9150 8000
 Text GLabel 7600 8000 0    50   Input ~ 0
 STM_CS
 Wire Wire Line
@@ -2106,10 +2083,6 @@ Text GLabel 7600 7500 0    50   Input ~ 0
 CAN_TERM
 Wire Wire Line
 	7600 7500 7800 7500
-Text GLabel 7600 7400 0    50   Input ~ 0
-CAN_RS
-Wire Wire Line
-	7600 7400 7800 7400
 $Comp
 L power:GND #PWR039
 U 1 1 617533C4
@@ -2315,7 +2288,7 @@ L Device:R R21
 U 1 1 600E362D
 P 11650 2000
 F 0 "R21" V 11730 2000 50  0000 C CNN
-F 1 "R" V 11650 2000 50  0000 C CNN
+F 1 "0" V 11650 2000 50  0000 C CNN
 F 2 "Resistor_SMD:R_0603_1608Metric" V 11580 2000 50  0001 C CNN
 F 3 "~" H 11650 2000 50  0001 C CNN
 F 4 "DNP" H 11650 2000 50  0001 C CNN "Population"
@@ -2404,10 +2377,6 @@ F 3 "" H 11850 900 50  0001 C CNN
 	1    11850 900 
 	1    0    0    -1  
 $EndComp
-Text GLabel 11450 2000 0    50   Input ~ 0
-CAN_RS
-Wire Wire Line
-	11500 2000 11450 2000
 Wire Wire Line
 	11800 2000 11850 2000
 Wire Wire Line
@@ -3112,22 +3081,43 @@ Text Notes 10550 8450 1    50   ~ 0
 TC2030-IDC-NL
 NoConn ~ 10200 7900
 Wire Wire Line
-	9100 8100 9800 8100
+	9100 8100 9900 8100
 Wire Wire Line
-	9800 8100 9800 8000
+	9900 8100 9900 8000
 Wire Wire Line
-	9800 8000 10200 8000
+	9900 8000 10200 8000
 NoConn ~ 10200 8400
-Text GLabel 9150 8000 2    50   Input ~ 0
-USB_DP
-Text GLabel 9150 7900 2    50   Input ~ 0
-USB_DM
-Text GLabel 10000 7900 0    50   Input ~ 0
+Text GLabel 9950 8300 0    50   Input ~ 0
 STM_RESET
 Wire Wire Line
-	10000 7900 10100 7900
+	3800 5050 3800 5100
+Connection ~ 3800 5100
 Wire Wire Line
-	10100 7900 10100 8100
+	3800 5100 3800 5200
+$Comp
+L power:GND #PWR?
+U 1 1 60908C01
+P 11400 2300
+F 0 "#PWR?" H 11400 2050 50  0001 C CNN
+F 1 "GND" H 11400 2150 50  0000 C CNN
+F 2 "" H 11400 2300 50  0001 C CNN
+F 3 "" H 11400 2300 50  0001 C CNN
+	1    11400 2300
+	1    0    0    -1  
+$EndComp
 Wire Wire Line
-	10100 8100 10200 8100
+	11400 2300 11400 2000
+Wire Wire Line
+	11400 2000 11500 2000
+NoConn ~ 7800 7400
+Wire Wire Line
+	10200 8100 10000 8100
+Wire Wire Line
+	10000 8100 10000 8300
+Wire Wire Line
+	10000 8300 9950 8300
+Wire Wire Line
+	9300 7900 9100 7900
+Wire Wire Line
+	9300 8000 9100 8000
 $EndSCHEMATC
