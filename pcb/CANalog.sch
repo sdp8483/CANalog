@@ -1797,7 +1797,6 @@ F 3 "~" H 10200 6950 50  0001 C CNN
 	1    10000 6950
 	1    0    0    -1  
 $EndComp
-NoConn ~ 9100 7600
 Wire Wire Line
 	10100 8300 10200 8300
 Wire Wire Line
@@ -1912,10 +1911,6 @@ Text GLabel 9300 7900 2    50   Input ~ 0
 CAN_RX
 Text GLabel 9300 8000 2    50   Input ~ 0
 CAN_TX
-Wire Wire Line
-	7800 7600 7600 7600
-Wire Wire Line
-	7800 7700 7600 7700
 Text GLabel 7600 8100 0    50   Input ~ 0
 SCLK
 Text GLabel 7600 8200 0    50   Input ~ 0
@@ -1928,14 +1923,12 @@ Wire Wire Line
 	7800 8200 7600 8200
 Wire Wire Line
 	7800 8300 7600 8300
-Text GLabel 7600 8000 0    50   Input ~ 0
+Text GLabel 9300 7600 2    50   Input ~ 0
 STM_CS
 Wire Wire Line
 	7600 8000 7800 8000
-Text GLabel 7600 7900 0    50   Input ~ 0
+Text GLabel 7600 8000 0    50   Input ~ 0
 STM_RDY
-Wire Wire Line
-	7600 7900 7800 7900
 $Comp
 L Device:Resonator Y1
 U 1 1 6098BD8E
@@ -2079,10 +2072,8 @@ F 3 "" H 7750 5250 50  0001 C CNN
 	1    7750 5250
 	1    0    0    -1  
 $EndComp
-Text GLabel 7600 7500 0    50   Input ~ 0
+Text GLabel 9300 7800 2    50   Input ~ 0
 CAN_TERM
-Wire Wire Line
-	7600 7500 7800 7500
 $Comp
 L power:GND #PWR039
 U 1 1 617533C4
@@ -2120,18 +2111,12 @@ Wire Notes Line
 	6200 4750 10650 4750
 Wire Notes Line
 	10650 4750 10650 9100
-Text GLabel 9300 6800 2    50   Input ~ 0
+Text GLabel 7600 7100 0    50   Input ~ 0
 CAN_LED
-Text GLabel 9300 6900 2    50   Input ~ 0
+Text GLabel 7600 7200 0    50   Input ~ 0
 SPI_LED
-Text GLabel 9300 7000 2    50   Input ~ 0
+Text GLabel 7600 7300 0    50   Input ~ 0
 ERROR_LED
-Wire Wire Line
-	9100 6800 9300 6800
-Wire Wire Line
-	9100 6900 9300 6900
-Wire Wire Line
-	9100 7000 9300 7000
 $Comp
 L Connector_Generic:Conn_01x03 J7
 U 1 1 60A9A0A7
@@ -3057,11 +3042,7 @@ F 3 "" H 13050 7700 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	6000 1100 6550 1100
-NoConn ~ 7800 7100
-NoConn ~ 7800 7200
-NoConn ~ 7800 7300
 NoConn ~ 9100 7700
-NoConn ~ 9100 7800
 NoConn ~ 9100 8300
 Wire Wire Line
 	10000 7100 10000 6950
@@ -3120,4 +3101,21 @@ Wire Wire Line
 	9300 7900 9100 7900
 Wire Wire Line
 	9300 8000 9100 8000
+NoConn ~ 7800 7600
+NoConn ~ 7800 7700
+Wire Wire Line
+	9100 7800 9300 7800
+NoConn ~ 7800 7500
+NoConn ~ 7800 7900
+Wire Wire Line
+	9100 7600 9300 7600
+Wire Wire Line
+	7600 7100 7800 7100
+Wire Wire Line
+	7600 7200 7800 7200
+Wire Wire Line
+	7600 7300 7800 7300
+NoConn ~ 9100 6800
+NoConn ~ 9100 6900
+NoConn ~ 9100 7000
 $EndSCHEMATC
