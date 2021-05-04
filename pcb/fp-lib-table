@@ -5,4 +5,5 @@
   (lib (name pl_Nucleo)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Nucleo.pretty)(options "")(descr ""))
   (lib (name pl_Diode)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Diode.pretty)(options "")(descr ""))
   (lib (name pl_Inductor)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_Inductor.pretty)(options "")(descr ""))
+  (lib (name pl_art)(type KiCad)(uri ${KIPRJMOD}/lib_fp/pl_art.pretty)(options "")(descr ""))
 )
