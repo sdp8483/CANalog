@@ -5,22 +5,22 @@
     {
       "Vendor":      "KiCad",
       "Application": "Pcbnew",
-      "Version":     "5.1.9"
+      "Version":     "5.1.10"
     },
-    "CreationDate":  "2021-03-01T19:41:54-05:00"
+    "CreationDate":  "2021-05-04T20:33:21-04:00"
   },
   "GeneralSpecs":
   {
     "ProjectId":
     {
-      "Name": "CANalog_nucleo",
-      "GUID": "43414e61-6c6f-4675-9f6e-75636c656f2e",
+      "Name": "CANalog",
+      "GUID": "43414e61-6c6f-4672-9e6b-696361645f70",
       "Revision": "rev?"
     },
     "Size":
     {
-      "X": 68.630,
-      "Y": 78.790
+      "X": 70.050,
+      "Y": 45.050
     },
     "LayerNumber": 2,
     "BoardThickness":  1.600
@@ -33,54 +33,54 @@
       "PadToTrack":  0.200,
       "TrackToTrack":  0.200,
       "MinLineWidth":  0.250,
-      "TrackToRegion":  0.508,
-      "RegionToRegion":  0.508
+      "TrackToRegion":  0.250,
+      "RegionToRegion":  0.250
     }
   ],
   "FilesAttributes":
   [
     {
-      "Path":  "CANalog_nucleo-F_Cu.gbr",
+      "Path":  "CANalog-F_Cu.gbr",
       "FileFunction":  "Copper,L1,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-B_Cu.gbr",
+      "Path":  "CANalog-B_Cu.gbr",
       "FileFunction":  "Copper,L2,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-F_Paste.gbr",
+      "Path":  "CANalog-F_Paste.gbr",
       "FileFunction":  "SolderPaste,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-B_Paste.gbr",
+      "Path":  "CANalog-B_Paste.gbr",
       "FileFunction":  "SolderPaste,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-F_SilkS.gbr",
+      "Path":  "CANalog-F_SilkS.gbr",
       "FileFunction":  "Legend,Top",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-B_SilkS.gbr",
+      "Path":  "CANalog-B_SilkS.gbr",
       "FileFunction":  "Legend,Bot",
       "FilePolarity":  "Positive"
     },
     {
-      "Path":  "CANalog_nucleo-F_Mask.gbr",
+      "Path":  "CANalog-F_Mask.gbr",
       "FileFunction":  "SolderMask,Top",
       "FilePolarity":  "Negative"
     },
     {
-      "Path":  "CANalog_nucleo-B_Mask.gbr",
+      "Path":  "CANalog-B_Mask.gbr",
       "FileFunction":  "SolderMask,Bot",
       "FilePolarity":  "Negative"
     },
     {
-      "Path":  "CANalog_nucleo-Edge_Cuts.gbr",
+      "Path":  "CANalog-Edge_Cuts.gbr",
       "FileFunction":  "Profile",
       "FilePolarity":  "Positive"
     }
