@@ -1935,12 +1935,11 @@ F 0 "Y1" H 6650 6425 50  0000 C CNN
 F 1 "16MHz" H 6650 6350 50  0000 C CNN
 F 2 "Crystal:Resonator_SMD_muRata_CSTxExxV-3Pin_3.0x1.1mm" H 6625 6200 50  0001 C CNN
 F 3 "https://www.mouser.com/datasheet/2/281/murata_04192018_CSTN_CeramResonCERAL-1323383.pdf" H 6625 6200 50  0001 C CNN
-F 4 "DNP" V 6650 6200 50  0000 C CNN "Population"
-F 5 "CSTNE16M0VH3C000R0 " H 6650 6200 50  0001 C CNN "MPN"
-F 6 "Murata Electronics" H 6650 6200 50  0001 C CNN "Manufacture"
-F 7 "81-CSTNE16M0VH3C000R " H 6650 6200 50  0001 C CNN "SPN"
-F 8 "Mouser" H 6650 6200 50  0001 C CNN "Supplier"
-F 9 "https://www.mouser.com/ProductDetail/81-CSTNE16M0VH3C000R" H 6650 6200 50  0001 C CNN "Supplier Link"
+F 4 "CSTNE16M0VH3C000R0 " H 6650 6200 50  0001 C CNN "MPN"
+F 5 "Murata Electronics" H 6650 6200 50  0001 C CNN "Manufacture"
+F 6 "81-CSTNE16M0VH3C000R " H 6650 6200 50  0001 C CNN "SPN"
+F 7 "Mouser" H 6650 6200 50  0001 C CNN "Supplier"
+F 8 "https://www.mouser.com/ProductDetail/81-CSTNE16M0VH3C000R" H 6650 6200 50  0001 C CNN "Supplier Link"
 	1    6650 6200
 	0    1    1    0   
 $EndComp
