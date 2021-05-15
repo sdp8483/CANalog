@@ -7,6 +7,7 @@ const char PAGE_style_CSS[] PROGMEM = R"=====(
 * {
     box-sizing: border-box
 }
+
 section.header {
     width: 100%;
     background-color: orangered;
@@ -15,17 +16,44 @@ section.header {
     font-weight: 700;
     padding: 10px;
 }
-section.navigation {
-    width: 100%;
-    padding: 1%;
-    text-align: center;
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
 }
+
+li {
+    float: left;  
+}
+
+li a {
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #111;
+    color: white;
+}
+
+.active {
+    background-color:orangered;
+    color: black;
+}
+
 section.main {
     width: 100%;
     clear: both;
     content: "";
     display: table;
 }
+
 aside.usrInput {
     padding-right: 1%;
     float: left;
@@ -33,12 +61,14 @@ aside.usrInput {
     margin-left: auto;
     margin-right: auto;
 }
+
 aside.frameDisplay {
     font-size: 11px;
     padding-top: 50px;
     float: left;
     width: 50%;
 }
+
 .formRow {
     margin-bottom: 0;
     padding: 1px 0 1px 0;
@@ -47,6 +77,7 @@ aside.frameDisplay {
     content: "";
     display: table
 }
+
 .buttonRow {
     padding: 5% 0 0 0;
     width: 100%;
@@ -54,6 +85,7 @@ aside.frameDisplay {
     content: "";
     display: table
 }
+
 div.label {
     padding-right: 15px;
     font-size: 20px;
@@ -61,49 +93,59 @@ div.label {
     text-align: right;
     width: 60%
 }
+
 .value {
     font-size: 18px;
     float: left;
     text-align: left;
     width: 40%
 }
+
 .outputText {
     font-size: 18px;
     float: left;
     text-align: left;
     width: 40%;
 }
+
 .line {
     height: 1px;
     width: 100%;
 }
+
 .savedOutput {
     font-size: 18px;
     width: 100%;
     padding: 1%;
     text-align: center;
 }
+
 .infoText {
     font-size: 18px;
     width: 100%;
     padding: 1%;
     text-align: center;
 }
+
 select {
     font-size: inherit;
     width: 100%;
 }
+
 input {
     font-size: inherit;
     width: 100%;
 }
+
 input:invalid {
     border: red solid 3px;
   }
+
 input[type=submit] {
     width: 100%;
     font-size: 20px;
 }
+
 .radio {
     margin-left: 3px;
     width: auto;
@@ -118,10 +160,12 @@ table, th, tr, td {
     margin-left: auto;
     margin-right: auto;
 }
+
 th {
     font-weight: bold;
     background-color: orangered;
 }
+
 @media (max-width: 650px) {
     .usrInput, .frameDisplay {
         width: 100%;

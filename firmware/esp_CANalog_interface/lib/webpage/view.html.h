@@ -18,34 +18,6 @@ const char PAGE_view_HTML[] PROGMEM = R"=====(
     <link rel="icon" href="data:,"> <!-- disable favicon request -->
 
     <style>
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-        }
-
-        li {
-            float: left;  
-        }
-
-        li a {
-            display: inline-block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        li a:hover {
-            background-color: #111;
-        }
-
-        .active {
-            background-color:orangered;
-        }
-
         .plot {
             float: left;
             width: 70%;
@@ -70,12 +42,6 @@ const char PAGE_view_HTML[] PROGMEM = R"=====(
 <body onload="initView()">
     <section class="header">CANalog View</section>
 
-    <!-- <section class="navigation">
-        <button onclick="document.location='index.html'">Settings</button>
-        <button onclick="document.location='view.html'">View</button>
-        <button onclick="document.location='pgnid.html'">PGN to ID</button>
-        <button onclick="document.location='about.html'">About</button>
-    </section> -->
     <ul>
         <li><a href="index.html">Settings</a></li>
         <li><a href="view.html" class="active">View</a></li>

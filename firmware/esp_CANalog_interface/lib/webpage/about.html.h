@@ -19,12 +19,12 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
 <body onload="loadAbout()">
     <section class="header">CANalog About</section>
 
-    <section class="navigation">
-        <button onclick="document.location='index.html'">Settings</button>
-        <button onclick="document.location='view.html'">View</button>
-        <button onclick="document.location='pgnid.html'">PGN to ID</button>
-        <button onclick="document.location='about.html'">About</button>
-    </section>
+    <ul>
+        <li><a href="index.html">Settings</a></li>
+        <li><a href="view.html">View</a></li>
+        <li><a href="pgnid.html">PGN to ID</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+    </ul>
     
     <section class="infoText">
         <div>
