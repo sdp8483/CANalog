@@ -33,7 +33,7 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V0.0.4.0"
+#define FW_VERSION				"V1.0.0.0"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
 char stm32_hw_version[9];                 /* string that stores hw version from stm32 */
 
@@ -49,6 +49,8 @@ IPAddress apIP(192, 168, 1, 1);
 IPAddress subnet(255,255,255,0);
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
+
+#define WIFI_LED_PIN 0                    /* Clinets connected indicator */
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
@@ -82,6 +84,9 @@ void setup(void){
   /* start serial for debugging ----------------------------------------------*/
   Serial.begin(115200);
   Serial.println("\n\r");
+
+  pinMode(WIFI_LED_PIN, OUTPUT);
+  digitalWrite(WIFI_LED_PIN, HIGH);
 
   /* start SPI master --------------------------------------------------------*/
   spiMaster.begin();
@@ -175,6 +180,18 @@ void setup(void){
 void loop(void){
   dnsServer.processNextRequest();
   ws.cleanupClients();
+
+  // if (ws.count() > 0) {
+  //   digitalWrite(WIFI_LED_PIN, LOW);
+  // } else {
+  //   digitalWrite(WIFI_LED_PIN, HIGH);
+  // }
+
+  if (WiFi.softAPgetStationNum() > 0){
+    digitalWrite(WIFI_LED_PIN, LOW);
+  } else {
+    digitalWrite(WIFI_LED_PIN, HIGH);
+  }
 
   if (ws_stream_data == true) {
     if ((millis() - last_ws_sent) >= 1000) {
