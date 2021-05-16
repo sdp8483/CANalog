@@ -12,7 +12,7 @@ uint32_t calc_sn(void) {
 	uint32_t uid[] = {HAL_GetUIDw0(), HAL_GetUIDw1(), HAL_GetUIDw2()};
 
 	selectionSort(uid, 3);
-	uint32_t sn = uid[3] - uid[2] - uid[1];
+	uint32_t sn = uid[2] - uid[1] - uid[0];
 
 	return sn;
 }

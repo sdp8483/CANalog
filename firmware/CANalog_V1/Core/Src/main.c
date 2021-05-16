@@ -42,7 +42,7 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define HW_VERSION				"V1.0.0.0"
-#define FW_VERSION				"V1.0.0.0"
+#define FW_VERSION				"V1.0.0.1"
 
 /* USER CODE END PTD */
 
