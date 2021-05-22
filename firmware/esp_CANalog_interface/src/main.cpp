@@ -33,9 +33,9 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V1.0.0.0"
+#define FW_VERSION				"V1.0.0.1"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
-char stm32_hw_version[9];                 /* string that stores hw version from stm32 */
+char stm32_hw_version[5];                 /* string that stores hw version from stm32 */
 
 /* ESP to STM32 Comunication -------------------------------------------------*/
 Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */

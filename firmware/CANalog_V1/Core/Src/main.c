@@ -22,6 +22,7 @@
 #include "can.h"
 #include "dac.h"
 #include "spi.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -41,8 +42,8 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define HW_VERSION				"V1.0.0.0"
-#define FW_VERSION				"V1.0.0.1"
+#define HW_VERSION				"V1.0"
+#define FW_VERSION				"V1.0.1.1"
 
 /* USER CODE END PTD */
 
@@ -61,6 +62,7 @@
 SPI_HandleTypeDef hspi2;
 DAC_HandleTypeDef hdac;
 CAN_HandleTypeDef hcan;
+TIM_HandleTypeDef htim16;
 
 CAN_FilterTypeDef canFilter;
 CAN_RxHeaderTypeDef canRxHeader;
@@ -76,6 +78,8 @@ uint32_t sn;
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
 void can_filter_init(CAN_HandleTypeDef *hcan, CAN_FilterTypeDef *canFilter);
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim);
+void can_led_touch();
 
 /* USER CODE END PFP */
 
@@ -114,6 +118,7 @@ int main(void) {
 	MX_CAN_Init();
 	MX_DAC_Init();
 	MX_SPI2_Init();
+	MX_TIM16_Init();
 	/* USER CODE BEGIN 2 */
 	sn = calc_sn();
 
@@ -236,7 +241,7 @@ int main(void) {
 
 					signal_calc(&signal);
 					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
-					HAL_GPIO_TogglePin(CAN_LED_GPIO_Port, CAN_LED_Pin);
+					can_led_touch();
 				}
 				break;
 			case ID_TYPE_29BIT:
@@ -246,7 +251,7 @@ int main(void) {
 
 					signal_calc(&signal);
 					HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
-					HAL_GPIO_TogglePin(CAN_LED_GPIO_Port, CAN_LED_Pin);
+					can_led_touch();
 				}
 				break;
 			default:
@@ -264,6 +269,7 @@ int main(void) {
 void SystemClock_Config(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+	RCC_PeriphCLKInitTypeDef PeriphClkInit = { 0 };
 
 	/** Initializes the RCC Oscillators according to the specified parameters
 	 * in the RCC_OscInitTypeDef structure.
@@ -288,6 +294,11 @@ void SystemClock_Config(void) {
 	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
 		Error_Handler();
 	}
+	PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_TIM16;
+	PeriphClkInit.Tim16ClockSelection = RCC_TIM16CLK_HCLK;
+	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK) {
+		Error_Handler();
+	}
 }
 
 /* USER CODE BEGIN 4 */
@@ -305,6 +316,20 @@ void can_filter_init(CAN_HandleTypeDef *hcan, CAN_FilterTypeDef *canFilter) {
 	if (HAL_CAN_ConfigFilter(hcan, canFilter) != HAL_OK) {
 		Error_Handler();
 	}
+}
+
+/* Timer callback to turn of LED */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if (htim == &htim16) {
+		HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_RESET);
+		HAL_TIM_Base_Stop_IT(&htim16);
+	}
+}
+/* set CAN led, tim16 will turn of using interrupt */
+void can_led_touch() {
+	HAL_GPIO_WritePin(CAN_LED_GPIO_Port, CAN_LED_Pin, GPIO_PIN_SET);
+	__HAL_TIM_SET_COUNTER(&htim16, 0);
+	HAL_TIM_Base_Start_IT(&htim16);
 }
 
 /* USER CODE END 4 */

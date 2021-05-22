@@ -29,9 +29,12 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_pwr_ex.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_spi.h \
  ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_spi_ex.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim.h \
+ ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h \
  ../Core/Inc/can.h ../Core/Inc/main.h ../Core/Inc/dac.h ../Core/Inc/spi.h \
- ../Core/Inc/gpio.h ../Core/Inc/can_signal.h ../Core/Inc/device_sn.h \
- ../Core/Inc/can_bit_timing.h ../Core/Inc/can.h ../Core/Inc/can_signal.h
+ ../Core/Inc/tim.h ../Core/Inc/gpio.h ../Core/Inc/can_signal.h \
+ ../Core/Inc/device_sn.h ../Core/Inc/can_bit_timing.h ../Core/Inc/can.h \
+ ../Core/Inc/can_signal.h
 
 ../Core/Inc/main.h:
 
@@ -95,6 +98,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_spi_ex.h:
 
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim.h:
+
+../Drivers/STM32F3xx_HAL_Driver/Inc/stm32f3xx_hal_tim_ex.h:
+
 ../Core/Inc/can.h:
 
 ../Core/Inc/main.h:
@@ -102,6 +109,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/dac.h:
 
 ../Core/Inc/spi.h:
+
+../Core/Inc/tim.h:
 
 ../Core/Inc/gpio.h:
 
