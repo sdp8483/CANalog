@@ -5,8 +5,8 @@ CAN to analog converter.
 ## TODO
 ### PCB
 - [x] Add resistor to stm32 reset line so that stm32 programmer can reset uC when esp8266 is pulling pin high
-- [ ] Increase clearance between terminals and mounting holes by about 1mm
-- [ ] Increase spacing between aout terminal and CAN terminal, possibly center CAN terminal.
+- [x] Increase clearance between terminals and mounting holes by about 1mm
+- [x] Increase spacing between aout terminal and CAN terminal, possibly center CAN terminal.
 ### WiFi Interface Firmware
 - [ ] fix webpage layout for mobile devices
 - [ ] aout control for analog calibration
