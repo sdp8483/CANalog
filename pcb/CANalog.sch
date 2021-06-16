@@ -787,15 +787,15 @@ F 8 "https://lcsc.com/product-detail/Chip-Resistor-Surface-Mount_YAGEO-RT0603BRD
 	1    0    0    -1  
 $EndComp
 Wire Notes Line
-	11650 2650 11650 4650
+	12650 2650 12650 4650
 Text Label 9950 3400 0    50   ~ 0
 RXD
 Wire Wire Line
-	10750 3500 10750 3400
+	11450 3500 11450 3400
 Text Label 9950 3300 0    50   ~ 0
 TXD
 Wire Wire Line
-	9750 3300 11150 3300
+	9750 3300 11900 3300
 Wire Wire Line
 	10050 4350 10050 4300
 $Comp
@@ -947,10 +947,10 @@ Wire Wire Line
 	6800 3000 6800 3100
 Wire Wire Line
 	6800 3400 6800 3950
-Text GLabel 10200 3800 2    50   Input ~ 0
+Text GLabel 10150 3800 2    50   Input ~ 0
 GPIO2
 Wire Wire Line
-	10200 3800 9750 3800
+	10150 3800 9750 3800
 Text GLabel 6800 3950 3    50   Input ~ 0
 GPIO2
 $Comp
@@ -1006,10 +1006,10 @@ NoConn ~ 8800 4500
 NoConn ~ 8900 4500
 NoConn ~ 9000 4500
 NoConn ~ 9100 4500
-Text GLabel 10200 3900 2    50   Input ~ 0
+Text GLabel 10150 3900 2    50   Input ~ 0
 STM_CS
 Wire Wire Line
-	10200 3900 10050 3900
+	10150 3900 10050 3900
 $Comp
 L Switch:SW_Push SW2
 U 1 1 6044D6C7
@@ -1047,8 +1047,8 @@ Wire Wire Line
 Text GLabel 7750 3300 0    50   Input ~ 0
 ESP_RESET
 Wire Wire Line
-	9750 3700 10200 3700
-Text GLabel 10200 3700 2    50   Input ~ 0
+	9750 3700 10150 3700
+Text GLabel 10150 3700 2    50   Input ~ 0
 GPIO0
 $Comp
 L Device:LED D10
@@ -1160,52 +1160,48 @@ MISO
 Text GLabel 7750 3900 0    50   Input ~ 0
 MOSI
 NoConn ~ 7950 3600
-Wire Wire Line
-	9750 3400 10750 3400
-Text GLabel 10200 3600 2    50   Input ~ 0
+Text GLabel 10150 3600 2    50   Input ~ 0
 STM_RDY
 Wire Wire Line
-	10200 3600 9750 3600
-Wire Wire Line
-	9750 3500 10200 3500
+	10150 3600 9750 3600
 Wire Notes Line
-	6200 2750 11650 2750
+	6200 2750 12650 2750
 Wire Notes Line
-	11650 4650 6200 4650
+	12650 4650 6200 4650
 Wire Notes Line
 	6200 4650 6200 2650
 Wire Notes Line
-	6200 2650 11650 2650
+	6200 2650 12650 2650
 $Comp
 L Connector_Generic:Conn_01x06 J5
 U 1 1 60FEC2BA
-P 11400 3400
-F 0 "J5" H 11400 3700 50  0000 C CNN
-F 1 "ESP_PROG" H 11400 3000 50  0000 C CNN
-F 2 "Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical" H 11400 3400 50  0001 C CNN
-F 3 "~" H 11400 3400 50  0001 C CNN
-F 4 "DNP" H 11400 3400 50  0001 C CNN "Population"
-	1    11400 3400
+P 12150 3400
+F 0 "J5" H 12150 3700 50  0000 C CNN
+F 1 "ESP_PROG" H 12150 3000 50  0000 C CNN
+F 2 "Connector:Tag-Connect_TC2030-IDC-NL_2x03_P1.27mm_Vertical" H 12150 3400 50  0001 C CNN
+F 3 "~" H 12150 3400 50  0001 C CNN
+F 4 "DNP" H 12150 3400 50  0001 C CNN "Population"
+	1    12150 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR049
 U 1 1 61023622
-P 11100 3800
-F 0 "#PWR049" H 11100 3550 50  0001 C CNN
-F 1 "GND" H 11100 3650 50  0000 C CNN
-F 2 "" H 11100 3800 50  0001 C CNN
-F 3 "" H 11100 3800 50  0001 C CNN
-	1    11100 3800
+P 11850 3800
+F 0 "#PWR049" H 11850 3550 50  0001 C CNN
+F 1 "GND" H 11850 3650 50  0000 C CNN
+F 2 "" H 11850 3800 50  0001 C CNN
+F 3 "" H 11850 3800 50  0001 C CNN
+	1    11850 3800
 	1    0    0    -1  
 $EndComp
-NoConn ~ 11200 3200
-NoConn ~ 11200 3700
-NoConn ~ 11200 3300
+NoConn ~ 11950 3200
+NoConn ~ 11950 3700
+NoConn ~ 11950 3300
 Wire Wire Line
-	10750 3500 10800 3500
+	11450 3500 11550 3500
 Wire Wire Line
-	11150 3400 11150 3300
+	11900 3400 11900 3300
 Wire Notes Line
 	12650 6700 12650 9100
 Wire Notes Line
@@ -1605,7 +1601,7 @@ ESP_RESET
 Connection ~ 4550 3900
 Text GLabel 5450 3900 2    50   Input ~ 0
 STM_RESET
-Text GLabel 10200 3500 2    50   Input ~ 0
+Text GLabel 10900 3500 2    50   Input ~ 0
 STM_RESET
 Wire Wire Line
 	5450 3700 4550 3700
@@ -1689,17 +1685,17 @@ $EndComp
 $Comp
 L Device:D_Schottky D6
 U 1 1 606DDDEA
-P 10950 3500
-F 0 "D6" H 10950 3600 50  0000 C CNN
-F 1 "1N4148W" H 10950 3400 50  0000 C CNN
-F 2 "Diode_SMD:D_SOD-123" H 10950 3500 50  0001 C CNN
-F 3 "https://datasheet.lcsc.com/szlcsc/1809052017_MDD-Microdiode-Electronics-1N4148W_C84367.pdf" H 10950 3500 50  0001 C CNN
-F 4 "1N4148W" H 10950 3500 50  0001 C CNN "MPN"
-F 5 "Microdiode Electronics" H 10950 3500 50  0001 C CNN "Manufacture"
-F 6 "C84367" H 10950 3500 50  0001 C CNN "SPN"
-F 7 "LCSC" H 10950 3500 50  0001 C CNN "Supplier"
-F 8 "https://lcsc.com/product-detail/Switching-Diode_MDD-Microdiode-Electronics-1N4148W_C84367.html" H 10950 3500 50  0001 C CNN "Supplier Link"
-	1    10950 3500
+P 11700 3500
+F 0 "D6" H 11700 3600 50  0000 C CNN
+F 1 "1N4148W" H 11700 3400 50  0000 C CNN
+F 2 "Diode_SMD:D_SOD-123" H 11700 3500 50  0001 C CNN
+F 3 "https://datasheet.lcsc.com/szlcsc/1809052017_MDD-Microdiode-Electronics-1N4148W_C84367.pdf" H 11700 3500 50  0001 C CNN
+F 4 "1N4148W" H 11700 3500 50  0001 C CNN "MPN"
+F 5 "Microdiode Electronics" H 11700 3500 50  0001 C CNN "Manufacture"
+F 6 "C84367" H 11700 3500 50  0001 C CNN "SPN"
+F 7 "LCSC" H 11700 3500 50  0001 C CNN "Supplier"
+F 8 "https://lcsc.com/product-detail/Switching-Diode_MDD-Microdiode-Electronics-1N4148W_C84367.html" H 11700 3500 50  0001 C CNN "Supplier Link"
+	1    11700 3500
 	-1   0    0    1   
 $EndComp
 Wire Wire Line
@@ -3040,14 +3036,14 @@ Wire Wire Line
 	6000 1100 6550 1100
 NoConn ~ 9100 7700
 Wire Wire Line
-	11100 3800 11100 3600
+	11850 3800 11850 3600
 Wire Wire Line
-	11100 3600 11200 3600
+	11850 3600 11950 3600
 Wire Wire Line
-	11200 3400 11150 3400
+	11950 3400 11900 3400
 Wire Wire Line
-	11100 3500 11200 3500
-Text Notes 11550 3750 1    50   ~ 0
+	11850 3500 11950 3500
+Text Notes 12300 3750 1    50   ~ 0
 TC2030-IDC-NL
 Text Notes 10550 8450 1    50   ~ 0
 TC2030-IDC-NL
@@ -3114,4 +3110,28 @@ Wire Wire Line
 	9100 8300 9300 8300
 Wire Wire Line
 	9300 8300 9300 8500
+Wire Wire Line
+	9750 3500 10500 3500
+Wire Wire Line
+	10800 3500 10900 3500
+Wire Wire Line
+	9750 3400 11450 3400
+Text Label 9950 3500 0    50   ~ 0
+GPIO15
+$Comp
+L Device:R R27
+U 1 1 611F4478
+P 10650 3500
+F 0 "R27" V 10730 3500 50  0000 C CNN
+F 1 "1k" V 10650 3500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 10580 3500 50  0001 C CNN
+F 3 "https://www.yageo.com/upload/media/product/productsearch/datasheet/rchip/PYu-RC_Group_51_RoHS_L_11.pdf" H 10650 3500 50  0001 C CNN
+F 4 "RC0603JR-071KL" H 10650 3500 50  0001 C CNN "MPN"
+F 5 "YAGEO" H 10650 3500 50  0001 C CNN "Manufacture"
+F 6 "311-1.0KGRCT-ND" H 10650 3500 50  0001 C CNN "SPN"
+F 7 "DigiKey" H 10650 3500 50  0001 C CNN "Supplier"
+F 8 "https://www.digikey.com/en/products/detail/yageo/RC0603JR-071KL/726677?s=N4IgTCBcDaIMwEYEFoEDoAMBrA5gJwGMAXZAOwBMQBdAXyA" H 10650 3500 50  0001 C CNN "Supplier Link"
+	1    10650 3500
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC
