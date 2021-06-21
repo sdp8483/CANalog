@@ -2932,7 +2932,6 @@ Wire Wire Line
 	11400 2300 11400 2000
 Wire Wire Line
 	11400 2000 11500 2000
-NoConn ~ 7800 7400
 Wire Wire Line
 	10200 8100 10000 8100
 Wire Wire Line
@@ -2947,7 +2946,6 @@ NoConn ~ 7800 7600
 NoConn ~ 7800 7700
 Wire Wire Line
 	9100 7800 9300 7800
-NoConn ~ 7800 7500
 NoConn ~ 7800 7900
 Wire Wire Line
 	9100 7600 9300 7600
@@ -3027,14 +3025,10 @@ F 3 "" H 12700 8150 50  0001 C CNN
 	1    12700 8150
 	1    0    0    -1  
 $EndComp
-Text GLabel 9300 7400 2    50   Input ~ 0
+Text GLabel 7600 7400 0    50   Input ~ 0
 I2C_SCL
-Text GLabel 9300 7500 2    50   Input ~ 0
+Text GLabel 7600 7500 0    50   Input ~ 0
 I2C_SDA
-Wire Wire Line
-	9100 7400 9300 7400
-Wire Wire Line
-	9100 7500 9300 7500
 Text GLabel 11150 7550 0    50   Input ~ 0
 I2C_SCL
 Text GLabel 11150 7650 0    50   Input ~ 0
@@ -3255,4 +3249,10 @@ F 3 "~" H 750 10050 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	750  10200 750  10050
+Wire Wire Line
+	7600 7400 7800 7400
+Wire Wire Line
+	7600 7500 7800 7500
+NoConn ~ 9100 7400
+NoConn ~ 9100 7500
 $EndSCHEMATC
