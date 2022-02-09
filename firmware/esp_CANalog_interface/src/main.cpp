@@ -50,7 +50,7 @@ IPAddress subnet(255,255,255,0);
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
-#define WIFI_LED_PIN 0                    /* Clinets connected indicator */
+#define WIFI_LED_PIN 0                    /* clients connected indicator */
 
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
