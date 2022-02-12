@@ -37,6 +37,7 @@
 #define SPI_SEND_HW_VERSION		'H'
 #define SPI_SEND_CAN_SIGNAL		'S'
 #define SPI_SEND_DAC_VALUE		'D'
+#define SPI_SET_DAC_VALUE		'd'						/* WiFi interface is setting DAC output for CAL */
 #define SPI_SEND_CAN_FRAME		'C'
 
 /* signal status flag values */

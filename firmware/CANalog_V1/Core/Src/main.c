@@ -43,7 +43,7 @@
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
 #define HW_VERSION				"V1.0"
-#define FW_VERSION				"V1.0.1.1"
+#define FW_VERSION				"V1.0.2.1"
 
 /* USER CODE END PTD */
 
@@ -214,6 +214,12 @@ int main(void) {
 				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.frame, sizeof(signal.frame), 5) != HAL_OK) {
 					Error_Handler();
 				}
+				break;
+			case SPI_SET_DAC_VALUE:
+				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.dac_out, sizeof(signal.frame), 5) != HAL_OK) {
+					Error_Handler();
+				}
+				HAL_DAC_SetValue(&hdac, DAC_CHANNEL_1, DAC_ALIGN_12B_R, signal.dac_out);
 				break;
 			default:
 				break;
