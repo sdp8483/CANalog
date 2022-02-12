@@ -1,17 +1,20 @@
 #include <Arduino.h>
 #include <DNSServer.h>
 #include <ESP_EEPROM.h>
-#include <ArduinoJson.h>
+#include <TaskScheduler.h>
+
+/* ESP8266 WiFi Includes ----------------------------------------------------- */
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <AsyncElegantOTA.h>
+#include <ArduinoJson.h>
 
-/* Local Libraries */
+/* Local Libraries ----------------------------------------------------------- */
 #include "spi_master.h"
 #include "can_signal.h"
 
-/* Raw String Literals for webpages */
+/* Raw String Literals for Webpages ------------------------------------------ */
 #include "about.html.h"
 #include "about.js.h"
 #include "Chart.min.js.h"
@@ -25,40 +28,57 @@
 #include "view.html.h"
 #include "view.js.h"
 
-/* Version Info --------------------------------------------------------------*/
-#define DEVICE_NAME				"CANalog WiFi"
-#define SERVER_ADDRESS    "www.canalog.io"
+/* Version Info -------------------------------------------------------------- */
+#define DEVICE_NAME				  "CANalog"
+#define SERVER_ADDRESS      "www.canalog.io"
 /* Version should be interpreted as: (MAIN).(TOPIC).(FUNCTION).(BUGFIX)
  * 		MAIN marks major milestones of the project such as release
  * 		TOPIC marks the introduction of a new functionality or major changes
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V1.0.1.1"
+#define FW_VERSION				  "V1.0.2.1"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
 char stm32_hw_version[5];                 /* string that stores hw version from stm32 */
 
-/* ESP to STM32 Comunication -------------------------------------------------*/
-Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */
-#define STM32_RESET_PIN 5                 /* esp pin used to reset STM32 on startup */
-#define STM32_RDY_PIN   4                 /* STM32 will pull this pin low when it is ready to receive SPI data */
-ESPMaster spiMaster(SS, STM32_RDY_PIN);   /* ESP master SPI mode */
+/* Private define ------------------------------------------------------------ */
+#define DEBUG_MESSAGES      1             /* set to 1 to enable serial print messages */
 
-/* WiFi Settings -------------------------------------------------------------*/
-String ssid = "CANalog ";                 /* first part of ssid, will append device sn to end */
-IPAddress apIP(192, 168, 1, 1);
+#define WIFI_LED_PIN        0             /* clients connected indicator */
+#define STM32_RESET_PIN     5             /* esp pin used to reset STM32 on startup */
+#define STM32_RDY_PIN       4             /* STM32 will pull this pin low when it is ready to receive SPI data */
+
+/* WiFi Settings ------------------------------------------------------------- */
+#define SSID_LEN            32            /* sources suggest SSID length has a max of 32 characters */
+String ssid = DEVICE_NAME + String(" ");  /* first part of ssid, will append device sn to end */
+IPAddress apIP(192, 168, 4, 1);
 IPAddress subnet(255,255,255,0);
+
 const byte DNS_PORT = 53;
 DNSServer dnsServer;
 
-#define WIFI_LED_PIN 0                    /* clients connected indicator */
-
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
-bool ws_stream_data = false;              /* when true stream data using websocket */
-unsigned long last_ws_sent;
+StaticJsonDocument<1028> wsData;
 
-/* funcition prototypes ------------------------------------------------------*/
+#define WS_TRANSMIT_RATE_ms 1000
+
+/* Private macro ------------------------------------------------------------- */
+#if DEBUG_MESSAGES
+#define debugLog(x) 	Serial.print(x)
+#define debugLogln(x)	Serial.println(x)
+#else
+#define debugLog(x)
+#define debugLogln(x)
+#endif
+
+/* Private variables --------------------------------------------------------- */
+Signal_Handle_t can;                      /* data used on webpages and passed between esp and STM32 */
+ESPMaster spiMaster(SS, STM32_RDY_PIN);   /* ESP master SPI mode */
+
+/* Private function prototypes ----------------------------------------------- */
+
+/* Webserver Handles --------------------------------------------------------- */
 void handleRoot(AsyncWebServerRequest *request);
 void handleSave(AsyncWebServerRequest *request);
 void handleView(AsyncWebServerRequest *request);
@@ -80,16 +100,26 @@ void onWsEvent(AsyncWebSocket * server,
                void * arg, 
                uint8_t *data, 
                size_t len);
+void wsReceiveParse(uint8_t *data, size_t len);
+void wsStream();
 
+/* Task Scheduler ------------------------------------------------------------ */
+Scheduler runner;
+Task wsTask(WS_TRANSMIT_RATE_ms, TASK_FOREVER, &wsStream);
+
+/* Setup --------------------------------------------------------------------- */
 void setup(void){
-  /* start serial for debugging ----------------------------------------------*/
+  /* start serial for debugging ---------------------------------------------- */
   Serial.begin(115200);
   Serial.println("\n\r");
 
   pinMode(WIFI_LED_PIN, OUTPUT);
   digitalWrite(WIFI_LED_PIN, HIGH);
 
-  /* start SPI master --------------------------------------------------------*/
+  /* setup task scheduler ---------------------------------------------------- */
+	runner.init();
+
+  /* start SPI master -------------------------------------------------------- */
   spiMaster.begin();
 
   pinMode(STM32_RESET_PIN, OUTPUT);   /* reset STM32 to avoid error states */
@@ -98,10 +128,7 @@ void setup(void){
   digitalWrite(STM32_RESET_PIN, HIGH);
   delay(10000);                       /* wait for STM32 to startup */
 
-  /* get data from STM32 so we can use sn to set the SSID --------------------*/
-  // spiMaster.read((uint8_t *) &can, sizeof(Signal_Handle_t));
-  // printData(&can);                    /* print received data for debugging */
-
+  /* get data from STM32 so we can use sn to set the SSID -------------------- */
   spiMaster.read(SPI_GET_FW_VERSION, (uint8_t*) stm32_fw_version, sizeof(stm32_fw_version));
   Serial.print("STM32 FW: ");
   Serial.println(String(stm32_fw_version));
@@ -142,8 +169,7 @@ void setup(void){
   Serial.println(WiFi.softAPIP());
 
   /* DNS Server --------------------------------------------------------------*/
-  /* modify TTL associated  with the domain name (in seconds)
-   *  default is 60 seconds */
+  /* modify TTL associated  with the domain name (in seconds), default is 60 seconds */
   dnsServer.setTTL(300);
   /* set which return code will be used for all other domains (e.g. sending
    *  ServerFailure instead of NonExistentDomain will reduce number of queries sent by clients)
@@ -179,46 +205,20 @@ void setup(void){
   Serial.println("HTTP server started");
 }
 
+/* Main Loop ----------------------------------------------------------------- */
 void loop(void){
   dnsServer.processNextRequest();
   ws.cleanupClients();
+  runner.execute();
 
   if (WiFi.softAPgetStationNum() > 0){
     digitalWrite(WIFI_LED_PIN, LOW);
   } else {
     digitalWrite(WIFI_LED_PIN, HIGH);
   }
-
-  if (ws_stream_data == true) {
-    if ((millis() - last_ws_sent) >= 1000) {
-      last_ws_sent = millis();
-
-      spiMaster.read(SPI_GET_CAN_SIGNAL, (uint8_t *) &can.value, sizeof(can.value));
-      delayMicroseconds(50);
-      spiMaster.read(SPI_GET_DAC_VALUE, (uint8_t *) &can.dac_out, sizeof(can.dac_out));
-      delayMicroseconds(50);
-      spiMaster.read(SPI_GET_CAN_FRAME, can.frame, sizeof(can.frame));
-
-      StaticJsonDocument<96> data;
-      
-      data["value"] = can.value;
-      data["dac"] = can.dac_out;
-      
-      String frame;
-      for (uint8_t i=0; i<sizeof(can.frame); i++) {
-        frame += (can.frame[i] < 16 ? "0": "") + String(can.frame[i], HEX); // add leading zero
-      }
-
-      data["frame"] = frame;
-
-      String json;
-      serializeJson(data, json);
-
-      ws.textAll(json.c_str(), json.length());
-    }
-  }
 }
 
+/* Web Server Handle Functions ----------------------------------------------- */
 void handleRoot(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", PAGE_index_HTML);
 }
@@ -329,37 +329,137 @@ void handleInfo(AsyncWebServerRequest *request) {
 }
 
 void handleNotFound(AsyncWebServerRequest *request){
-  request->send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+  request->send(404, "text/plain", "404: Not found");               // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
 }
 
 void handleInvalidRequest(AsyncWebServerRequest *request) {
   request->send(400, "text/plain", "400: Invalid Request");         // The request is invalid, so send HTTP status 400
 }
 
-void onWsEvent(AsyncWebSocket * server, AsyncWebSocketClient * client, 
-               AwsEventType type, void * arg, uint8_t *data, size_t len) {
-  switch (type) {
-  case WS_EVT_CONNECT:
-    Serial.println("Websocket data stream started");
-    client->text("Websocket data stream started");
-    ws_stream_data = true;
-    break;
-  case WS_EVT_DISCONNECT:
-    Serial.println("Websocket data stream ended");
-    ws_stream_data = false;
-    break;
-  case WS_EVT_ERROR:
+void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, 
+               AwsEventType type, void *arg, uint8_t *data, size_t len) {
+	
+	AwsFrameInfo * info = (AwsFrameInfo*)arg;
+    switch(type) {
+      case WS_EVT_CONNECT:
+        /* client connected */
+        Serial.printf("ws[%s][%u] connect\n", server->url(), client->id());
+        client->printf("Hello Client %u :)", client->id());
+        client->ping();
+        runner.addTask(wsTask);
+        wsTask.enable();
+        break;
+      case WS_EVT_DISCONNECT:
+        /* client disconnected */
+        Serial.printf("ws[%s][%u] disconnect\n", server->url(), client->id());
+        wsTask.disable();
+        runner.deleteTask(wsTask);
+        break;
+      case WS_EVT_ERROR:
+        /* error was received from the other end */
+        Serial.printf("ws[%s][%u] error(%u): %s\n", server->url(), client->id(), *((uint16_t*)arg), (char*)data);
+        break;
+      case WS_EVT_PONG:
+        /* pong message was received (in response to a ping request maybe) */
+        Serial.printf("ws[%s][%u] pong[%u]: %s\n", server->url(), client->id(), len, (len)?(char*)data:"");
+        break;
+      case WS_EVT_DATA:
+        /* data packet */
+        if(info->final && info->index == 0 && info->len == len) {
+          //the whole message is in a single frame and we got all of it's data
+          Serial.printf("ws[%s][%u] %s-message[%llu]: ", 
+                server->url(), client->id(), (info->opcode == WS_TEXT)?"text":"binary", info->len);
+          if(info->opcode == WS_TEXT) {
+            data[len] = 0;
+            Serial.printf("%s\n", (char*)data);
+            wsReceiveParse(data, info->len);
+          } else {
+            for(size_t i=0; i < info->len; i++){
+              Serial.printf("%02x ", data[i]);
+            }
+            Serial.printf("\n");
+          }
+          if(info->opcode == WS_TEXT)
+            client->text("I got your text message");
+          else
+            client->binary("I got your binary message");
+        } else {
+          //message is comprised of multiple frames or the frame is split into multiple packets
+          if(info->index == 0){
+            if(info->num == 0)
+            Serial.printf("ws[%s][%u] %s-message start\n", server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
+            Serial.printf("ws[%s][%u] frame[%u] start[%llu]\n", server->url(), client->id(), info->num, info->len);
+          }
 
-    break;
-  case WS_EVT_PONG:
+          Serial.printf("ws[%s][%u] frame[%u] %s[%llu - %llu]: ", 
+                server->url(), client->id(), info->num, 
+                (info->message_opcode == WS_TEXT)?"text":"binary", info->index, info->index + len);
+          if(info->message_opcode == WS_TEXT){
+            data[len] = 0;
+            Serial.printf("%s\n", (char*)data);
+          } else {
+            for(size_t i=0; i < len; i++){
+              Serial.printf("%02x ", data[i]);
+            }
+            Serial.printf("\n");
+          }
 
-    break;
-  case WS_EVT_DATA:
+          if((info->index + len) == info->len){
+            Serial.printf("ws[%s][%u] frame[%u] end[%llu]\n", server->url(), client->id(), info->num, info->len);
+            if(info->final) {
+              Serial.printf("ws[%s][%u] %s-message end\n", 
+                    server->url(), client->id(), (info->message_opcode == WS_TEXT)?"text":"binary");
+              if(info->message_opcode == WS_TEXT)
+                client->text("I got your text message");
+              else
+                client->binary("I got your binary message");
+            }
+          }
+        }
+        break;
+      default:
+        break;
+	}
+}
 
-    break;
+void wsReceiveParse(uint8_t *data, size_t len) {
+	/* get data from JSON */
+	DeserializationError error = deserializeJson(wsData, data, len);
+
+	if (error) {
+		debugLog("deserializeJason() failed: ");
+		debugLogln(error.f_str());
+	}
+
+	switch (wsData["action"].as<uint8_t>()) {
+    case 0:
+      break;
+    default:
+      break;
+	}
+}
+
+void wsStream() {
+  spiMaster.read(SPI_GET_CAN_SIGNAL, (uint8_t *) &can.value, sizeof(can.value));
+  delayMicroseconds(50);
+  spiMaster.read(SPI_GET_DAC_VALUE, (uint8_t *) &can.dac_out, sizeof(can.dac_out));
+  delayMicroseconds(50);
+  spiMaster.read(SPI_GET_CAN_FRAME, can.frame, sizeof(can.frame));
+
+  StaticJsonDocument<96> data;
   
-
-  default:
-    break;
+  data["value"] = can.value;
+  data["dac"] = can.dac_out;
+  
+  String frame;
+  for (uint8_t i=0; i<sizeof(can.frame); i++) {
+    frame += (can.frame[i] < 16 ? "0": "") + String(can.frame[i], HEX); // add leading zero
   }
+
+  data["frame"] = frame;
+
+  String json;
+  serializeJson(data, json);
+
+  ws.textAll(json.c_str(), json.length());
 }
