@@ -29,6 +29,9 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
     <section class="infoText">
         <div>
             WiFi Adapter Firmware Version
+            <div>
+                <button type="button" class="rButton" onclick="window.location.href='/update'">Update FW</button>
+            </div>
             <pre><output type="text", id="esp_fw", name="esp_fw"></output></pre>
         </div>
         <div class="line"></div>

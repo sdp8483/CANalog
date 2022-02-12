@@ -5,6 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <ESPAsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <AsyncElegantOTA.h>
 
 /* Local Libraries */
 #include "spi_master.h"
@@ -33,7 +34,7 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				"V1.0.0.1"
+#define FW_VERSION				"V1.0.1.1"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
 char stm32_hw_version[5];                 /* string that stores hw version from stm32 */
 
@@ -173,6 +174,7 @@ void setup(void){
   server.on("/info.txt", handleInfo);
   server.onNotFound(handleNotFound);              /* When a client requests an unknown URI call function "handleNotFound" */
 
+  AsyncElegantOTA.begin(&server);                 /* Start OTA update server */
   server.begin();                                 /* Actually start the server */
   Serial.println("HTTP server started");
 }
@@ -180,12 +182,6 @@ void setup(void){
 void loop(void){
   dnsServer.processNextRequest();
   ws.cleanupClients();
-
-  // if (ws.count() > 0) {
-  //   digitalWrite(WIFI_LED_PIN, LOW);
-  // } else {
-  //   digitalWrite(WIFI_LED_PIN, HIGH);
-  // }
 
   if (WiFi.softAPgetStationNum() > 0){
     digitalWrite(WIFI_LED_PIN, LOW);
