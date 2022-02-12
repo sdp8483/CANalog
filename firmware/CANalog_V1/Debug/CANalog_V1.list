@@ -1778,12 +1778,12 @@ int main(void) {
 				break;
  8000d92:	e020      	b.n	8000dd6 <main+0x2b2>
 			case SPI_SET_DAC_VALUE:
-				if (HAL_SPI_Transmit(&hspi2, (uint8_t*) &signal.dac_out, sizeof(signal.frame), 5) != HAL_OK) {
+				if (HAL_SPI_Receive(&hspi2, (uint8_t*) &signal.dac_out, sizeof(signal.dac_out), 5) != HAL_OK) {
  8000d94:	2305      	movs	r3, #5
- 8000d96:	2208      	movs	r2, #8
+ 8000d96:	2202      	movs	r2, #2
  8000d98:	493c      	ldr	r1, [pc, #240]	; (8000e8c <main+0x368>)
  8000d9a:	4838      	ldr	r0, [pc, #224]	; (8000e7c <main+0x358>)
- 8000d9c:	f002 fe6d 	bl	8003a7a <HAL_SPI_Transmit>
+ 8000d9c:	f002 ffdb 	bl	8003d56 <HAL_SPI_Receive>
  8000da0:	4603      	mov	r3, r0
  8000da2:	2b00      	cmp	r3, #0
  8000da4:	d001      	beq.n	8000daa <main+0x286>
