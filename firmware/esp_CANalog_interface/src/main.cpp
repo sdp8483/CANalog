@@ -17,6 +17,8 @@
 /* Raw String Literals for Webpages ------------------------------------------ */
 #include "about.html.h"
 #include "about.js.h"
+#include "analog.html.h"
+#include "analog.js.h"
 #include "Chart.min.js.h"
 #include "index.html.h"
 #include "index.js.h"
@@ -37,7 +39,7 @@
  * 		FUNCTION marks introduction of new functionality and aim to advance the current TOPIC
  * 		BUGFIX marks very minor updates such as bug fix, optimization, or text edit
  */
-#define FW_VERSION				  "V1.0.2.1"
+#define FW_VERSION				  "V1.0.3.2"
 char stm32_fw_version[9];                 /* string that stores fw version from stm32 */
 char stm32_hw_version[5];                 /* string that stores hw version from stm32 */
 
@@ -81,10 +83,12 @@ ESPMaster spiMaster(SS, STM32_RDY_PIN);   /* ESP master SPI mode */
 /* Webserver Handles --------------------------------------------------------- */
 void handleRoot(AsyncWebServerRequest *request);
 void handleSave(AsyncWebServerRequest *request);
+void handleAnalog(AsyncWebServerRequest *request);
 void handleView(AsyncWebServerRequest *request);
 void handlePGNtoID(AsyncWebServerRequest *request);
 void handleAbout(AsyncWebServerRequest *request);
 void handleIndexJavascript(AsyncWebServerRequest *request);
+void handleAnalogJavascript(AsyncWebServerRequest *request);
 void handleViewJavascript(AsyncWebServerRequest *request);
 void handlePGNtoIDJavascript(AsyncWebServerRequest *request);
 void handleAboutJavascript(AsyncWebServerRequest *request);
@@ -187,10 +191,12 @@ void setup(void){
   server.on("/", HTTP_GET, handleRoot);           /* Call the 'handleRoot' function when a client requests URI "/" */
   server.on("/index.html", HTTP_GET, handleRoot); /* Call the 'handleRoot' function when a client requests URI "/index" */
   server.on("/save", HTTP_POST, handleSave);      /* Call the 'handleSave' function when a POST request is made to URI "/save" */
-  server.on("/pgnid.html", HTTP_GET, handlePGNtoID);
+  server.on("/analog.html", HTTP_GET, handleAnalog);
   server.on("/view.html", HTTP_GET, handleView);
+  server.on("/pgnid.html", HTTP_GET, handlePGNtoID);
   server.on("/about.html", HTTP_GET, handleAbout);
   server.on("/index.js", handleIndexJavascript);  /* javascript */
+  server.on("/analog.js", handleAnalogJavascript);
   server.on("/view.js", handleViewJavascript);
   server.on("/pgnid.js", handlePGNtoIDJavascript);
   server.on("/about.js", handleAboutJavascript);
@@ -255,6 +261,10 @@ void handleSave(AsyncWebServerRequest *request) {
   }
 }
 
+void handleAnalog(AsyncWebServerRequest *request) {
+  request->send_P(200, "text/html", PAGE_analog_HTML);
+}
+
 void handleView(AsyncWebServerRequest *request) { 
   request->send_P(200, "text/html", PAGE_view_HTML);
 }
@@ -269,6 +279,10 @@ void handleAbout(AsyncWebServerRequest *request) {
 
 void handleIndexJavascript(AsyncWebServerRequest *request) {
   request->send_P(200, "application/javascript", PAGE_index_JS);
+}
+
+void handleAnalogJavascript(AsyncWebServerRequest *request) {
+  request->send_P(200, "application/javascript", PAGE_analog_JS);
 }
 
 void handleViewJavascript(AsyncWebServerRequest *request) {
@@ -431,9 +445,20 @@ void wsReceiveParse(uint8_t *data, size_t len) {
 		debugLogln(error.f_str());
 	}
 
+  uint16_t dac_out = 0;
+
 	switch (wsData["action"].as<uint8_t>()) {
-    case 0:
+    case WS_ACTION_SET_DAC:
+      dac_out = wsData["dac_out"].as<uint16_t>();
+      debugLogln(dac_out);
+      spiMaster.write(SPI_SET_DAC_VALUE, (uint8_t *) &dac_out, sizeof(dac_out));
+      
       break;
+    case WS_ACTION_PAUSE_STREAM:
+      wsTask.disable();
+      break;
+    case WS_ACTION_RESUME_STREAM:
+      wsTask.enable();
     default:
       break;
 	}
@@ -446,10 +471,12 @@ void wsStream() {
   delayMicroseconds(50);
   spiMaster.read(SPI_GET_CAN_FRAME, can.frame, sizeof(can.frame));
 
-  StaticJsonDocument<96> data;
+  StaticJsonDocument<128> data;
   
   data["value"] = can.value;
   data["dac"] = can.dac_out;
+  data["sMax"] = can.max;
+  data["sMin"] = can.min;
   
   String frame;
   for (uint8_t i=0; i<sizeof(can.frame); i++) {

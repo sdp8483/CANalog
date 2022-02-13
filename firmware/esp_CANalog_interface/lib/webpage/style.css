@@ -2,6 +2,20 @@
     box-sizing: border-box
 }
 
+section.box {
+    margin: 1.5em;
+    border: 1px solid black;
+    padding: 1em;
+}
+
+section>h2 {
+    background-color: white;
+    margin-top: -1.5em;
+    width: max-content;
+    padding: 0 0.5em;
+    margin-left: 0.5em;
+}
+
 section.header {
     width: 100%;
     background-color: orangered;

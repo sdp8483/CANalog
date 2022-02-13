@@ -44,6 +44,7 @@ const char PAGE_view_HTML[] PROGMEM = R"=====(
 
     <ul>
         <li><a href="index.html">Settings</a></li>
+        <li><a href="analog.html">Analog</a></li>
         <li><a href="view.html" class="active">View</a></li>
         <li><a href="pgnid.html">PGN to ID</a></li>
         <li><a href="about.html">About</a></li>

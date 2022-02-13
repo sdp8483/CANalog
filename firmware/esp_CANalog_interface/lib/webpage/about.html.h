@@ -21,6 +21,7 @@ const char PAGE_about_HTML[] PROGMEM = R"=====(
 
     <ul>
         <li><a href="index.html">Settings</a></li>
+        <li><a href="analog.html">Analog</a></li>
         <li><a href="view.html">View</a></li>
         <li><a href="pgnid.html">PGN to ID</a></li>
         <li><a href="about.html" class="active">About</a></li>

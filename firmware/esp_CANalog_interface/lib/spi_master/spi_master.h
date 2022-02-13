@@ -12,6 +12,7 @@
 #define SPI_GET_HW_VERSION	'H'         /* read firmware version string */
 #define SPI_GET_CAN_SIGNAL  'S'         /* read CAN signal value */
 #define SPI_GET_DAC_VALUE   'D'         /* read dac value */
+#define SPI_SET_DAC_VALUE   'd'         /* set the DAC output for use during calibraton */
 #define SPI_GET_CAN_FRAME   'C'         /* read CAN frame data */
 
 #define SPI_DELAY_us        10          /* delay for uS before each SPI.transmit to allow STM32 time to catch up, STM32 needs a few uS between bytes */
@@ -28,6 +29,7 @@ class ESPMaster {
     ESPMaster(uint8_t ss_pin, uint8_t rdy_pin);
     void begin();
     void write(uint8_t *pData, uint16_t len);
+    void write(uint8_t cmd_char, uint8_t *pData, uint16_t len);
     void read(uint8_t *pData, uint16_t len);
     void read(uint8_t cmd_char, uint8_t *pData, uint16_t len);
 };
