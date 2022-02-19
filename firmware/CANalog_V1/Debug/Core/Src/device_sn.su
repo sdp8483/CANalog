@@ -1,3 +1,0 @@
-device_sn.c:11:10:calc_sn	24	static
-device_sn.c:21:6:swap	24	static
-device_sn.c:28:6:selectionSort	32	static

@@ -1,6 +1,0 @@
-main.c:95:5:main	16	static
-main.c:275:6:SystemClock_Config	120	static
-main.c:311:6:can_filter_init	16	static
-main.c:328:6:HAL_TIM_PeriodElapsedCallback	16	static
-main.c:335:6:can_led_touch	8	static
-main.c:347:6:Error_Handler	8	static,ignoring_inline_asm

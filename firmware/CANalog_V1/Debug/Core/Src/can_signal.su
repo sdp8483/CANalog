@@ -1,5 +1,0 @@
-can_signal.c:21:6:signal_init	48	static
-can_signal.c:44:6:signal_update	48	static
-can_signal.c:60:10:map	24	static
-can_signal.c:64:6:nibble_swap	56	static
-can_signal.c:72:6:signal_calc	104	static
